@@ -5,6 +5,7 @@
 	<form method="post" action=".">
 		{% csrf_token %}
 		{{ form.as_p }}
-		<input type="submit" value="로그인">
+		<input type="hidden" name="next" value="/" />
+		<input type="submit" value="로그인" />
 	</form>
 {% endblock %}
