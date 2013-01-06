@@ -51,6 +51,7 @@ input {
 	width: 179px;
 	border-right: dashed 1px;
 	height: 100%;
+	padding-top: 5px;
 }
 
 #rightContent{
@@ -68,4 +69,8 @@ input {
 	height: 100px;
 	border: dotted 1px;
 	line-height: 100px;
+}
+
+.rfloat{
+	float: right;
 }

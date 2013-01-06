@@ -1,7 +1,9 @@
+{% extends "registrationBase.html" %}
 {% block title %}가입{% endblock %}
 {% block body %}
 	<h2>가입</h2><hr />
 	<form method="post" action=".">
+		{% csrf_token %}
 		{{ form.as_p }}
 		<input type="submit" value="가입">
 	</form>
