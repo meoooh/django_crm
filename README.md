@@ -5,6 +5,7 @@ Fedora release 17 (Beefy Miracle)
 	Kernel \r on an \m (\l)
 
 [root@localhost ~]# uname -a
+
 Linux localhost.localdomain 3.6.10-2.fc17.i686 #1 SMP Tue Dec 11 18:33:15 UTC 2012 i686 i686 i386 GNU/Linux
 
 [root@localhost ~]# django-admin.py --version
