@@ -7,8 +7,8 @@ from django.contrib.auth.models import User
 
 class userRegistrationForm(forms.Form):
 	userId = forms.CharField(label='아이디',
-		max_length=30,
-		)
+			max_length=30,
+			)
 	userName = forms.CharField(label='이름',
 			max_length=70,
 			)
