@@ -13,7 +13,9 @@ class userRegistrationForm(forms.Form):
 			max_length=70,
 			)
 	email = forms.EmailField(label='전자우편')
-	mobile = forms.CharField(label='휴대전화번호')
+	mobile = forms.CharField(label='휴대전화번호',
+			max_length=13
+			)
 	password1 = forms.CharField(label='비밀번호',
 			widget=forms.PasswordInput(),
 			)
