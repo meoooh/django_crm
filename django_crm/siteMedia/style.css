@@ -1,0 +1,71 @@
+body{
+	margin:0;
+	padding:0;
+}
+
+input {
+	display: block;
+}
+
+#topBar{
+	position: fixed;
+	background-color: #d1d1e0;
+	height: 30px;
+	width: 100%;
+	z-index: 5;
+}
+
+#mainContainer{
+	top: 30px;
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	border: solid 1px;
+	z-index: 1;
+}
+
+#navContainer{
+	margin: 0px auto;
+	width: 1200px;
+	height: 100%;
+	display: table;
+}
+
+#nav{
+	vertical-align: middle;
+	display: table-cell;
+}
+
+.nav-buttom{
+    display: inline-block;
+}
+
+#main{
+	margin: 0px auto;	
+	width: 1200px;
+	height: 100%;
+}
+
+#leftSide{
+	float: left;
+	width: 179px;
+	border-right: dashed 1px;
+	height: 100%;
+}
+
+#rightContent{
+	float: left;
+	width: 1000px;
+	padding-left: 10px;
+}
+
+.leftSideButton{
+}
+
+#pic{
+	text-align:center;
+	width: 100px;
+	height: 100px;
+	border: dotted 1px;
+	line-height: 100px;
+}

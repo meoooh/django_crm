@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<title>CRM::{% block title %}{% endblock %}</title>
+		<link rel="stylesheet" href="/siteMedia/style.css"
+		type="text/css">
+		<script type="text/javascript"
+		src="http://code.jquery.com/jquery-latest.js"></script>
+		{% block head %}{% endblock %}
+	</head>
+	<body>
+		<div id="topBar">
+			<div id="navContainer">
+				<div id="nav">
+					<div class="nav-buttom">
+						<a href="/" target="_self">home</a>
+					</div>
+					<div class="nav-buttom">
+						nextMenu
+					</div>
+				</div>
+			</div>	
+		</div>
+		<div id="mainContainer">
+			{% block content %}{% endblock %}
+		</div>
+		{% block body %}{% endblock %}
+	</body>
+</html>

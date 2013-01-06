@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}처음{% endblock %}
+{% block content %}
+<div id="main">
+	<div id="leftSide">
+		<div id="pic">사진</div>
+		<div id="username">
+			<b>{{ username }}</b>님, 입장.
+		</div>
+		<div>&nbsp;</div>
+		<div class="leftSideButton">전체고객관리</div>
+		<div class="leftSideButton">침탐내역</div>
+	</div>
+	<div id="rightContent">
+		<h1>test</h1><hr>
+		{{ username }}, 로그인
+	</div>
+</div>
+{% endblock %}
