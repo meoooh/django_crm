@@ -1,21 +1,10 @@
-<html>
-	<head>
-		<title>CRM::로그인</title>
-		<link rel="stylesheet" href="/siteMedia/style.css"
-		type="text/css">
-	</head>
-	<body>
-		<h2>로그인</h2><hr />
-		{% if form.errors %}
-			<p>사용자 이름과 비밀번호가 일치하지 않습니다. 다시 시도해보세요.</p>
-		{% endif %}
-		<form method="post" action=".">{% csrf_token %}
-			<p><label for="id_username">사용자 이름:</label>
-			{{ form.username }}</p>
-			<p><label for="id_password">비밀번호:</label>
-			{{ form.password }}</p>
-			<input type="hidden" name="next" value="/" />
-			<input type="submit" value="로그인" />
-		</form>
-	</body>
-</html>
+{% extends "registrationBase.html" %}
+{% block title %}로그인{% endblock %}
+{% block body %}
+	<h2>로그인</h2><hr />
+	<form method="post" action=".">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" value="로그인">
+	</form>
+{% endblock %}

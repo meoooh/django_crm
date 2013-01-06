@@ -5,6 +5,8 @@ import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+AUTH_PROFILE_MODULE = 'crm.UserProfile'
+
 LOGIN_URL = '/login/'
 
 ADMINS = (
