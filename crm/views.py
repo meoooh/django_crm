@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.template import RequestContext
+from django.contrib.auth.views import login
 from django.contrib.auth import logout
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
@@ -29,7 +30,7 @@ def userRegistration(request):
 					password=form.cleaned_data['password1'],
 					email=form.cleaned_data['email'],
 					)
-			_user=UserProfile.objects.create(user=user)
+			UserProfile.objects.create(user=user)
 			# get_profile관련 https://docs.djangoproject.com/en/dev/topics/auth/customizing/#auth-profiles
 			# http://www.turnkeylinux.org/blog/django-profile
 			# http://stackoverflow.com/questions/5477925/django-1-3-userprofile-matching-query-does-not-exist
@@ -60,3 +61,13 @@ def logoutPage(request):
 
 	return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 	# from django.http import HttpResponseRedirect
+
+def loginPage(request):
+	loginReturnValue=login(request=request)
+
+	if request.method == 'POST' and request.user.is_authenticated():
+		user = request.user.get_profile()
+		user.lastIp = request.META.get('REMOTE_ADDR')
+		user.save()
+	
+	return loginReturnValue
