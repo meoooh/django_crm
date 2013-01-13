@@ -1,13 +1,23 @@
 {% extends "registrationBase.html" %}
 {% block title %}로그인{% endblock %}
 {% block body %}
-	<h2>로그인</h2><hr />
-	<form method="post" action=".">
-		{% csrf_token %}
-		{{ form.as_p }}
-		<input type="hidden" name="next" value="/" />
-		<input type="submit" value="로그인" />
-	</form>
-	<a href="/userRegistration/" target="_self"
-	>가입</a>
+	<div class="container">
+		<div class="row">
+			<div class="span12">
+				<div class="page-header">
+					<h1>로그인</h1>
+				</div>
+				<form method="post" action="." class="form-inline">
+					{% csrf_token %}
+					{{ form.as_table }}
+					<input type="hidden" name="next" value="/" />
+					<button type="submit" class="btn">로그인</button>
+				</form>
+				<button class="btn btn-large" type="button">
+					<a href="/userRegistration/" target="_self"
+					>가입</a>
+				</button>
+			</div>	
+		</div>
+	</div>
 {% endblock %}

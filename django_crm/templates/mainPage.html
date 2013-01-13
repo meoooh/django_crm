@@ -1,19 +1,31 @@
 {% extends "base.html" %}
 {% block title %}처음{% endblock %}
 {% block content %}
-<div id="main">
-	<div id="leftSide">
-		<div id="pic">사진</div>
-		<div id="username">
+<div class="row">
+	<div class="span2">
+		<div id="pic"><img src="http://i1.daumcdn.net/cfs.tistory/static/admin/editor/renew/sicon_org.gif"
+		class="img-polaroid"></div>
+		<div id="username" style="padding-bottom:20px; padding-top:20px;">
 			<b>{{ username }}</b>님, 입장.
 		</div>
-		<div>&nbsp;</div>
-		<div class="leftSideButton">전체고객관리</div>
-		<div class="leftSideButton">침탐내역</div>
+		<ul class="nav nav-pills nav-stacked">
+			<li class="active"><a tabindex="-1" href="#">뉴스피드</a></li>
+			<li><a tabindex="-1" href="#">고객관리</a></li>
+			<li><a tabindex="-1" href="#">침입탐지대응</a></li>
+			<li><a tabindex="-1" href="/workDailyRecord/">근무일지</a></li>
+		</ul>
+		<div class="btn-group open">
+			<button class="btn"><a tabindex="-1" href="/workDailyRecord/">근무일지</a></button>
+			<button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+			<ul class="dropdown-menu">
+				<li><a href="#">Action</a></li>
+			</ul>
+		</div>
 	</div>
-	<div id="rightContent">
+	<div class="span10">
 		<h1>test</h1><hr>
 		{{ username }}, 로그인
+		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 	</div>
 </div>
 {% endblock %}
