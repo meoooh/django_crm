@@ -71,3 +71,16 @@ class userRegistrationForm(forms.Form):
 				raise forms.ValidationError('비밀번호가 일치하지 않습니다.')
 		else:
 			raise forms.ValidationError('올바른 비밀번호가 아닙니다.')
+
+class WorkDailyRecordForm(forms.Form):
+	ONGOING_OR_END =(
+				('ing', '진행중'),
+				('end', '완료'),
+			)
+
+	ongoing_or_end = forms.ChoiceField(
+			label='',
+			choices=ONGOING_OR_END,
+			initial ='ing',
+		)
+	contents = forms.CharField(label='')

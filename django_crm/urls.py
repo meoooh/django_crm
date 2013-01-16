@@ -27,4 +27,5 @@ urlpatterns = patterns('',
 	 { 'document_root': siteMedia }),
 	(r'^userRegistration/$', userRegistration),
 	(r'^logout/$', logoutPage),
+	(r'^workDailyRecord/(?P<mode_name>\w+/)?$', workDailyRecord),
 )

@@ -12,7 +12,7 @@ from crm.models import *
 @login_required
 def mainPage(request):
 	variables = RequestContext(request, {
-			'username': request.user.username,
+			'user': request.user,
 			})
 	
 	return render_to_response('mainPage.html', variables)
@@ -71,3 +71,35 @@ def loginPage(request):
 		user.save()
 	
 	return loginReturnValue
+
+@login_required
+def workDailyRecord(request, mode_name):
+	form = WorkDailyRecordForm()
+	if request.method == 'GET':
+#		import pdb
+#		pdb.set_trace()
+		"""if mode_name == u'add/':
+			pass
+		elif mode_name == None:
+		"""
+		workDailyRecord = WorkDailyRecord.objects.order_by('date')
+	elif request.method == 'POST':
+		#form = WorkDailyRecordForm(request.POST)
+		
+		WorkDailyRecord.objects.create(
+			user=request.user,
+			contents=request.POST['contents'],
+			ongoing_or_end=request.POST['ongoing_or_end'],
+		)
+		
+		return HttpResponseRedirect('/workDailyRecord/')
+#	import pdb
+#	pdb.set_trace()
+	variables = RequestContext(request, {
+				'user':request.user,
+				'form':form,
+				'workDailyRecord':workDailyRecord,
+			})
+
+	return render_to_response('workDailyRecord.html',
+			variables)
