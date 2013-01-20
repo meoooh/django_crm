@@ -5,7 +5,7 @@ from django.contrib.auth.views import login
 from django.contrib.auth import logout
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from crm.forms import *
 from crm.models import *
 
@@ -76,30 +76,128 @@ def loginPage(request):
 def workDailyRecord(request, mode_name):
 	form = WorkDailyRecordForm()
 	if request.method == 'GET':
+		if mode_name == u'edit/':
+			workDailyRecord = WorkDailyRecord.objects.get(pk=request.GET['pk'])
+			target_user = ', '.join(
+					w.get_profile().name for w in workDailyRecord.target_user.all()
+					)
+			form = WorkDailyRecordForm({
+				'ongoing_or_end':workDailyRecord.ongoing_or_end,
+				'contents':workDailyRecord.contents,
+				'target_user':target_user,
+			})
+			
+			variables = RequestContext(request, {
+				'form':form,
+			})
+			
+			return render_to_response('workDailyRecordForm.html', variables)
+		elif mode_name == None:
+			workDailyRecord = WorkDailyRecord.objects.order_by('date')
+		
 #		import pdb
 #		pdb.set_trace()
-		"""if mode_name == u'add/':
-			pass
-		elif mode_name == None:
-		"""
-		workDailyRecord = WorkDailyRecord.objects.order_by('date')
-	elif request.method == 'POST':
-		#form = WorkDailyRecordForm(request.POST)
-		
-		WorkDailyRecord.objects.create(
-			user=request.user,
-			contents=request.POST['contents'],
-			ongoing_or_end=request.POST['ongoing_or_end'],
-		)
-		
-		return HttpResponseRedirect('/workDailyRecord/')
-#	import pdb
-#	pdb.set_trace()
-	variables = RequestContext(request, {
-				'user':request.user,
-				'form':form,
-				'workDailyRecord':workDailyRecord,
-			})
+		variables = RequestContext(request, {
+					'user':request.user,
+					'form':form,
+					'workDailyRecord':workDailyRecord,
+				})
 
-	return render_to_response('workDailyRecord.html',
-			variables)
+		return render_to_response('workDailyRecord.html', variables)
+	elif request.method == 'POST':
+#		import pdb
+#		pdb.set_trace()
+		#form = WorkDailyRecordForm(request.POST)
+		ajax = request.GET.has_key('ajax')
+		if mode_name == u'del/':
+			if ajax:
+				workDailyRecord = WorkDailyRecord.objects.get(pk=request.POST['pk'])
+				workDailyRecord.delete()
+				return HttpResponse('1')	 # from django.http import HttpResponse
+		elif mode_name == None:
+			if ajax:
+				if request.POST.has_key('pk'): #수정
+					if request.GET.has_key('edit'):
+						workDailyRecord = WorkDailyRecord.objects.get(pk=request.POST['pk'])
+						workDailyRecord.contents = request.POST['contents']
+						workDailyRecord.ongoing_or_end = request.POST['ongoing_or_end']
+						
+						target_users = request.POST['target_user'].split(',')
+					
+						for target_user in target_users:
+							user=''
+							target_user=target_user.strip()
+							try:
+								user = UserProfile.objects.get(name=target_user).user
+							except ObjectDoesNotExist:
+								continue
+							workDailyRecord.target_user.add(user)
+						
+						workDailyRecord.save()
+					elif request.GET.has_key('check'):
+						workDailyRecord = WorkDailyRecord.objects.get(pk=request.POST['pk'])
+						
+						workDailyRecord.check_user.add(request.user)
+						workDailyRecord.save()
+						
+						return HttpResponse('1')
+					elif request.GET.has_key('uncheck'):
+						workDailyRecord = WorkDailyRecord.objects.get(pk=request.POST['pk'])
+						
+						workDailyRecord.check_user.remove(request.user)
+						workDailyRecord.save()
+						
+						return HttpResponse('1')
+				else:
+					workDailyRecord = WorkDailyRecord.objects.create(
+						user=request.user,
+						contents=request.POST['contents'],
+						ongoing_or_end=request.POST['ongoing_or_end'],
+					)
+					
+					target_users = request.POST['target_user'].split(',')
+				
+					for target_user in target_users:
+						user=''
+						target_user=target_user.strip()
+						try:
+							user = UserProfile.objects.get(name=target_user).user
+						except ObjectDoesNotExist:
+							continue
+						workDailyRecord.target_user.add(user)
+						workDailyRecord.save()
+					
+				variables = RequestContext(request, {
+						'form':form,
+						'workDailyRecord':[workDailyRecord],
+					})	
+					
+				return render_to_response('onlyWorkDailyRecord.html', variables)
+			else:
+				workDailyRecord = WorkDailyRecord.objects.create(
+					user=request.user,
+					contents=request.POST['contents'],
+					ongoing_or_end=request.POST['ongoing_or_end'],
+				)
+				
+				target_users = request.POST['target_user'].split(',')
+				
+				for target_user in target_users:
+					user=''
+					target_user=target_user.strip()
+					try:
+						user = UserProfile.objects.get(name=target_user).user
+					except ObjectDoesNotExist:
+						continue
+					workDailyRecord.target_user.add(user)
+					workDailyRecord.save()
+				
+				return HttpResponseRedirect('/workDailyRecord/')
+				
+@login_required
+def searchUser(request):
+	if request.GET.has_key('q'):
+		users = UserProfile.objects.filter(name__istartswith=request.GET['q'])
+		
+		return HttpResponse('\n'.join(user.name for user in users))
+	return HttpResponse()

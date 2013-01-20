@@ -6,21 +6,26 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 
 class userRegistrationForm(forms.Form):
-	userId = forms.CharField(label='아이디',
-			max_length=30,
+	userId = forms.CharField(label='',
+				max_length=30,
+				widget=forms.TextInput(attrs={'placeholder': '아이디'}),
 			)
-	userName = forms.CharField(label='이름',
-			max_length=70,
+	userName = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '이름'}),
 			)
-	email = forms.EmailField(label='전자우편')
-	mobile = forms.CharField(label='휴대전화번호',
-			max_length=13
+	email = forms.EmailField(label='',
+				widget=forms.TextInput(attrs={'placeholder': '전자우편', 'type':'email'}),
 			)
-	password1 = forms.CharField(label='비밀번호',
-			widget=forms.PasswordInput(),
+	mobile = forms.CharField(label='',
+				max_length=13,
+				widget=forms.TextInput(attrs={'placeholder': '휴대전화번호'}),
 			)
-	password2 = forms.CharField(label='비밀번호(확인)',
-			widget=forms.PasswordInput(),
+	password1 = forms.CharField(label='',
+				widget=forms.PasswordInput(attrs={'placeholder': '비밀번호'}),
+			)
+	password2 = forms.CharField(label='',
+				widget=forms.PasswordInput(attrs={'placeholder': '비밀번호(확인)'}),
 			)
 
 	def clean_userId(self):
@@ -82,5 +87,12 @@ class WorkDailyRecordForm(forms.Form):
 			label='',
 			choices=ONGOING_OR_END,
 			initial ='ing',
+			widget=forms.Select(attrs={'style': 'width:85px'}),
 		)
-	contents = forms.CharField(label='')
+	contents = forms.CharField(label='',
+			widget=forms.TextInput(attrs={'placeholder': '내용', 'style':'width:674px'}),
+		)
+	target_user = forms.CharField(label='',
+			widget=forms.TextInput(attrs={'placeholder': '대상자', 'style':'width:724px'}),
+			required=False,
+		)

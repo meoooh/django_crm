@@ -28,4 +28,5 @@ urlpatterns = patterns('',
 	(r'^userRegistration/$', userRegistration),
 	(r'^logout/$', logoutPage),
 	(r'^workDailyRecord/(?P<mode_name>\w+/)?$', workDailyRecord),
+	(r'^user/search/$', searchUser),
 )

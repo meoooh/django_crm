@@ -27,7 +27,7 @@ class UserProfile(models.Model):
 
 class WorkDailyRecord(models.Model):
 	user = models.ForeignKey(User)
-	date = models.DateTimeField(auto_now=True)
+	date = models.DateTimeField(auto_now_add=True)
 	contents = models.TextField()
 	check_user = models.ManyToManyField(
 				User,
