@@ -82,7 +82,7 @@ def workDailyRecord(request, mode_name):
 					w.get_profile().name for w in workDailyRecord.target_user.all()
 					)
 			form = WorkDailyRecordForm({
-				'ongoing_or_end':workDailyRecord.ongoing_or_end,
+#				'ongoing_or_end':workDailyRecord.ongoing_or_end,
 				'contents':workDailyRecord.contents,
 				'target_user':target_user,
 			})
@@ -120,7 +120,9 @@ def workDailyRecord(request, mode_name):
 					if request.GET.has_key('edit'):
 						workDailyRecord = WorkDailyRecord.objects.get(pk=request.POST['pk'])
 						workDailyRecord.contents = request.POST['contents']
-						workDailyRecord.ongoing_or_end = request.POST['ongoing_or_end']
+#						workDailyRecord.ongoing_or_end = request.POST['ongoing_or_end']
+						
+						workDailyRecord.target_user.clear()
 						
 						target_users = request.POST['target_user'].split(',')
 					
@@ -148,11 +150,27 @@ def workDailyRecord(request, mode_name):
 						workDailyRecord.save()
 						
 						return HttpResponse('1')
+					elif request.GET.has_key('ongoing'):
+#						import pdb;pdb.set_trace()
+						workDailyRecord = WorkDailyRecord.objects.get(pk=request.POST['pk'])
+						
+						workDailyRecord.ongoing_or_end = u'ing';
+						workDailyRecord.save()
+						
+#						return HttpResponse('1')
+					elif request.GET.has_key('end'):
+#						import pdb;pdb.set_trace()
+						workDailyRecord = WorkDailyRecord.objects.get(pk=request.POST['pk'])
+						
+						workDailyRecord.ongoing_or_end = u'end';
+						workDailyRecord.save()
+						
+#						return HttpResponse('1')
 				else:
 					workDailyRecord = WorkDailyRecord.objects.create(
 						user=request.user,
 						contents=request.POST['contents'],
-						ongoing_or_end=request.POST['ongoing_or_end'],
+#						ongoing_or_end=request.POST['ongoing_or_end'],
 					)
 					
 					target_users = request.POST['target_user'].split(',')
@@ -177,7 +195,7 @@ def workDailyRecord(request, mode_name):
 				workDailyRecord = WorkDailyRecord.objects.create(
 					user=request.user,
 					contents=request.POST['contents'],
-					ongoing_or_end=request.POST['ongoing_or_end'],
+#					ongoing_or_end=request.POST['ongoing_or_end'],
 				)
 				
 				target_users = request.POST['target_user'].split(',')

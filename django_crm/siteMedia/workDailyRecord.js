@@ -6,22 +6,100 @@ function connect_submit(pk){
 	});
 }
 
-function connect_button(){
+function init(){
 	$("button#workDailyRecord-edit").click(get_form);
 	$("button#workDailyRecord-del").click(del);
+	
 	$("button#workDailyRecord-check").toggle(function(){
-		myToggle.call(this);
+		check.call(this);
 	},
 	function(){
-		myToggle.call(this);
+		check.call(this);
 	});
+	
 	$("form#save-form").submit(function(){
 		add.call(this);
 		return false;
 	});
+	
+	$("button#workDailyRecord-end").toggle(function(){
+		end.call(this);
+	},
+	function(){
+		end.call(this);
+	});
+        
+	$("textarea").autosize({className:"mirroredText"});
+	
+	$("textarea").keydown(function(e) {
+		if(e.keyCode == 13) {
+			$(this).parent().submit();
+		}
+	});
 }
 
-function myToggle(){
+function end(){
+	var item = this;
+	var pk = item.name;
+	
+	var className = 'btn btn-mini btn-inverse';
+	var status = 'ongoing';
+	
+	if(item.className == className){
+		className = 'btn btn-mini';
+		status = 'end';
+	}
+	
+	$.post("/workDailyRecord/?ajax&"+status, {pk:pk}, function(result){
+		item.className=className;
+		
+		if(status == 'end'){
+			var td = $(item).parent();
+			var tr = td.parent();
+		
+			tr.append($("td", result).get(0));
+			td.remove();
+			
+			tr.find("#workDailyRecord-edit").click(get_form);
+			tr.find("#workDailyRecord-del").click(del);
+			
+			tr.find("#workDailyRecord-end").toggle(function(){
+				end.call(this);
+			},
+			function(){
+				end.call(this);
+			});
+			
+			td.find("#workDailyRecord-check").remove();
+		}
+		else if(status == 'ongoing'){
+			var td = $(item).parent();
+			var tr = td.parent();
+			td.remove();
+			
+			tr.append($("td", result).get(0));
+			
+			tr.find("#workDailyRecord-edit").click(get_form);
+			tr.find("#workDailyRecord-del").click(del);
+	
+			tr.find("#workDailyRecord-check").toggle(function(){
+				check.call(this);
+			},
+			function(){
+				check.call(this);
+			});
+			
+			tr.find("#workDailyRecord-end").toggle(function(){
+				end.call(this);
+			},
+			function(){
+				end.call(this);
+			});
+		}
+	});
+}
+
+function check(){
 	var item = this;
 	var pk = item.name;
 	
@@ -50,9 +128,11 @@ function get_form(){
 		connect_submit.call(this, pk);
 		
 		item.find("#id_target_user").autocomplete(
-		'/user/search/',
-		{multiple: true, multipleSeparator: ','}
+			'/user/search/',
+			{multiple: true, multipleSeparator: ','}
 		);
+		
+		item.find('textarea').autosize({className:'mirroredText'});
 		
 		item.find("#id_contents").focus()
 	});
@@ -68,14 +148,23 @@ function add(){
 				this.reset();
 			});
 			
+			t.children()[0].style.height="35px";
+			
 			item.find("td").last().find("#workDailyRecord-edit").click(get_form);
 			item.find("td").last().find("#workDailyRecord-del").click(del);
 			
 			item.find("td").last().find("#workDailyRecord-check").toggle(function(){
-				myToggle.call(this);
+				check.call(this);
 			},
 			function(){
-				myToggle.call(this);
+				check.call(this);
+			});
+			
+			item.find("td").last().find("#workDailyRecord-end").toggle(function(){
+				end.call(this);
+			},
+			function(){
+				end.call(this);
 			});
 		});
 }
@@ -99,11 +188,6 @@ function del(){
 
 function submit_form(pk){
 	var item = $(this).parent();
-	var data = {
-		pk: pk,
-		contents: item.find("#id_contents").val(),
-		ongoing_or_end: item.find("#id_ongoing_or_end").val(),
-	};
 	
 	$.post("/workDailyRecord/?ajax&edit", $(this).serialize()+'&pk='+pk, function(result){
 			item.before($("td", result).get(0));
@@ -112,14 +196,21 @@ function submit_form(pk){
 			item.parent().children().first().find("#workDailyRecord-del").click(del);
 			
 			item.parent().children().first().find("#workDailyRecord-check").toggle(function(){
-				myToggle.call(this);
+				check.call(this);
 			},
 			function(){
-				myToggle.call(this);
+				check.call(this);
+			});
+			
+			item.parent().children().first().find("#workDailyRecord-end").toggle(function(){
+				end.call(this);
+			},
+			function(){
+				end.call(this);
 			});
 			
 			item.remove();
 		});
 }
 
-$(document).ready(connect_button);
+$(document).ready(init);

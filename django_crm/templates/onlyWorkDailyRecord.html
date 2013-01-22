@@ -11,6 +11,7 @@
 			[{{ wdr.user.get_profile.name }}]</font>{% if wdr.ongoing_or_end == 'end' %}</del>{% endif %}
 			<button class="btn btn-mini" type="button" id="workDailyRecord-edit" name="{{ wdr.pk }}">수정</button>
 			<button class="btn btn-mini" type="button" id="workDailyRecord-del" name="{{ wdr.pk }}">삭제</button>
+			<button class="btn btn-mini{% if wdr.ongoing_or_end == 'ing' %} btn-inverse{% endif %}" type="button" id="workDailyRecord-end" name="{{ wdr.pk }}">완료</button>
 			{% if wdr.ongoing_or_end == 'ing' %}{% if user in wdr.check_user.all %}<button id="workDailyRecord-check" class="btn btn-mini" type="button" name="{{ wdr.pk }}">확인</button>{% elif user in wdr.target_user.all %}<button id="workDailyRecord-check" class="btn btn-mini btn-success" type="button" name="{{ wdr.pk }}">확인</button>{% endif %}{% endif %}</td></tr>
 		{% endfor %}
 		</table>

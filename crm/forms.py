@@ -82,15 +82,17 @@ class WorkDailyRecordForm(forms.Form):
 				('ing', '진행중'),
 				('end', '완료'),
 			)
-
+	"""
 	ongoing_or_end = forms.ChoiceField(
 			label='',
 			choices=ONGOING_OR_END,
 			initial ='ing',
 			widget=forms.Select(attrs={'style': 'width:85px'}),
 		)
+	"""
 	contents = forms.CharField(label='',
-			widget=forms.TextInput(attrs={'placeholder': '내용', 'style':'width:674px'}),
+			widget=forms.Textarea(attrs={'placeholder': '내용', 'style':'width:764px; height:35px;'}),
+			required=False,
 		)
 	target_user = forms.CharField(label='',
 			widget=forms.TextInput(attrs={'placeholder': '대상자', 'style':'width:724px'}),
