@@ -4,6 +4,7 @@ from django import forms
 import re
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+from crm.models import *
 
 class userRegistrationForm(forms.Form):
 	userId = forms.CharField(label='',
@@ -98,3 +99,161 @@ class WorkDailyRecordForm(forms.Form):
 			widget=forms.TextInput(attrs={'placeholder': '대상자', 'style':'width:724px'}),
 			required=False,
 		)
+		
+class CustomerRegistrationForm(forms.Form):
+	name = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '고객사 이름'}),
+			)
+			
+	personInChargesName = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '담당자 이름'}),
+			)
+	personInChargesTel = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '담당자 전화번호'}),
+			)
+	personInChargesMobile = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '담당자 휴대전화'}),
+			)
+	personInChargesEmail = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '담당자 전자우편'}),
+			)
+			
+	position = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '위치'}),
+			)
+			
+	serviceName = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '서비스이름'}),
+			)
+	
+	detailedServiceName = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '상세서비스이름'}),
+			)
+	
+	serviceNumber = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '서비스번호'}),
+			)
+	
+	dataFolder = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '폴더경로'}),
+			)
+	
+	workers = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '작업자'}),
+			)
+	
+	salespersons = forms.CharField(label='',
+				min_length=1,
+				widget=forms.TextInput(attrs={'placeholder': '담당영업'}),
+			)
+	
+	notes = forms.CharField(label='',
+			widget=forms.Textarea(attrs={'placeholder': '비고', 'style':'width:764px; height:35px;'}),
+			required=False,
+		)
+	
+	ipaddrs = forms.CharField(label='',
+				min_length=1,
+				widget=forms.TextInput(attrs={'placeholder': '호스트'}),
+			)
+	ipaddrsNote = forms.CharField(label='',
+				min_length=1,
+				widget=forms.TextInput(attrs={'placeholder': '호스트 비고'}),
+			)
+	
+	domains = forms.URLField(label='',
+				widget=forms.TextInput(attrs={'placeholder': '도메인'}),
+			)
+	
+	domainsNote = forms.CharField(label='',
+				min_length=1,
+				widget=forms.TextInput(attrs={'placeholder': '도메인 비고'}),
+			)
+			
+	types =(
+				('ids', 'IDS'),
+				('ips', 'IPS'),
+				('fw', '방화벽'),
+				('waf', '웹방화벽'),
+				('SW', '스위치'),
+				('ddos', 'Anti-DDos'),
+				('log', 'Log'),
+				('utm', 'UTM'),
+				('etc', '기타'),
+			)
+	
+	equipmentsType = forms.ChoiceField(
+			label='',
+			choices=types,
+			initial ='ing',
+			widget=forms.Select(attrs={'style': 'width:85px'}),
+		)
+	
+	equipmentsIpaddr = forms.GenericIPAddressField(
+			label='',
+			widget=forms.TextInput(attrs={'placeholder': '장비IP주소'}),
+		)
+	
+	equipmentsNote = forms.CharField(label='',
+			widget=forms.Textarea(attrs={'placeholder': '장비정보', 'style':'width:764px; height:35px;'}),
+			required=False,
+		)
+	
+	alertEmails = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '알람메일'}),
+			)
+	
+	alertSMSs = forms.CharField(label='',
+				max_length=70,
+				widget=forms.TextInput(attrs={'placeholder': '알람문자'}),
+			)
+	
+	def clean_name(self):
+		if 'name' in self.cleaned_data:
+			try:
+				Customer.objects.get(name=self.cleaned_data['name'])
+			except ObjectDoesNotExist:
+				return self.cleaned_data['name']
+			else:
+				raise forms.ValidationError('고객사 이름이 존재합니다.')
+			raise forms.ValidationError('비정상 동작')
+		else:
+			raise forms.ValidationError('올바른 고객사 이름이 아닙니다.')
+	
+	def clean_workers(self):
+		if 'workers' in self.cleaned_data:
+			try:
+				UserProfile.objects.get(name=self.cleaned_data['workers'])
+			except ObjectDoesNotExist:
+				raise forms.ValidationError('등록되지 않은 작업자 입니다.')
+			else:
+				return self.cleaned_data['workers']
+				# return UserProfile.objects.get(name=self.cleaned_data['workers']).user
+			raise forms.ValidationError('비정상 동작')
+		else:
+			raise forms.ValidationError('올바른 작업자가 아닙니다.')
+			
+	def clean_salespersons(self):
+		if 'workers' in self.cleaned_data:
+			try:
+				UserProfile.objects.get(name=self.cleaned_data['salespersons'])
+			except ObjectDoesNotExist:
+				raise forms.ValidationError('등록되지 않은 담당영업 입니다.')
+			else:
+				return self.cleaned_data['salespersons']
+				# return UserProfile.objects.get(name=self.cleaned_data['salespersons']).user
+			raise forms.ValidationError('비정상 동작')
+		else:
+			raise forms.ValidationError('올바른 담당영업이 아닙니다.')

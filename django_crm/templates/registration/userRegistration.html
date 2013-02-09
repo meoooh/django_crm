@@ -8,8 +8,7 @@
 					<h1>가입</h1>
 				</div>
 				<form method="post" action=".">
-				<fieldset>
-						{% csrf_token %}
+					<fieldset>
 						{{ form.as_p }}
 						<button type="submit" class="btn">가입</button>
 					</fieldset>

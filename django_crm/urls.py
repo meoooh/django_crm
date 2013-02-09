@@ -29,4 +29,12 @@ urlpatterns = patterns('',
 	(r'^logout/$', logoutPage),
 	(r'^workDailyRecord/(?P<mode_name>\w+/)?$', workDailyRecord),
 	(r'^user/search/$', searchUser),
+	url(r'^workDailyRecord/$', TodayLogView.as_view(), name="todayWork"), #https://docs.djangoproject.com/en/dev/topics/http/urls/?from=olddocs#naming-url-patterns
+	url(r'^workDailyRecord/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$', DailyLogView.as_view(), name='dayWork'),
+	url(r'^workDailyRecord/(?P<year>\d{4})/(?P<month>\d{2})/$', MonthlyLogView.as_view(), name='monthWork'),
+	url(r'^workDailyRecord/(?P<year>\d{4})/$', YearlyLogView.as_view(), name='yearWork'),
+	url(r'^customer/$', customerList.as_view(), name="customer"),
+	(r'^customer/new/$', customerRegistration),
+	# (r'^tag/([^\s]+)/$', tag_page),
+	url(r'^customer/(?P<slug>[^\s]+)/$', customerDetailView.as_view(), name="customerDetailView"),
 )

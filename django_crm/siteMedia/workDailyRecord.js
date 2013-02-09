@@ -50,7 +50,7 @@ function end(){
 		status = 'end';
 	}
 	
-	$.post("/workDailyRecord/?ajax&"+status, {pk:pk}, function(result){
+	$.post(workDailyRecord+"?ajax&"+status, {pk:pk}, function(result){
 		item.className=className;
 		
 		if(status == 'end'){
@@ -111,7 +111,7 @@ function check(){
 		status = 'check';
 	}
 	
-	$.post("/workDailyRecord/?ajax&"+status, {pk:pk}, function(result){
+	$.post(workDailyRecord+"?ajax&"+status, {pk:pk}, function(result){
 			if(result == '1'){
 				item.className=className;
 			}
@@ -124,7 +124,7 @@ function check(){
 function get_form(){
 	var item = $(this).parent();
 	var pk = $(this)[0].name;
-	item.load("/workDailyRecord/edit/?pk="+pk, null, function(){
+	item.load(workDailyRecord+"edit/?pk="+pk, null, function(){
 		connect_submit.call(this, pk);
 		
 		item.find("#id_target_user").autocomplete(
@@ -142,7 +142,7 @@ function add(){
 	var t = $(this)
 	var item = t.parent(); //div
 	
-	$.post("/workDailyRecord/?ajax", t.serialize(), function(result){
+	$.post(workDailyRecord+"?ajax", t.serialize(), function(result){
 			item.find("tbody").append($("tr", result).get(0));
 			t.each(function(){
 				this.reset();
@@ -178,7 +178,7 @@ function del(){
 			pk: pk,
 		};
 		
-		$.post("/workDailyRecord/del/?ajax", data, function(result){
+		$.post(workDailyRecord+"del/?ajax", data, function(result){
 			if(result == '1'){
 				item.remove();
 			}
@@ -189,7 +189,7 @@ function del(){
 function submit_form(pk){
 	var item = $(this).parent();
 	
-	$.post("/workDailyRecord/?ajax&edit", $(this).serialize()+'&pk='+pk, function(result){
+	$.post(workDailyRecord+"?ajax&edit", $(this).serialize()+'&pk='+pk, function(result){
 			item.before($("td", result).get(0));
 			
 			item.parent().children().first().find("#workDailyRecord-edit").click(get_form);

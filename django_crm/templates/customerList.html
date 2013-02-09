@@ -1,0 +1,49 @@
+<div>
+	<div>
+		<h1>고객관리<button class="btn btn-mini" type="button" onclick="location.href='{% url crm.views.customerRegistration %}'">고객 등록</button></h1><hr>
+	</div>
+	<div>
+		<table class="table table-hover">
+			<tr>
+				<td>고객사 이름</td>
+				<td>장비1</td>
+				<td>장비2</td>
+				<td>담당자</td>
+				<td>연락처</td>
+				<td>폴더</td>
+			</tr>
+			{% for cl in customerList %}
+				<tr>
+					<td>
+						<a href="{% url customerDetailView cl.name %}">{{ cl.name }}</a>
+					</td>
+					<td>
+						<a href="{% url customerDetailView cl.name %}">
+							{{ cl.equipments.all.0.ipaddr.addr }}
+						</a>
+					</td>
+					<td>
+						<a href="{% url customerDetailView cl.name %}">
+							{{ cl.equipments.all.1.ipaddr.addr }}
+						</a>
+					</td>
+					<td>
+						<a href="{% url customerDetailView cl.name %}">
+							{{ cl.personInCharges.all.0.name }}
+						</a>
+					</td>
+					<td>
+						<a href="{% url customerDetailView cl.name %}">
+							{{ cl.personInCharges.all.0.mobile1 }}
+						</a>
+					</td>
+					<td>
+						<a href="{% url customerDetailView cl.name %}">
+							{{ cl.dataFolder }}
+						</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>
