@@ -331,15 +331,13 @@ def customerRegistration(request):
 				email1=form.cleaned_data['personInChargesEmail'],
 			)
 			customer.personInCharges.add(personInCharge)
-			"""
+			
 			worker = UserProfile.objects.get(name=form.cleaned_data['workers']).user
 			customer.workers.add(worker)
-			customer.save()
 			
 			salesperson = UserProfile.objects.get(name=form.cleaned_data['salespersons']).user
 			customer.salespersons.add(salesperson)
-			customer.save()
-			"""
+			
 			for i in form.cleaned_data['ipaddrs'].split(','):
 				if iptools.validate_cidr(i.strip()):
 					for j in iptools.IpRange(i.strip()):
@@ -347,8 +345,6 @@ def customerRegistration(request):
 							addr=j,
 						)
 #						ipaddr.country=GeoIP(j)
-						ipaddr.country=u'None'
-						ipaddr.save()
 						note = Note(
 							content_object=ipaddr,
 							contents=form.cleaned_data['ipaddrsNote'],
@@ -356,15 +352,12 @@ def customerRegistration(request):
 						)
 						note.save()
 						customer.ipaddrs.add(ipaddr)
-						customer.save()
 				elif iptools.validate_ip(i.strip()):
 					for j in iptools.IpRange(i.strip()):
 						ipaddr, created=IPaddr.objects.get_or_create(
 							addr=j,
 						)
 #						ipaddr.country=GeoIP(j)
-						ipaddr.country=u'None'
-						ipaddr.save()
 						note = Note(
 							content_object=ipaddr,
 							contents=form.cleaned_data['ipaddrsNote'],
@@ -372,7 +365,6 @@ def customerRegistration(request):
 						)
 						note.save()
 						customer.ipaddrs.add(ipaddr)
-						customer.save()
 			
 			for i in form.cleaned_data['domains'].split(','):
 				domain, created= Domain.objects.get_or_create(
@@ -385,14 +377,11 @@ def customerRegistration(request):
 						)
 				note.save()
 				customer.domains.add(domain)
-				customer.save()
 				
 			ipaddr, created=IPaddr.objects.get_or_create(
 				addr=form.cleaned_data['equipmentsIpaddr'],
 			)
 			#ipaddr.country=GeoIP(j)
-			ipaddr.country=u'None'
-			ipaddr.save()
 			equipment, created = Equipment.objects.get_or_create(
 				ipaddr=ipaddr
 			)
@@ -405,7 +394,6 @@ def customerRegistration(request):
 			)
 			note.save()
 			customer.equipments.add(equipment)
-			customer.save()
 			
 			for i in form.cleaned_data['alertEmails'].split(','):
 				# import pdb;pdb.set_trace()
@@ -413,21 +401,20 @@ def customerRegistration(request):
 					email1=i,
 				)
 				if created:
-					personInCharge.name=u'이름없는 담당자'
+					personInCharge.name=customer.name+u' 담당자'
 					personInCharge.save()
 				customer.alertEmails.add(personInCharge)
-				customer.save()
 				
 			for i in form.cleaned_data['alertSMSs'].split(','):
 				personInCharge, created = PersonInCharge.objects.get_or_create(
 					mobile1=i,
 				)
 				if created:
-					personInCharge.name=u'이름없는 담당자'
+					personInCharge.name=customer.name+u' 담당자'
 					personInCharge.save()
 				customer.alertSMSs.add(personInCharge)
-				customer.save()
 				
+			customer.save()
 			return HttpResponseRedirect(reverse('customer')) # from django.core.urlresolvers import reverse
 		
 	variables = RequestContext(request, {

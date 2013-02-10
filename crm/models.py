@@ -6,12 +6,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
 class UserProfile(models.Model):
-	user = models.ForeignKey(User, unique=True) # OneToOneField으로 바꿔야함 생각을 잘못했음...
-	mobile = models.CharField(unique=True, max_length=11)
+	user = models.OneToOneField(User, unique=True, to_field='username') # OneToOneField으로 바꿔야함 생각을 잘못했음...
+	mobile = models.CharField(unique=True, max_length=20,)
 	lastIp= models.GenericIPAddressField(null=True)
-	position = models.CharField(max_length=10, null=True)
-	function = models.CharField(max_length=10, null=True)
-	level = models.CharField(max_length=10, null=True)
+	position = models.CharField(max_length=20, null=True)
+	function = models.CharField(max_length=20, null=True)
+	level = models.CharField(max_length=20, null=True)
 	team = models.CharField(max_length=20, null=True)
 	name = models.CharField(max_length=70)
 
@@ -28,7 +28,7 @@ class UserProfile(models.Model):
 			)
 
 class WorkDailyRecord(models.Model):
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(User, to_field='username')
 	date = models.DateTimeField(auto_now_add=True)
 	contents = models.TextField()
 	check_user = models.ManyToManyField(
@@ -64,7 +64,7 @@ class WorkDailyRecord(models.Model):
 	
 class Note(models.Model):
 	contents = models.TextField()
-	writer = models.ForeignKey(User)
+	writer = models.ForeignKey(User, to_field='username')
 	date = models.DateTimeField(auto_now_add=True)
 	
 	content_type = models.ForeignKey(ContentType)
@@ -72,12 +72,15 @@ class Note(models.Model):
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
 
 	def __unicode__(self):
-		return "writer: %s, content: %s, date: %s"%(self.writer.get_profile().name, self.content, self.date)
+		return "writer: %s, contents: %s, date: %s"%(self.writer.get_profile().name, self.contents, self.date)
 	
 class IPaddr(models.Model):
 	notes = generic.GenericRelation(Note, null=True)
 	addr = models.GenericIPAddressField(unique=True,)
 	country = models.CharField(max_length=30, null=True)
+	
+	def __unicode__(self):
+		return "addr: %s, country: %s, len(notes): %d"%(self.addr, self.country, self.notes.all().count())
 	
 class PersonInCharge(models.Model):
 	name = models.CharField(max_length=50,)
@@ -89,9 +92,15 @@ class PersonInCharge(models.Model):
 	email2 = models.EmailField(null=True)
 	notes = generic.GenericRelation(Note, null=True)
 	
+	def __unicode__(self):
+		return "name: %s, telephone1: %s, telephone2: %s, mobile1: %s, mobile2: %s, email1: %s, email2: %s, len(notes): %d"%(self.name, self.telephone1, self.telephone2, self.mobile1, self.mobile2, self.email1, self.email2, self.notes.all().count())
+	
 class Domain(models.Model):
 	url = models.URLField(unique=True,)
 	notes = generic.GenericRelation(Note, null=True)
+	
+	def __unicode__(self):
+		return "url: %s, len(notes): %d"%(self.url, self.notes.all().count())
 	
 class Equipment(models.Model):
 	types =(
@@ -110,9 +119,13 @@ class Equipment(models.Model):
 				choices=types,
 				default='etc',
 				max_length=4,
+				null=True,
 			)
-	ipaddr = models.ForeignKey(IPaddr, null=True)
+	ipaddr = models.ForeignKey(IPaddr, to_field='addr')
 	notes = generic.GenericRelation(Note, null=True)
+	
+	def __unicode__(self):
+		return "type: %s, ipaddr: %s, len(notes): %d"%(self.type, self.ipaddr, self.notes.all().count())
 	
 class Customer(models.Model):
 	name = models.CharField(max_length=50,)
@@ -131,3 +144,6 @@ class Customer(models.Model):
 	alertEmails = models.ManyToManyField(PersonInCharge, related_name='customer_alertEmails_personincharge_set', null=True)
 	alertSMSs = models.ManyToManyField(PersonInCharge, related_name='customer_alertSMSs_personincharge_set', null=True)
 	date = models.DateTimeField(auto_now_add=True)
+	
+	def __unicode__(self):
+		return "name: %s"%self.name
