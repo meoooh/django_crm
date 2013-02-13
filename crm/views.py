@@ -414,6 +414,13 @@ def customerRegistration(request):
 					personInCharge.save()
 				customer.alertSMSs.add(personInCharge)
 				
+			note = Note(
+				content_object=customer,
+				contents=form.cleaned_data['notes'],
+				writer=request.user,
+			)
+			note.save()
+			
 			customer.save()
 			return HttpResponseRedirect(reverse('customer')) # from django.core.urlresolvers import reverse
 		
@@ -434,4 +441,5 @@ class customerDetailView(DetailView):
 	template_name = "customerDetail.html"
 	allow_empty = True
 	model = Customer
+	#queryset = Customer.objects.order_by('note__date') # 실패했음...
 	slug_field = 'name'

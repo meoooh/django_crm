@@ -35,6 +35,5 @@ urlpatterns = patterns('',
 	url(r'^workDailyRecord/(?P<year>\d{4})/$', YearlyLogView.as_view(), name='yearWork'),
 	url(r'^customer/$', customerList.as_view(), name="customer"),
 	(r'^customer/new/$', customerRegistration),
-	# (r'^tag/([^\s]+)/$', tag_page),
 	url(r'^customer/(?P<slug>[^\s]+)/$', customerDetailView.as_view(), name="customerDetailView"),
 )

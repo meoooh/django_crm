@@ -70,7 +70,11 @@ class Note(models.Model):
 	content_type = models.ForeignKey(ContentType)
 	object_id = models.PositiveIntegerField()
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
-
+	
+	
+	class Meta:
+		ordering = ['date'] # date를 기준으로 정렬
+	
 	def __unicode__(self):
 		return "writer: %s, contents: %s, date: %s"%(self.writer.get_profile().name, self.contents, self.date)
 	
