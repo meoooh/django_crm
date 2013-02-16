@@ -104,58 +104,70 @@ class CustomerRegistrationForm(forms.Form):
 	name = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '고객사 이름'}),
+				required=False,
 			)
 			
 	personInChargesName = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '담당자 이름'}),
+				required=False,
 			)
 	personInChargesTel = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '담당자 전화번호'}),
+				required=False,
 			)
 	personInChargesMobile = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '담당자 휴대전화'}),
+				required=False,
 			)
 	personInChargesEmail = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '담당자 전자우편'}),
+				required=False,
 			)
 			
 	position = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '위치'}),
+				required=False,
 			)
 			
 	serviceName = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '서비스이름'}),
+				required=False,
 			)
 	
 	detailedServiceName = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '상세서비스이름'}),
+				required=False,
 			)
 	
 	serviceNumber = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '서비스번호'}),
+				required=False,
 			)
 	
 	dataFolder = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '폴더경로'}),
+				required=False,
 			)
 	
 	workers = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '작업자'}),
+				required=False,
 			)
 	
 	salespersons = forms.CharField(label='',
 				min_length=1,
 				widget=forms.TextInput(attrs={'placeholder': '담당영업'}),
+				required=False,
 			)
 	
 	notes = forms.CharField(label='',
@@ -166,19 +178,23 @@ class CustomerRegistrationForm(forms.Form):
 	ipaddrs = forms.CharField(label='',
 				min_length=1,
 				widget=forms.TextInput(attrs={'placeholder': '호스트'}),
+				required=False,
 			)
 	ipaddrsNote = forms.CharField(label='',
 				min_length=1,
 				widget=forms.TextInput(attrs={'placeholder': '호스트 비고'}),
+				required=False,
 			)
 	
 	domains = forms.URLField(label='',
 				widget=forms.TextInput(attrs={'placeholder': '도메인'}),
+				required=False,
 			)
 	
 	domainsNote = forms.CharField(label='',
 				min_length=1,
 				widget=forms.TextInput(attrs={'placeholder': '도메인 비고'}),
+				required=False,
 			)
 			
 	types =(
@@ -198,11 +214,13 @@ class CustomerRegistrationForm(forms.Form):
 			choices=types,
 			initial ='ing',
 			widget=forms.Select(attrs={'style': 'width:85px'}),
+			required=False,
 		)
 	
 	equipmentsIpaddr = forms.GenericIPAddressField(
 			label='',
 			widget=forms.TextInput(attrs={'placeholder': '장비IP주소'}),
+			required=False,
 		)
 	
 	equipmentsNote = forms.CharField(label='',
@@ -213,11 +231,13 @@ class CustomerRegistrationForm(forms.Form):
 	alertEmails = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '알람메일'}),
+				required=False,
 			)
 	
 	alertSMSs = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '알람문자'}),
+				required=False,
 			)
 	
 	def clean_name(self):

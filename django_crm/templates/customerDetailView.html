@@ -5,49 +5,150 @@
 	<div>
 		<table class="table table-bordered" style="width: 100%;">
 			<tr>
-				<td>서비스번호</td>
-				<th>{{ customerDetail.serviceNumber }}</th>
-				<td>서비스명</td>
-				<th>{{ customerDetail.serviceName }}</th>
-				<td>상세서비스</td>
-				<th>{{ customerDetail.detailedServiceName }}</th>
+				<th>기본 정보</th>
 			</tr>
 			<tr>
-				<td>개통일</td>
-				<th>{{ customerDetail.date }}</th>
-				<td>위치</td>
-				<th>{{ customerDetail.position }}</th>
-				<td>고객폴더</td>
-				<th>{{ customerDetail.dataFolder }}</th>
+				<th>서비스번호</th>
+				<td>{{ customerDetail.serviceNumber }}</td>
+				<th>서비스명</th>
+				<td>{{ customerDetail.serviceName }}</td>
+				<th>상세서비스</th>
+				<td>{{ customerDetail.detailedServiceName }}</td>
 			</tr>
 			<tr>
-				<td>작업자</td>
-				<th>{% for i in customerDetail.workers.all %}{{ i.userprofile.name }}{% endfor %}</th>
-				<td>담당영업</td>
-				<th>{% for i in customerDetail.salespersons.all %}{{ i.userprofile.name }}{% endfor %}</th>
-				<td>비고</td>
-				<th>aa</th>
+				<th>개통일</th>
+				<td>{{ customerDetail.date }}</td>
+				<th>위치</th>
+				<td>{{ customerDetail.position }}</td>
+				<th>고객폴더</th>
+				<td>{{ customerDetail.dataFolder }}</td>
+			</tr>
+			<tr>
+				<th>작업자</th>
+				<td>{% for i in customerDetail.workers.all %}{{ i.userprofile.name }}{% endfor %}</td>
+				<th>담당영업</th>
+				<td>{% for i in customerDetail.salespersons.all %}{{ i.userprofile.name }}{% endfor %}</td>
+				<th>비고</th>
+				<td>aa</td>
+			</tr>
+		</table>
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<table class="table table-bordered" style="width: 100%;">
+						<tr>
+							<th>담당자(정)</th>
+						</tr>
+						{% if customerDetail.personInCharges.all.0.name %}
+							<tr>
+								<th>이름</th><td>{{ customerDetail.personInCharges.all.0.name }}</td>
+							</tr>
+							<tr>
+								<th>유선전화</th><td>{{ customerDetail.personInCharges.all.0.telephone1 }}</td>
+							</tr>
+							<tr>
+								<th>휴대전화</th><td>{{ customerDetail.personInCharges.all.0.mobile1 }}</td>
+							</tr>
+							<tr>
+								<th>전자우편</th><td>{{ customerDetail.personInCharges.all.0.email1 }}</td>
+							</tr>
+							<tr>
+								<th>비고</th><td>{{ customerDetail.personInCharges.all.0.notes.all }}</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td>담당자를 추가해 주세요.</td>
+							</tr>
+						{% endif %}
+					</table>
+				</td>
+				<td>
+					<table class="table table-bordered" style="width: 100%;">
+						<tr>
+							<th>담당자(부)</th>
+						</tr>
+						{% if customerDetail.personInCharges.all.1.name %}
+							<tr>
+								<th>이름</th><td>{{ customerDetail.personInCharges.all.1.name }}</td>
+							</tr>
+							<tr>
+								<th>유선전화</th><td>{{ customerDetail.personInCharges.all.1.telephone1 }}</td>
+							</tr>
+							<tr>
+								<th>휴대전화</th><td>{{ customerDetail.personInCharges.all.1.mobile1 }}</td>
+							</tr>
+							<tr>
+								<th>전자우편</th><td>{{ customerDetail.personInCharges.all.1.email1 }}</td>
+							</tr>
+							<tr>
+								<th>비고</th><td>{{ customerDetail.personInCharges.all.1.notes.all }}</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td>담당자를 추가해 주세요.</td>
+							</tr>
+						{% endif %}
+					</table>
+				</td>
+			</tr>
+		</table>
+		<table id="equipmentList" class="table table-bordered" style="width: 100%;">
+			<tr>
+				<th>장비 목록</th>
+			</tr>
+			<tr class="info">
+				<td>종류</td><td>주소</td><td>비고</td>
+			</tr>
+				{% for i in customerDetail.equipments.all %}
+					<tr>
+						<td>{{ i.type }}</td><td>{{ i.ipaddr.addr }}</td><td> {{ i.notes.all.0.contents }}</td>
+					</tr>
+				{% endfor %}
+			<tr>
+				<td colspan="3" style="text-align: center;"><button class="equipmentAdd">추가</button></td>
 			</tr>
 		</table>
 		<table class="table table-bordered" style="width: 100%;">
 			<tr>
-				<td>IP 목록</td>
+				<th>도메인 목록</th>
+			</tr>
+				{% for i in customerDetail.domains.all %}
+					<tr>
+						<td>{{ i.url }} - {{ i.notes.all.0.contents }}</td>
+					</tr>
+				{% endfor %}
+		</table>
+		<table class="table table-bordered" style="width: 100%;">
+			<tr>
+				<th>IP 목록</th>
 			</tr>
 				{% for i in customerDetail.ipaddrs.all %}
 					<tr>
-						<th>{{ i.addr }} - {{ i.notes.all.0.contents }}</th>
+						<td>{{ i.addr }} - {{ i.notes.all.0.contents }}</td>
 					</tr>
 				{% endfor %}
 		</table>
-		<table class="table table-bordered" style="width: 100%;">
+		<table id="customerNoteList" class="table table-bordered" style="width: 100%;">
 			<tr>
-				<td>이력사항</td>
+				<th>이력사항</th>
 			</tr>
-				{% for i in customerDetail.notes.all %}
+				{% for i in customerDetail.notes.all|dictsort:"date" %}
 					<tr>
-						<th>({{ i.date }}) {{ i.contents }} <font color=#0000FF>[{{ i.writer }}]</font></th>
+						<td>({{ i.date }}) {{ i.contents }} <font color=#0000FF>[{{ i.writer }}]</font></td>
 					</tr>
 				{% endfor %}
+			<tr>
+				<td colspan="3" style="text-align: center;" class="form-inline">
+					<form method="post" style="margin-bottom: 0" action="/">
+						<textarea name="customerNote" placeholder="내용" style="width:714px; height:35px;"></textarea>
+						<button type="submit">추가</button>
+					</form>
+				</td>
+			</tr>
 		</table>
 	</div>
 </div>
+<script type="text/javascript">
+	var slug = "{{ customerDetail.name }}"
+</script>
+<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=1">

@@ -71,9 +71,10 @@ class Note(models.Model):
 	object_id = models.PositiveIntegerField()
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
 	
-	
+	"""
 	class Meta:
 		ordering = ['date'] # date를 기준으로 정렬
+	"""
 	
 	def __unicode__(self):
 		return "writer: %s, contents: %s, date: %s"%(self.writer.get_profile().name, self.contents, self.date)
@@ -132,7 +133,7 @@ class Equipment(models.Model):
 		return "type: %s, ipaddr: %s, len(notes): %d"%(self.type, self.ipaddr, self.notes.all().count())
 	
 class Customer(models.Model):
-	name = models.CharField(max_length=50,)
+	name = models.CharField(max_length=50, unique=True,)
 	personInCharges = models.ManyToManyField(PersonInCharge, null=True, related_name='customer_personincharges_personincharge_set')
 	position = models.CharField(null=True, max_length=50,)
 	serviceName = models.CharField(null=True, max_length=50,)
