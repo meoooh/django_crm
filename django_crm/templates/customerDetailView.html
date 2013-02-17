@@ -128,27 +128,27 @@
 					</tr>
 				{% endfor %}
 		</table>
-		<table id="customerNoteList" class="table table-bordered" style="width: 100%;">
-			<tr>
-				<th>이력사항</th>
-			</tr>
+		<div class="customerDetailViewBox">
+			<div class="customerDetailViewTitle">
+				이력사항
+			</div>
+			<div class="customerDetailViewList">
+				<ul class="customerDetailViewList unstyled">
 				{% for i in customerDetail.notes.all|dictsort:"date" %}
-					<tr>
-						<td>({{ i.date }}) {{ i.contents }} <font color=#0000FF>[{{ i.writer }}]</font></td>
-					</tr>
+					<li class="customerDetailViewList">({{ i.date|date:"Y-m-d h:i:s A" }}) {{ i.contents }} <span class="writer">[{{ i.writer.get_profile.name }}]</span></li>
 				{% endfor %}
-			<tr>
-				<td colspan="3" style="text-align: center;" class="form-inline">
-					<form method="post" style="margin-bottom: 0" action="/">
-						<textarea name="customerNote" placeholder="내용" style="width:714px; height:35px;"></textarea>
-						<button type="submit">추가</button>
-					</form>
-				</td>
-			</tr>
-		</table>
+				</ul>
+			</div>
+			<div class="addCustomerNotes">
+				<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
+					<textarea name="notes" placeholder="내용" style="width:714px; height:35px;"></textarea>
+					<button type="submit">추가</button>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>
 <script type="text/javascript">
 	var slug = "{{ customerDetail.name }}"
 </script>
-<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=1">
+<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=4">

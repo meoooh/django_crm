@@ -77,7 +77,11 @@ class Note(models.Model):
 	"""
 	
 	def __unicode__(self):
+		#return {u'name':u'%s'%self.writer.get_profile().name, u'contents':u'%s'%self.contents, u'date':u'%s'%self.date}
 		return "writer: %s, contents: %s, date: %s"%(self.writer.get_profile().name, self.contents, self.date)
+		
+	def to_dict(self):
+		return {u'name':u'%s'%self.writer.get_profile().name, u'contents':u'%s'%self.contents, u'date':u'%s'%self.date.strftime("%Y-%m-%d %I:%M:%S %p")}
 	
 class IPaddr(models.Model):
 	notes = generic.GenericRelation(Note, null=True)

@@ -1,76 +1,32 @@
-body{
-	margin:0;
-	padding:0;
+div.customerDetailViewTitle{
+	padding: 8px;
+	font-weight: bold;
+	border-bottom: 1px solid #dddddd;
 }
 
-input {
-	display: block;
+li.customerDetailViewList{
+	padding: 8px;
+	border-bottom: 1px solid #dddddd;
 }
 
-#topBar{
-	position: fixed;
-	background-color: #d1d1e0;
-	height: 30px;
+ul.customerDetailViewList{
+	padding: 0px;
+	border-bottom: 0px;
+	margin: 0px;
+}
+
+div.addCustomerNotes{
+	padding: 8px;
+	text-align: center;
+}
+
+div.customerDetailViewBox{
 	width: 100%;
-	z-index: 5;
+	border:1px solid #dddddd;
+	border-radius: 4px;
+	margin-bottom: 5px;
 }
 
-#mainContainer{
-	top: 30px;
-	height: 100%;
-	width: 100%;
-	position: fixed;
-	border: solid 1px;
-	z-index: 1;
-}
-
-#navContainer{
-	margin: 0px auto;
-	width: 1200px;
-	height: 100%;
-	display: table;
-}
-
-#nav{
-	vertical-align: middle;
-	display: table-cell;
-}
-
-.nav-buttom{
-    display: inline-block;
-}
-
-#main{
-	margin: 0px auto;	
-	width: 1200px;
-	height: 100%;
-}
-
-#leftSide{
-	float: left;
-	width: 179px;
-	border-right: dashed 1px;
-	height: 100%;
-	padding-top: 5px;
-}
-
-#rightContent{
-	float: left;
-	width: 1000px;
-	padding-left: 10px;
-}
-
-.leftSideButton{
-}
-
-#pic{
-	text-align:center;
-	width: 100px;
-	height: 100px;
-	border: dotted 1px;
-	line-height: 100px;
-}
-
-.rfloat{
-	float: right;
+span.writer{
+	color: #0000FF;
 }

@@ -443,3 +443,22 @@ class customerDetailView(DetailView):
 	model = Customer
 	#queryset = Customer.objects.order_by('note__date') # 실패했음...
 	slug_field = 'name'
+	
+def addCustomerNotes(request, slug):
+	if request.method == "POST":
+		if request.GET.has_key('ajax'):
+			try:
+				customer = Customer.objects.get(name=slug)
+			except ObjectDoesNotExist:
+				return HttpResponse('등록되지 않은 고객.')
+			else:
+				note = Note(
+						content_object=customer,
+						contents=request.POST['notes'],
+						writer=request.user,
+				)
+				note.save()
+				
+				return HttpResponse(simplejson.dumps(note.to_dict()), content_type="application/json")
+	else:
+		return HttpResponse('Other methods is denied.')

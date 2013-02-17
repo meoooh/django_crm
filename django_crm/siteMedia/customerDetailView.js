@@ -3,7 +3,7 @@ function init(){
 		getEquipmentAddForm.call(this);
 	});
 	
-	$("table#customerNoteList form").submit(function(){
+	$("div.addCustomerNotes form").submit(function(){
 		saveCustomerNote.call(this);
 		return false;
 	});
@@ -17,8 +17,10 @@ function getEquipmentAddForm(){
 function saveCustomerNote(){
 	var _form=$(this);
 	
-	$.post(this.baseURI+"/notes/?ajax", _form.serialize(), function(result){
-		_form.parent()
+	$.post(this.baseURI+"notes/?ajax", _form.serialize(), function(result){
+		_form.parent().parent().find('ul.customerDetailViewList');
+		
+		alert("성공");
 	});
 }
 
