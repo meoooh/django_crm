@@ -99,18 +99,18 @@ def workDailyRecord(request, mode_name):
 			
 			return render_to_response('workDailyRecordForm.html', variables)
 		elif mode_name == None:
-#			import pdb;pdb.set_trace()
+			# import pdb;pdb.set_trace()
 			try:
 				return TodayLogView.as_view()(request)
 			except Http404:
-#				workDailyRecord = WorkDailyRecord.objects.filter(ongoing_or_end=date.today)
+				# workDailyRecord = WorkDailyRecord.objects.filter(ongoing_or_end=date.today)
 				pass
 			else:
 				return render_to_response('test.html')
 			workDailyRecord = WorkDailyRecord.objects.order_by('date')
 		
-#		import pdb
-#		pdb.set_trace()
+		# import ipdb
+		# ipdb.set_trace()
 		variables = RequestContext(request, {
 					'user':request.user,
 					'form':form,
@@ -458,7 +458,7 @@ def addCustomerNotes(request, slug):
 						writer=request.user,
 				)
 				note.save()
-				
+				# import ipdb;ipdb.set_trace()
 				return HttpResponse(simplejson.dumps(note.to_dict()), content_type="application/json")
 	else:
 		return HttpResponse('Other methods is denied.')

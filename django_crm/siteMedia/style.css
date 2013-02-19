@@ -27,6 +27,11 @@ div.customerDetailViewBox{
 	margin-bottom: 5px;
 }
 
-span.writer{
+span.name{
 	color: #0000FF;
+}
+
+span.contents{
+	margin-left: 5px;
+    margin-right: 5px;
 }

@@ -6,9 +6,7 @@
 		{% include "workDailyRecordForm.html" %}
 		<table class="table table-hover">
 		{% for wdr in workDailyRecord %}
-			<tr><td style="word-break:break-all; line-height:200%;">{% if wdr.ongoing_or_end == 'end' %}<del>{% endif %}({{ wdr.date }})
-			<strong>{{ wdr.contents }}</strong><font color=#0000FF>
-			[{{ wdr.user.get_profile.name }}]</font>{% if wdr.ongoing_or_end == 'end' %}</del>{% endif %}
+			<tr><td style="word-break:break-all; line-height:200%;">{% if wdr.ongoing_or_end == 'end' %}<del>{% endif %}<span class="time">{{ wdr.date|date:"c" }}</span><span class="contents"><strong>{{ wdr.contents }}</strong></span><span class="name">[{{ wdr.user.get_profile.name }}]</span>{% if wdr.ongoing_or_end == 'end' %}</del>{% endif %}
 			<button class="btn btn-mini" type="button" id="workDailyRecord-edit" name="{{ wdr.pk }}">수정</button>
 			<button class="btn btn-mini" type="button" id="workDailyRecord-del" name="{{ wdr.pk }}">삭제</button>
 			<button class="btn btn-mini{% if wdr.ongoing_or_end == 'ing' %} btn-inverse{% endif %}" type="button" id="workDailyRecord-end" name="{{ wdr.pk }}">완료</button>

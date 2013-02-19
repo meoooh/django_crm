@@ -53,16 +53,17 @@ function end(){
 	$.post(workDailyRecord+"?ajax&"+status, {pk:pk}, function(result){
 		item.className=className;
 		
-		if(status == 'end'){
-			var td = $(item).parent();
-			var tr = td.parent();
+		var td = $(item).parent();
+		var tr = td.parent();
 		
-			tr.append($("td", result).get(0));
-			td.remove();
+		td.remove();
+		
+		tr.append($("td", result).get(0));
 			
-			tr.find("#workDailyRecord-edit").click(get_form);
-			tr.find("#workDailyRecord-del").click(del);
-			
+		tr.find("#workDailyRecord-edit").click(get_form);
+		tr.find("#workDailyRecord-del").click(del);
+		
+		if(status == 'end'){
 			tr.find("#workDailyRecord-end").toggle(function(){
 				end.call(this);
 			},
@@ -73,15 +74,6 @@ function end(){
 			td.find("#workDailyRecord-check").remove();
 		}
 		else if(status == 'ongoing'){
-			var td = $(item).parent();
-			var tr = td.parent();
-			td.remove();
-			
-			tr.append($("td", result).get(0));
-			
-			tr.find("#workDailyRecord-edit").click(get_form);
-			tr.find("#workDailyRecord-del").click(del);
-	
 			tr.find("#workDailyRecord-check").toggle(function(){
 				check.call(this);
 			},
@@ -96,6 +88,8 @@ function end(){
 				end.call(this);
 			});
 		}
+		
+		isoFormat2localeString(tr);
 	});
 }
 
@@ -150,22 +144,26 @@ function add(){
 			
 			t.children()[0].style.height="35px";
 			
-			item.find("td").last().find("#workDailyRecord-edit").click(get_form);
-			item.find("td").last().find("#workDailyRecord-del").click(del);
+			var td = item.find("td").last();
 			
-			item.find("td").last().find("#workDailyRecord-check").toggle(function(){
+			td.find("#workDailyRecord-edit").click(get_form);
+			td.find("#workDailyRecord-del").click(del);
+			
+			td.find("#workDailyRecord-check").toggle(function(){
 				check.call(this);
 			},
 			function(){
 				check.call(this);
 			});
 			
-			item.find("td").last().find("#workDailyRecord-end").toggle(function(){
+			td.find("#workDailyRecord-end").toggle(function(){
 				end.call(this);
 			},
 			function(){
 				end.call(this);
 			});
+			
+			isoFormat2localeString(td);
 		});
 }
 
