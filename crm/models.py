@@ -83,7 +83,7 @@ class Note(models.Model):
 	def to_dict(self):
 		# import ipdb;ipdb.set_trace()
 		#return {u'name':u'%s'%self.writer.get_profile().name, u'contents':u'%s'%self.contents, u'date':u'%s'%self.date.strftime("%Y-%m-%d %I:%M:%S %p")}
-		return {u'name':u'%s'%self.writer.get_profile().name, u'contents':u'%s'%self.contents, u'date':u'%s'%self.date.isoformat()}
+		return {u'id':self.pk, u'name':self.writer.get_profile().name, u'contents':self.contents, u'date':self.date.isoformat()}
 	
 class IPaddr(models.Model):
 	notes = generic.GenericRelation(Note, null=True)

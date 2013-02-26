@@ -450,7 +450,7 @@ def addCustomerNotes(request, slug):
 			try:
 				customer = Customer.objects.get(name=slug)
 			except ObjectDoesNotExist:
-				return HttpResponse('등록되지 않은 고객.')
+				return HttpResponse(u'등록되지 않은 고객.')
 			else:
 				note = Note(
 						content_object=customer,
@@ -462,3 +462,13 @@ def addCustomerNotes(request, slug):
 				return HttpResponse(simplejson.dumps(note.to_dict()), content_type="application/json")
 	else:
 		return HttpResponse('Other methods is denied.')
+		
+def actionCustomerNote(request, slug, pk):
+	if request.method == "DELETE":
+		content_type = ContentType.objects.get_for_model(Customer)
+		try:
+			Note.objects.get(content_type=content_type, pk=pk).delete()
+		except ObjectDoesNotExist:
+			return HttpResponse(u'등록되지 않은 메모.')
+		
+		return HttpResponse(u'1')

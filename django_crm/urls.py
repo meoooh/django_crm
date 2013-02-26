@@ -36,5 +36,6 @@ urlpatterns = patterns('',
 	url(r'^customer/$', customerList.as_view(), name="customer"),
 	(r'^customer/new/$', customerRegistration),
 	url(r'^customer/(?P<slug>[^/]+)/$', customerDetailView.as_view(), name="customerDetailView"),
-	(r'^customer/(?P<slug>[^/]+)/notes/$', addCustomerNotes),
+	url(r'^customer/(?P<slug>[^/]+)/notes/$', addCustomerNotes, name="addCustomerNotes"),
+	url(r'^customer/(?P<slug>[^/]+)/notes/(?P<pk>[^/]+)/$', actionCustomerNote, name="actionCustomerNote"),
 )
