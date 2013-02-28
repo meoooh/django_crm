@@ -461,14 +461,37 @@ def addCustomerNotes(request, slug):
 				# import ipdb;ipdb.set_trace()
 				return HttpResponse(simplejson.dumps(note.to_dict()), content_type="application/json")
 	else:
-		return HttpResponse('Other methods is denied.')
+		return HttpResponse('addCustomerNotes: Other methods is denied.')
 		
 def actionCustomerNote(request, slug, pk):
-	if request.method == "DELETE":
+	# import ipdb;ipdb.set_trace()
+	if request.is_ajax():
 		content_type = ContentType.objects.get_for_model(Customer)
 		try:
-			Note.objects.get(content_type=content_type, pk=pk).delete()
+			note=Note.objects.get(content_type=content_type, pk=pk)
 		except ObjectDoesNotExist:
 			return HttpResponse(u'등록되지 않은 메모.')
+	
+		if request.method == "DELETE":
+			note.delete()
+			
+			return HttpResponse(u'1')
+		elif request.method == "PUT":
+			# import ipdb;ipdb.set_trace()
+			key, value = request.raw_post_data.split("=")
+			
+			if key == "contents":
+				import urllib
+				note.contents = urllib.unquote(value).replace("+", " ") # 뭔가 깔끔하게 해결할수있는 방법이 있을꺼 같다... 찾아봐야지...
+				note.save()
+			else:
+				return HttpResponse('actionCustomerNote: Other key is denied.')
+			
+			return HttpResponse(u'1')
+		elif request.method == "GET":
+			return HttpResponse(simplejson.dumps({"contents":note.contents}), content_type="application/json")
+		else:
+			return HttpResponse('actionCustomerNote: Other methods is denied.')
+	else:
+		return HttpResponse('actionCustomerNote: Not ajax is denied.')
 		
-		return HttpResponse(u'1')

@@ -86,9 +86,10 @@ class Note(models.Model):
 		return {u'id':self.pk, u'name':self.writer.get_profile().name, u'contents':self.contents, u'date':self.date.isoformat()}
 	
 class IPaddr(models.Model):
-	notes = generic.GenericRelation(Note, null=True)
+	notes = generic.GenericRelation(Note, null=True) # 이름을 history로 바꾸어 이력관리 용으로..
 	addr = models.GenericIPAddressField(unique=True,)
 	country = models.CharField(max_length=30, null=True)
+	# note = models.TextField() # notes 대신에 history로 바뀌었을때 간단한 단일메모 저장 컬럼...
 	
 	def __unicode__(self):
 		return "addr: %s, country: %s, len(notes): %d"%(self.addr, self.country, self.notes.all().count())

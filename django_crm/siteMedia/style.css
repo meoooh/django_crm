@@ -1,7 +1,8 @@
 div.customerDetailViewTitle{
 	padding: 8px;
 	font-weight: bold;
-	border-bottom: 1px solid #dddddd;
+	border-bottom: 3px double #dddddd;
+	background-color: #85E085;
 }
 
 li.customerDetailViewList{
@@ -22,7 +23,7 @@ div.addCustomerNotes{
 
 div.customerDetailViewBox{
 	width: 100%;
-	border:1px solid #dddddd;
+	border:2px solid #dddddd;
 	border-radius: 4px;
 	margin-bottom: 5px;
 }
@@ -34,4 +35,8 @@ span.name{
 span.contents{
 	margin-left: 5px;
     margin-right: 5px;
+}
+
+div{
+	word-break: break-all;
 }

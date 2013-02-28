@@ -31,7 +31,7 @@ function init(){
         
 	$("textarea").autosize({className:"mirroredText"});
 	
-	$("textarea").keydown(function(e) {
+	$("textarea").keydown(function(e) { // textarea에서 엔터치면 submit되도록...
 		if(e.keyCode == 13) {
 			$(this).parent().submit();
 		}
