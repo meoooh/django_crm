@@ -29,7 +29,7 @@ function init(){
 		end.call(this);
 	});
         
-	$("textarea").autosize({className:"mirroredText"});
+	$("textarea").autosize({className:"mirroredText"}); // textarea 늘어나는거...
 	
 	$("textarea").keydown(function(e) { // textarea에서 엔터치면 submit되도록...
 		if(e.keyCode == 13) {
@@ -126,9 +126,15 @@ function get_form(){
 			{multiple: true, multipleSeparator: ','}
 		);
 		
-		item.find('textarea').autosize({className:'mirroredText'});
+		item.find('textarea').autosize({className:'mirroredText'}); // textarea 늘어나는거...
 		
 		item.find("#id_contents").focus()
+	
+		item.find("textarea").keydown(function(e) { // textarea에서 엔터치면 submit되도록...
+			if(e.keyCode == 13) {
+				$(this).parent().submit();
+			}
+		});
 	});
 }
 
@@ -206,6 +212,8 @@ function submit_form(pk){
 			function(){
 				end.call(this);
 			});
+			
+			isoFormat2localeString(item.parent().children().first());
 			
 			item.remove();
 		});

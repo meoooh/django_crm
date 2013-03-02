@@ -17,7 +17,7 @@
 			</tr>
 			<tr>
 				<th>개통일</th>
-				<td>{{ customerDetail.date }}</td>
+				<td><span class="time">{{ customerDetail.date|date:"c" }}</span></td>
 				<th>위치</th>
 				<td>{{ customerDetail.position }}</td>
 				<th>고객폴더</th>
@@ -101,7 +101,7 @@
 			</tr>
 				{% for i in customerDetail.equipments.all %}
 					<tr>
-						<td>{{ i.type }}</td><td>{{ i.ipaddr.addr }}</td><td> {{ i.notes.all.0.contents }}</td>
+						<td>{{ i.type }}</td><td>{{ i.ipaddr.addr }}</td><td> {{ i.ipaddr.notes.all.0.contents }}</td>
 					</tr>
 				{% endfor %}
 			<tr>
@@ -125,13 +125,14 @@
 			<div class="customerDetailViewList">
 				<ul class="customerDetailViewList unstyled">
 				{% for i in customerDetail.ipaddrs.all %}
-					<li class="customerDetailViewList" id="{{ i.pk }}"><span class="ipaddr">{{ i.addr }}</span> - <span class="note">{{ i.notes.all.0.contents }}</span></li>
+					<li class="customerDetailViewList" id="{{ i.pk }}"><span class="ipaddr">{{ i.addr }}</span> - <span class="note">{{ i.history.all.0.contents }}</span></li>
 				{% endfor %}
 				</ul>
 			</div>
 			<div class="addCustomerNotes">
 				<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
-					<textarea name="notes" placeholder="내용" style="width:714px; height:35px;"></textarea>
+					<input type="text" name="addr" placeholder="IP주소" style="width: 240px;">
+					<input type="text" name="note" placeholder="메모" style="width: 480px;">	
 					<button class="btn btn-mini" type="submit">추가</button>
 				</form>
 			</div>

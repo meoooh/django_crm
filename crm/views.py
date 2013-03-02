@@ -69,6 +69,9 @@ def logoutPage(request):
 	# from django.http import HttpResponseRedirect
 
 def loginPage(request):
+	print request.META['REMOTE_ADDR'], request.META['HTTP_USER_AGENT']
+	if 'next' in request.GET:
+		n = request.GET['next']
 	loginReturnValue=login(request=request)
 
 	if request.method == 'POST' and request.user.is_authenticated():
@@ -339,7 +342,7 @@ def customerRegistration(request):
 			customer.salespersons.add(salesperson)
 			
 			for i in form.cleaned_data['ipaddrs'].split(','):
-				if iptools.validate_cidr(i.strip()):
+				if ipValidation(i.strip()):
 					for j in iptools.IpRange(i.strip()):
 						ipaddr, created=IPaddr.objects.get_or_create(
 							addr=j,
@@ -352,19 +355,9 @@ def customerRegistration(request):
 						)
 						note.save()
 						customer.ipaddrs.add(ipaddr)
-				elif iptools.validate_ip(i.strip()):
-					for j in iptools.IpRange(i.strip()):
-						ipaddr, created=IPaddr.objects.get_or_create(
-							addr=j,
-						)
-#						ipaddr.country=GeoIP(j)
-						note = Note(
-							content_object=ipaddr,
-							contents=form.cleaned_data['ipaddrsNote'],
-							writer=request.user,
-						)
-						note.save()
-						customer.ipaddrs.add(ipaddr)
+				else:
+					# validation 실패시...
+					pass
 			
 			for i in form.cleaned_data['domains'].split(','):
 				domain, created= Domain.objects.get_or_create(
@@ -377,23 +370,23 @@ def customerRegistration(request):
 						)
 				note.save()
 				customer.domains.add(domain)
-				
-			ipaddr, created=IPaddr.objects.get_or_create(
-				addr=form.cleaned_data['equipmentsIpaddr'],
-			)
-			#ipaddr.country=GeoIP(j)
-			equipment, created = Equipment.objects.get_or_create(
-				ipaddr=ipaddr
-			)
-			equipment.type=form.cleaned_data['equipmentsType']
-			equipment.save()
-			note = Note(
-				content_object=equipment,
-				contents=form.cleaned_data['equipmentsNote'],
-				writer=request.user,
-			)
-			note.save()
-			customer.equipments.add(equipment)
+			if ipValidation(form.cleaned_data['equipmentsIpaddr']):
+				ipaddr, created=IPaddr.objects.get_or_create(
+					addr=form.cleaned_data['equipmentsIpaddr'],
+				)
+				#ipaddr.country=GeoIP(j)
+				equipment, created = Equipment.objects.get_or_create(
+					ipaddr=ipaddr
+				)
+				equipment.type=form.cleaned_data['equipmentsType']
+				equipment.save()
+				note = Note(
+					content_object=ipaddr,
+					contents=form.cleaned_data['equipmentsNote'],
+					writer=request.user,
+				)
+				note.save()
+				customer.equipments.add(equipment)
 			
 			for i in form.cleaned_data['alertEmails'].split(','):
 				# import pdb;pdb.set_trace()
@@ -486,7 +479,6 @@ def actionCustomerNote(request, slug, pk):
 				note.save()
 			else:
 				return HttpResponse('actionCustomerNote: Other key is denied.')
-			
 			return HttpResponse(u'1')
 		elif request.method == "GET":
 			return HttpResponse(simplejson.dumps({"contents":note.contents}), content_type="application/json")
@@ -494,4 +486,32 @@ def actionCustomerNote(request, slug, pk):
 			return HttpResponse('actionCustomerNote: Other methods is denied.')
 	else:
 		return HttpResponse('actionCustomerNote: Not ajax is denied.')
-		
+
+def addCustomerIP(request, slug):
+	if request.is_ajax():
+		if request.method == "POST":
+			try:
+				customer = Customer.objects.get(name=slug)
+			except ObjectDoesNotExist:
+				return HttpResponse(u'등록되지 않은 고객.')
+			else:
+				requestPOSTip = request.POST['ip'].replace(' ','') # 공백제거
+				if ipValidation(requestPOSTip):
+					try:
+						# import ipdb;ipdb.set_trace()
+						ip, created = IPaddr.objects.get_or_create(
+							addr=requestPOSTip
+						)
+					except:
+						return HttpResponse('addCustomerIP: error')
+					else:
+						Note.objects.create(
+							contents=request.POST['note'],
+							writer=request.user,
+							content_object=ip,
+						)
+						return HttpResponse('addCustomerIP: 1')
+		else:
+			return HttpResponse('addCustomerIP: Other methods is denied.')
+	else:
+		return HttpResponse('addCustomerIP: Not ajax is denied.')

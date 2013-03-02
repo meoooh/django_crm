@@ -10,13 +10,13 @@
 				<form method="post" action="." class="form-inline">
 					{% csrf_token %}
 					{{ form.as_table }}
-					<input type="hidden" name="next" value="/" />
+					<input type="hidden" name="next" value="{{ next }}" />
 					<button type="submit" class="btn">로그인</button>
 				</form>
 				<button class="btn btn-large" type="button"
 				onclick="location.href='/userRegistration/'"
-				>가입	</button>
-			</div>	
+				>가입</button>
+			</div>
 		</div>
 	</div>
 {% endblock %}

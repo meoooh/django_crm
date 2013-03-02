@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
 class UserProfile(models.Model):
-	user = models.OneToOneField(User, unique=True, to_field='username') # OneToOneField으로 바꿔야함 생각을 잘못했음...
+	user = models.OneToOneField(User, unique=True, to_field='username')
 	mobile = models.CharField(unique=True, max_length=20,)
 	lastIp= models.GenericIPAddressField(null=True)
 	position = models.CharField(max_length=20, null=True)
@@ -86,10 +86,9 @@ class Note(models.Model):
 		return {u'id':self.pk, u'name':self.writer.get_profile().name, u'contents':self.contents, u'date':self.date.isoformat()}
 	
 class IPaddr(models.Model):
-	notes = generic.GenericRelation(Note, null=True) # 이름을 history로 바꾸어 이력관리 용으로..
+	notes = generic.GenericRelation(Note, null=True)
 	addr = models.GenericIPAddressField(unique=True,)
 	country = models.CharField(max_length=30, null=True)
-	# note = models.TextField() # notes 대신에 history로 바뀌었을때 간단한 단일메모 저장 컬럼...
 	
 	def __unicode__(self):
 		return "addr: %s, country: %s, len(notes): %d"%(self.addr, self.country, self.notes.all().count())
@@ -134,7 +133,6 @@ class Equipment(models.Model):
 				null=True,
 			)
 	ipaddr = models.ForeignKey(IPaddr, to_field='addr')
-	notes = generic.GenericRelation(Note, null=True)
 	
 	def __unicode__(self):
 		return "type: %s, ipaddr: %s, len(notes): %d"%(self.type, self.ipaddr, self.notes.all().count())

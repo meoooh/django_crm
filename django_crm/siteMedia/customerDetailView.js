@@ -15,6 +15,14 @@ function init(){
 	$("li.customerDetailViewList button.modify").click(function(){
 		ModifyCustomerNote.call(this);
 	});
+	
+	$("textarea").autosize({className:"mirroredText"}); // textarea 늘어나는거...
+	
+	$("textarea").keydown(function(e) { // textarea에서 엔터치면 submit되도록...
+		if(e.keyCode == 13) {
+			$(this).parent().submit();
+		}
+	});
 }
 
 function ModifyCustomerNote(){
@@ -28,11 +36,19 @@ function ModifyCustomerNote(){
 	
 	$.get(customerNoteURL+_li.attr("id")+"/?ajax", function(result){
 		var backup_li = _li.html();
-		_li.html('<form method="post" style="margin-bottom: 0" action="/" class="form-inline"><textarea name="contents" placeholder="내용" style="width:714px; height:35px;">'+result['contents']+'</textarea><button type="submit">완료</button></form>');
+		_li.html('<form method="post" style="margin-bottom: 0" action="/" class="form-inline"><textarea name="contents" placeholder="내용" style="width:714px; height:35px;">'+result['contents']+'</textarea><button class="btn btn-mini" type="submit">완료</button></form>');
 		
 		_li.find("form").submit(backup_li, function(){
 			saveModifyCustomerNote.call(this, backup_li);
 			return false;
+		});
+		
+		_li.find("textarea").autosize({className:"mirroredText"}); // textarea 늘어나는거...
+	
+		_li.find("textarea").keydown(function(e){ // textarea에서 엔터치면 submit되도록...
+			if(e.keyCode == 13){
+				$(this).parent().submit();
+			}
 		});
 	});
 }

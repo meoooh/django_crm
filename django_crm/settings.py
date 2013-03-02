@@ -8,6 +8,7 @@ TEMPLATE_DEBUG = DEBUG
 AUTH_PROFILE_MODULE = 'crm.UserProfile'
 
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
