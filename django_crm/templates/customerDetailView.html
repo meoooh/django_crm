@@ -125,7 +125,7 @@
 			<div class="customerDetailViewList">
 				<ul class="customerDetailViewList unstyled">
 				{% for i in customerDetail.ipaddrs.all %}
-					<li class="customerDetailViewList" id="{{ i.pk }}"><span class="ipaddr">{{ i.addr }}</span> - <span class="note">{{ i.history.all.0.contents }}</span></li>
+					<li class="customerDetailViewList" id="{{ i.pk }}"><span class="ipaddr">{{ i.addr }}</span> - <span class="note">{{ i.notes.all.0.contents }}</span></li>
 				{% endfor %}
 				</ul>
 			</div>
