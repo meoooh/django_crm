@@ -38,5 +38,5 @@ urlpatterns = patterns('',
 	url(r'^customer/(?P<slug>[^/]+)/$', customerDetailView.as_view(), name="customerDetailView"),
 	url(r'^customer/(?P<slug>[^/]+)/notes/$', addCustomerNotes, name="addCustomerNotes"),
 	url(r'^customer/(?P<slug>[^/]+)/notes/(?P<pk>[^/]+)/$', actionCustomerNote, name="actionCustomerNote"),
-	url(r'^customer/(?P<slug>[^/]+)/IP/$', addCustomerIP, name="addCustomerIP"),
+	url(r'^customer/(?P<slug>[^/]+)/IPaddrs/$', addCustomerIPaddrs, name="addCustomerIPaddrs"),
 )

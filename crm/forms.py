@@ -251,6 +251,21 @@ class CustomerRegistrationForm(forms.Form):
 			raise forms.ValidationError('비정상 동작')
 		else:
 			raise forms.ValidationError('올바른 고객사 이름이 아닙니다.')
+			
+	def clean_personInChargesMobile(self):
+		if 'personInChargesMobile' in self.cleaned_data:
+			mobile = self.cleaned_data['personInChargesMobile']
+			if re.search(r'^01(0|1|6|7|8|9)\d{7,8}$', mobile) == None: # re.search(a, b)는 b가 a와 일치 하지 않을때 None를 반환함.
+				_mobile=''
+				for i in mobile:
+					if i.isdigit():
+						_mobile+=i
+				mobile=_mobile
+				if re.search(r'^01(0|1|6|7|8|9)\d{7,8}$', mobile) == None:
+					raise forms.ValidationError('올바른 휴대전화번호가 아닙니다.')
+			return mobile
+		else:
+			raise forms.ValidationError('올바른 휴대전화번호가 아닙니다.')
 	
 	def clean_workers(self):
 		if 'workers' in self.cleaned_data:

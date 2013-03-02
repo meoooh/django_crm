@@ -25,14 +25,20 @@ def GeoIP(s):
 		
 def ipValidation(t):
 	if '/' in t:
-		return iptools.validate_cidr(t)
+		if iptools.validate_cidr(t):
+			return iptools.IpRange(t)
 	elif '-' in t:
 		s, e = t.split('-')
 		
-		return iptools.validate_ip(s) and iptools.validate_ip(e)
+		if iptools.validate_ip(s) and iptools.validate_ip(e):
+			return iptools.IpRange(s, e)
 	elif '~' in t:
 		s, e = t.split('~')
 		
-		return iptools.validate_ip(s) and iptools.validate_ip(e)
+		if iptools.validate_ip(s) and iptools.validate_ip(e):
+			return iptools.IpRange(s, e)
 	else:
-		return iptools.validate_ip(t)
+		if iptools.validate_ip(t):
+			return iptools.IpRange(t)
+			
+	return False

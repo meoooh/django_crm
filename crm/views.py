@@ -487,7 +487,7 @@ def actionCustomerNote(request, slug, pk):
 	else:
 		return HttpResponse('actionCustomerNote: Not ajax is denied.')
 
-def addCustomerIP(request, slug):
+def addCustomerIPaddrs(request, slug):
 	if request.is_ajax():
 		if request.method == "POST":
 			try:
@@ -495,22 +495,32 @@ def addCustomerIP(request, slug):
 			except ObjectDoesNotExist:
 				return HttpResponse(u'등록되지 않은 고객.')
 			else:
-				requestPOSTip = request.POST['ip'].replace(' ','') # 공백제거
-				if ipValidation(requestPOSTip):
-					try:
-						# import ipdb;ipdb.set_trace()
-						ip, created = IPaddr.objects.get_or_create(
-							addr=requestPOSTip
-						)
-					except:
-						return HttpResponse('addCustomerIP: error')
-					else:
-						Note.objects.create(
-							contents=request.POST['note'],
-							writer=request.user,
-							content_object=ip,
-						)
-						return HttpResponse('addCustomerIP: 1')
+				jsonContext=[]
+				# import ipdb;ipdb.set_trace()
+				requestPOST = request.POST.copy()
+				requestPOST['ip'] = request.POST['ip'].replace(' ', '')
+				
+				try:
+					for i in ipValidation(requestPOST['ip'] ):
+						try:
+							# import ipdb;ipdb.set_trace()
+							ip, created=IPaddr.objects.get_or_create(
+								addr=i 
+							)
+						except:
+							return HttpResponse('0')
+						else:
+							note=Note.objects.create(
+								contents=request.POST['note'],
+								writer=request.user,
+								content_object=ip,
+							)
+							customer.ipaddrs.add(ip)
+							
+							jsonContext.append({"addr":i,"pk":ip.pk})
+					return HttpResponse(simplejson.dumps(jsonContext), content_type="application/json")
+				except:
+					return HttpResponse('0')
 		else:
 			return HttpResponse('addCustomerIP: Other methods is denied.')
 	else:

@@ -23,6 +23,31 @@ function init(){
 			$(this).parent().submit();
 		}
 	});
+	
+	$("div.addCustomerIPaddrs form").submit(function(){
+		saveCustomerIPaddrs.call(this);
+		return false;
+	});
+}
+
+function saveCustomerIPaddrs(){
+	var _form = $(this);
+	var _div = _form.parent().parent()
+	
+	$.post(customerIPaddrURL+"?ajax", _form.serialize(), function(result){
+		if(result != "0"){
+			$.each(result, function(){
+				_div.find("ul.customerDetailViewList").append('<li class="customerDetailViewList" id="'+this.pk+'"><span class="ipaddr">'+this.addr+'</span> - <span class="note">'+_form.find("input[name=note]").val()+'</span></li>');
+			});
+			_form[0].reset();
+		}
+		else{
+			$('#myModal').modal('show');
+			$('#myModal').on('hide', function(){
+				_form.find("input[name=ip]").focus();
+			});
+		}
+	});
 }
 
 function ModifyCustomerNote(){
@@ -111,7 +136,7 @@ function getEquipmentAddForm(){
 function saveCustomerNote(){
 	var _form=$(this);
 	
-	$.post(this.baseURI+"notes/?ajax", _form.serialize(), function(result){
+	$.post(customerNoteURL+"?ajax", _form.serialize(), function(result){
 		_form.each(function(){
 			this.reset();
 		});
