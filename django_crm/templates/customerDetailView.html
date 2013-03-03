@@ -118,53 +118,56 @@
 					</tr>
 				{% endfor %}
 		</table>
-		<div class="customerDetailViewBox">
-			<div class="customerDetailViewTitle">
-				IP 목록
-			</div>
-			<div class="customerDetailViewList">
-				<ul class="customerDetailViewList unstyled">
-				{% for i in customerDetail.ipaddrs.all %}
-					<li class="customerDetailViewList" id="{{ i.pk }}"><span class="ipaddr">{{ i.addr }}</span> - <span class="note">{{ i.notes.all.0.contents }}</span></li>
-				{% endfor %}
-				</ul>
-			</div>
-			<div class="addCustomerIPaddrs">
-				<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
-					<input type="text" name="ip" placeholder="IP주소" style="width: 240px;">
-					<input type="text" name="note" placeholder="메모" style="width: 480px;">	
-					<button class="btn btn-mini" type="submit">추가</button>
-				</form>
-				<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h3 id="myModalLabel">오류</h3>
-					</div>
-					<div class="modal-body">
-						<p>IP주소가 잘못되었습니다.</p>
-					</div>
-					<div class="modal-footer">
-						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<div id="ipaddrList">
+			<div class="customerDetailViewBox">
+				<div class="customerDetailViewTitle">
+					IP 목록
+				</div>
+				<div class="customerDetailViewList">
+					<ul class="customerDetailViewList unstyled"></ul>
+				</div>
+				<div class="more">
+					<a>더보기</a>
+				</div>
+				<div class="addCustomerIPaddrs">
+					<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
+						<input type="text" name="ip" placeholder="IP주소" style="width: 240px;">
+						<input type="text" name="note" placeholder="메모" style="width: 480px;">	
+						<button class="btn btn-mini" type="submit">추가</button>
+					</form>
+					<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+							<h3 id="myModalLabel">오류</h3>
+						</div>
+						<div class="modal-body">
+							<p>IP주소가 잘못되었습니다.</p>
+						</div>
+						<div class="modal-footer">
+							<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="customerDetailViewBox">
-			<div class="customerDetailViewTitle">
-				이력사항
-			</div>
-			<div class="customerDetailViewList">
-				<ul class="customerDetailViewList unstyled">
-				{% for i in customerDetail.notes.all|dictsort:"date" %}
-					<li class="customerDetailViewList" id="{{ i.pk }}"><span class="time">{{ i.date|date:"c" }}</span><span class="contents"><strong>{{ i.contents }}</strong></span><span class="name">[{{ i.writer.get_profile.name }}]</span><span class="button"><button class="btn btn-mini modify" type="button">수정</button><button class="btn btn-mini delete" type="button">삭제</button></span></li>
-				{% endfor %}
-				</ul>
-			</div>
-			<div class="addCustomerNotes">
-				<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
-					<textarea name="notes" placeholder="내용" style="width:714px; height:35px;"></textarea>
-					<button class="btn btn-mini" type="submit">추가</button>
-				</form>
+		<div id="note">
+			<div class="customerDetailViewBox">
+				<div class="customerDetailViewTitle">
+					이력사항
+				</div>
+				<div class="customerDetailViewList">
+					<ul class="customerDetailViewList unstyled">
+					{% for i in customerDetail.notes.all|dictsort:"date" %}
+						<li class="customerDetailViewList" data-id="{{ i.pk }}"><span class="time">{{ i.date|date:"c" }}</span><span class="contents"><strong>{{ i.contents }}</strong></span><span class="name">[{{ i.writer.get_profile.name }}]</span><span class="button"><button class="btn btn-mini modify" type="button">수정</button><button class="btn btn-mini delete" type="button">삭제</button></span></li>
+					{% endfor %}
+					</ul>
+				</div>
+				<div class="addCustomerNotes">
+					<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
+						<textarea name="notes" placeholder="내용" style="width:714px; height:35px;"></textarea>
+						<button class="btn btn-mini" type="submit">추가</button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -172,5 +175,6 @@
 <script type="text/javascript">
 	var customerNoteURL = "{% url addCustomerNotes customerDetail.name %}";
 	var customerIPaddrURL = "{% url addCustomerIPaddrs customerDetail.name %}";
+	var ipaddrListViewURL = "{% url listing customerDetail.name %}";
 </script>
 <script type="text/javascript" src="/siteMedia/customerDetailView.js?a=9">

@@ -5,6 +5,15 @@ div.customerDetailViewTitle{
 	background-color: #85E085;
 }
 
+div.more{
+	text-align: center;
+	border-bottom: 1px solid #dddddd;
+	font-size: 20px;
+	padding: 8px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
 li.customerDetailViewList{
 	padding: 8px;
 	border-bottom: 1px solid #dddddd;
@@ -34,7 +43,7 @@ span.name{
 
 span.contents{
 	margin-left: 5px;
-    margin-right: 5px;
+	margin-right: 5px;
 }
 
 div{

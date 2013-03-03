@@ -28,6 +28,35 @@ function init(){
 		saveCustomerIPaddrs.call(this);
 		return false;
 	});
+	
+	$("div.more").click(function(){
+		more.call(this);
+	});
+	
+	$("div#ipaddrList ul").dblclick(function(){
+		more.call(this);
+	});
+	
+	ipaddrListView();
+}
+
+function more(){
+	var _li = $(this).parent().find("li:last");
+	
+	ipaddrListView(_li.attr('data-next'));
+}
+
+function ipaddrListView(page){
+	var url = ipaddrListViewURL;
+	
+	if(page){
+		$.get(url+page, function(result){
+			$("div#ipaddrList ul").append(result);
+		});
+	}
+	else{
+		$("div#ipaddrList ul").load(url);
+	}
 }
 
 function saveCustomerIPaddrs(){
@@ -37,7 +66,7 @@ function saveCustomerIPaddrs(){
 	$.post(customerIPaddrURL+"?ajax", _form.serialize(), function(result){
 		if(result != "0"){
 			$.each(result, function(){
-				_div.find("ul.customerDetailViewList").append('<li class="customerDetailViewList" id="'+this.pk+'"><span class="ipaddr">'+this.addr+'</span> - <span class="note">'+_form.find("input[name=note]").val()+'</span></li>');
+				_div.find("ul.customerDetailViewList").append('<li class="customerDetailViewList" data-id="'+this.pk+'"><span class="ipaddr">'+this.addr+'</span> - <span class="note">'+_form.find("input[name=note]").val()+'</span></li>');
 			});
 			_form[0].reset();
 		}
@@ -59,7 +88,7 @@ function ModifyCustomerNote(){
 		$(this).attr("disabled", true)
 	});
 	
-	$.get(customerNoteURL+_li.attr("id")+"/?ajax", function(result){
+	$.get(customerNoteURL+_li.attr("data-id")+"/?ajax", function(result){
 		var backup_li = _li.html();
 		_li.html('<form method="post" style="margin-bottom: 0" action="/" class="form-inline"><textarea name="contents" placeholder="내용" style="width:714px; height:35px;">'+result['contents']+'</textarea><button class="btn btn-mini" type="submit">완료</button></form>');
 		
@@ -82,7 +111,7 @@ function saveModifyCustomerNote(li){
 			var _form = $(this);
 			var contents = _form.children().first().val()
 			$.ajax({
-				url: customerNoteURL+_form.parent().attr("id")+"/?ajax",
+				url: customerNoteURL+_form.parent().attr("data-id")+"/?ajax",
 				type: "PUT",
 				data: _form.serialize(),
 				success: function(result){
@@ -114,7 +143,7 @@ function deleteCustomerNote(){
 	
 	if(confirm('삭제하시겠습니까?')){
 		$.ajax({
-			url: customerNoteURL+li.attr("id")+"/?ajax",
+			url: customerNoteURL+li.attr("data-id")+"/?ajax",
 			type: "DELETE",
 			success: function(result){
 				if(result == "1"){
@@ -142,7 +171,7 @@ function saveCustomerNote(){
 		});
 		_form.children()[0].style.height="35px";
 		
-		var _li = $('<li class="customerDetailViewList" id='+result['id']+'></li>').append('<span class="time">'+result['date']+'</span>').append('<span class="contents"><strong>'+result['contents']+'</strong></span>').append('<span class="name">['+result['name']+']</span>').append('<span class="button"><button class="btn btn-mini modify" type="button">수정</button><button class="btn btn-mini delete" type="button">삭제</button></span>');
+		var _li = $('<li class="customerDetailViewList" data-id='+result['id']+'></li>').append('<span class="time">'+result['date']+'</span>').append('<span class="contents"><strong>'+result['contents']+'</strong></span>').append('<span class="name">['+result['name']+']</span>').append('<span class="button"><button class="btn btn-mini modify" type="button">수정</button><button class="btn btn-mini delete" type="button">삭제</button></span>');
 		
 		isoFormat2localeString(_li);
 		

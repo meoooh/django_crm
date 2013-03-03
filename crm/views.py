@@ -525,3 +525,26 @@ def addCustomerIPaddrs(request, slug):
 			return HttpResponse('addCustomerIP: Other methods is denied.')
 	else:
 		return HttpResponse('addCustomerIP: Not ajax is denied.')
+		
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+		
+def listing(request, slug, page=1):
+	customer = Customer.objects.get(name=slug)
+	contact_list = customer.ipaddrs.all().order_by('addr')
+	paginator = Paginator(contact_list, 5) # Show 25 contacts per page
+	
+	try:
+		contacts = paginator.page(page)
+	except PageNotAnInteger:
+		# If page is not an integer, deliver first page.
+		contacts = paginator.page(1)
+	except EmptyPage:
+		# If page is out of range (e.g. 9999), deliver last page of results.
+		contacts = paginator.page(paginator.num_pages)
+
+	variables = RequestContext(request, {
+		'contacts':contacts,
+		'className':"customerDetailViewList",
+	})
+		
+	return render_to_response('list.html', variables)

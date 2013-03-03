@@ -39,4 +39,5 @@ urlpatterns = patterns('',
 	url(r'^customer/(?P<slug>[^/]+)/notes/$', addCustomerNotes, name="addCustomerNotes"),
 	url(r'^customer/(?P<slug>[^/]+)/notes/(?P<pk>[^/]+)/$', actionCustomerNote, name="actionCustomerNote"),
 	url(r'^customer/(?P<slug>[^/]+)/IPaddrs/$', addCustomerIPaddrs, name="addCustomerIPaddrs"),
+	url(r'^list/(?P<slug>[^/]+)/page/(?P<page>[\d]+)?$', listing, name="listing"),
 )

@@ -92,6 +92,9 @@ class IPaddr(models.Model):
 	
 	def __unicode__(self):
 		return "addr: %s, country: %s, len(notes): %d"%(self.addr, self.country, self.notes.all().count())
+		
+	def span(self):
+		return '<span class="ipaddr">%s</span> - <span class="note">%s</span>'%(self.addr, self.notes.all()[0].contents)
 	
 class PersonInCharge(models.Model):
 	name = models.CharField(max_length=50,)
