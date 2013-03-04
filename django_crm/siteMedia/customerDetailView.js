@@ -29,33 +29,45 @@ function init(){
 		return false;
 	});
 	
-	$("div.more").click(function(){
-		more.call(this);
+	$("div.more").each(function(){
+		var more = this;
+		
+		$(more).click(function(){
+			listView.call(this, $(more).parent().find("li:last").attr('data-next'));
+		});
+		$(more).parent().find("ul").dblclick(function(){
+			listView.call(more, $(more).parent().find("li:last").attr('data-next'));
+		});
+		listView.call(this);
 	});
-	
-	$("div#ipaddrList ul").dblclick(function(){
-		more.call(this);
-	});
-	
-	ipaddrListView();
 }
 
 function more(){
 	var _li = $(this).parent().find("li:last");
 	
-	ipaddrListView(_li.attr('data-next'));
+	listView($(this).attr('data-kind'), _li.attr('data-next'));
 }
 
-function ipaddrListView(page){
-	var url = ipaddrListViewURL;
+function listView(page){
+	var more = $(this);
+	var url = listViewURL;
+	var kind = more.attr('data-kind');
 	
 	if(page){
-		$.get(url+page, function(result){
-			$("div#ipaddrList ul").append(result);
+		$.get(url+kind+"/"+page, function(result){
+			more.parent().find("ul").append(result);
+			
+			if(!more.parent().find("li:last").attr('data-next')){
+				more.hide();
+			}
 		});
 	}
 	else{
-		$("div#ipaddrList ul").load(url);
+		more.parent().find("ul").load(url+kind+"/", function(){
+			if(!more.parent().find("li:last").attr('data-next')){
+				more.hide();
+			}
+		});
 	}
 }
 
@@ -69,6 +81,7 @@ function saveCustomerIPaddrs(){
 				_div.find("ul.customerDetailViewList").append('<li class="customerDetailViewList" data-id="'+this.pk+'"><span class="ipaddr">'+this.addr+'</span> - <span class="note">'+_form.find("input[name=note]").val()+'</span></li>');
 			});
 			_form[0].reset();
+			_form.find("input:first").focus();
 		}
 		else{
 			$('#myModal').modal('show');
@@ -126,7 +139,7 @@ function saveModifyCustomerNote(li){
 							ModifyCustomerNote.call(this);
 						});
 						
-						_li.parent().parent().parent().parent().find(".addCustomerNotes form").children().each(function(){
+						_li.parent().parent().parent().parent().find("form.form-inline").children().each(function(){
 							$(this).attr("disabled", false)
 						});
 					}

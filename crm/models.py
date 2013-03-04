@@ -90,6 +90,9 @@ class IPaddr(models.Model):
 	addr = models.GenericIPAddressField(unique=True,)
 	country = models.CharField(max_length=30, null=True)
 	
+	class Meta:
+		ordering = ['addr'] # 정렬
+	
 	def __unicode__(self):
 		return "addr: %s, country: %s, len(notes): %d"%(self.addr, self.country, self.notes.all().count())
 		
@@ -115,6 +118,9 @@ class Domain(models.Model):
 	
 	def __unicode__(self):
 		return "url: %s, len(notes): %d"%(self.url, self.notes.all().count())
+		
+	def span(self):
+		return '<span class="domain">%s</span>'%(self.url)
 	
 class Equipment(models.Model):
 	types =(

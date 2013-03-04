@@ -528,9 +528,9 @@ def addCustomerIPaddrs(request, slug):
 		
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 		
-def listing(request, slug, page=1):
+def listing(request, slug, kind, page=1):
 	customer = Customer.objects.get(name=slug)
-	contact_list = customer.ipaddrs.all().order_by('addr')
+	contact_list = getattr(customer, kind).all()
 	paginator = Paginator(contact_list, 5) # Show 25 contacts per page
 	
 	try:
@@ -544,7 +544,6 @@ def listing(request, slug, page=1):
 
 	variables = RequestContext(request, {
 		'contacts':contacts,
-		'className':"customerDetailViewList",
 	})
 		
 	return render_to_response('list.html', variables)
