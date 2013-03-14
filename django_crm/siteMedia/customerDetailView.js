@@ -235,18 +235,26 @@ function saveModifyCustomerNote(li){
 					if(result == "1"){
 						var _li=_form.parent().html(li).find("strong").html(contents).parent();
 						
-						// _li.parent().find('button.delete').click(function(){
-							// deleteCustomerNote.call(this);
-						// });
+						if(!_li.parent().find('button.delete').attr('onclick')){
+							_li.parent().find('button.delete').click(function(){
+								deleteCustomerNote.call(this);
+							});
+						}
 						
-						// _li.parent().find("button.modify").click(function(){
-							// ModifyCustomerNote.call(this);
-						// });
+						if(!_li.parent().find("button.modify").attr('onclick')){
+							_li.parent().find("button.modify").click(function(){
+								ModifyCustomerNote.call(this);
+							});
+						}
 						
 						//위 두부분을 주석처리 해야하는 이유는 노트(이력사항)부분을 ajax로 구현하기 전에는
 						//버튼에 onclick를 직접 코딩해주지않고, 이 js파일에서 바인드 시켰었다.
 						//하지만 노트를 아작스로 바꾸고 직접 응답에 온크릭에 함수호출을 하였으므로,
 						// 위 두부분까지 작동하면 바인드가 두번되므로 함수가 두번 호출되어 오작동을 일으킨다.
+						
+						//다시 주석을 해제하였다. 이유는 아작스로 노트를 새로 추가할때에는 버튼에 onclick를 
+						//입력하지 않는다 그렇기 때문에 onclick속성에 뭔가 있으면 추가 바인딩을 안해주는걸로 바꿨다.
+						// 근데 항상 바인딩할때 어떤 값이 들어있나 확인해보고 바인딩하는게 좋은 습관인것같다.
 						
 						_li.parent().parent().parent().parent().find("form.form-inline").children().each(function(){
 							$(this).attr("disabled", false)
@@ -293,19 +301,23 @@ function saveCustomerNote(){
 		});
 		_form.children()[0].style.height="35px";
 		
-		var _li = $('<li class="customerDetailViewList" data-id='+result['id']+'></li>').append('<span class="time">'+result['date']+'</span>').append('<span class="contents"><strong>'+result['contents']+'</strong></span>').append('<span class="name">['+result['name']+']</span>').append('<span class="button"><button class="btn btn-mini modify" type="button">수정</button><button class="btn btn-mini delete" type="button">삭제</button></span>');
+		var _li = $('<li class="customerDetailViewList" data-id='+result['id']+'></li>').append('<span class="time">'+result['date']+'</span>').append('<span class="contents"><strong>'+result['contents']+'</strong></span>').append('<span class="name">['+result['name']+']</span>').append('<span class="button"><button class="btn btn-mini modify" type="button" onclick="ModifyCustomerNote.call(this);">수정</button><button class="btn btn-mini delete" type="button" onclick="deleteCustomerNote.call(this);">삭제</button></span>');
 		
 		isoFormat2localeString(_li);
 		
 		_form.parent().parent().find('ul.customerDetailViewList').append(_li);
 		
-		_li.find('button.delete').click(function(){
-			deleteCustomerNote.call(this);
-		});
+		if(!_li.find('button.delete').attr('onclick')){
+			_li.find('button.delete').click(function(){
+				deleteCustomerNote.call(this);
+			});
+		}
 		
-		_li.find("button.modify").click(function(){
-			ModifyCustomerNote.call(this);
-		});
+		if(!_li.find("button.modify").attr('onclick')){
+			_li.find("button.modify").click(function(){
+				ModifyCustomerNote.call(this);
+			});
+		}
 	});
 }
 
