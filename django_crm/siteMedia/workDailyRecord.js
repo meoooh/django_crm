@@ -128,7 +128,9 @@ function get_form(){
 		
 		item.find('textarea').autosize({className:'mirroredText'}); // textarea 늘어나는거...
 		
-		item.find("#id_contents").focus()
+		var _tmp=item.find("#id_contents").val();
+		
+		item.find("#id_contents").focus().val('').val(_tmp);
 	
 		item.find("textarea").keydown(function(e) { // textarea에서 엔터치면 submit되도록...
 			if(e.keyCode == 13) {

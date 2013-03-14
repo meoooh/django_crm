@@ -1,0 +1,2 @@
+{% for contact in contacts %}<li class="customerDetailViewList" data-id="{{ contact.pk }}" data-next="{% if contacts.has_next %}{{ contacts.next_page_number }}{% else %}none{% endif %}">{{ contact.span|safe }}</li>
+{% endfor %}

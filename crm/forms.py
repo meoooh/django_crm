@@ -7,11 +7,11 @@ from django.contrib.auth.models import User
 from crm.models import *
 
 class userRegistrationForm(forms.Form):
-	userId = forms.CharField(label='',
+	username = forms.CharField(label='',
 				max_length=30,
 				widget=forms.TextInput(attrs={'placeholder': '아이디'}),
 			)
-	userName = forms.CharField(label='',
+	name = forms.CharField(label='',
 				max_length=70,
 				widget=forms.TextInput(attrs={'placeholder': '이름'}),
 			)

@@ -8,14 +8,6 @@ function init(){
 		return false;
 	});
 	
-	$("li.customerDetailViewList button.delete").click(function(){
-		deleteCustomerNote.call(this);
-	});
-	
-	$("li.customerDetailViewList button.modify").click(function(){
-		ModifyCustomerNote.call(this);
-	});
-	
 	$("textarea").autosize({className:"mirroredText"}); // textarea 늘어나는거...
 	
 	$("textarea").keydown(function(e) { // textarea에서 엔터치면 submit되도록...
@@ -33,40 +25,146 @@ function init(){
 		var more = this;
 		
 		$(more).click(function(){
-			listView.call(this, $(more).parent().find("li:last").attr('data-next'));
+			if($(more).attr('data-start')){
+				listView.call(more, $(more).parent().find("li:first").attr('data-next'));
+			}
+			else{
+				listView.call(more, $(more).parent().find("li:last").attr('data-next'));
+			}
 		});
 		$(more).parent().find("ul").dblclick(function(){
-			listView.call(more, $(more).parent().find("li:last").attr('data-next'));
+			if($(more).attr('data-start')){
+				listView.call(more, $(more).parent().find("li:first").attr('data-next'));
+			}
+			else{
+				listView.call(more, $(more).parent().find("li:last").attr('data-next'));
+			}
 		});
-		listView.call(this);
+		listView.call(more);
+	});
+	
+	$("div.addCustomerDomains form").submit(function(){
+		saveCustomerDomains.call(this);
+		return false;
+	});
+	
+	
+	
+	isoFormat2localeString();
+}
+
+function deleteCustomerDomains(){
+	var _button=$(this);
+	var _li=_button.parent();
+	
+	if(confirm('삭제하시겠습니까?')){
+		$.ajax({
+			url: customerDomainURL+_li.attr('data-id'),
+			type: "DELETE",
+			statusCode:{
+				204: function(){
+					_li.remove();
+				}
+			}
+		});
+	}
+}
+
+function saveCustomerDomains(){
+	var _form=$(this);
+	var _div=_form.parent().parent();
+	var _ul=_div.find("ul");
+	var _li=_ul.find("li:last");
+	
+	$.ajax({
+		url: customerDomainURL+"?ajax",
+		type: "POST",
+		data: _form.serialize(),
+		success: function(result){
+			if(result['id']){
+				_ul.append('<li class="customerDetailViewList" data-id="'+result['id']+'" data-next="'+_li.attr("data-next")+'"><span class="domain">'+_form.serializeArray()[0].value+'</span> <button class="btn btn-mini delete" type="button" onclick="deleteCustomerDomains.call(this);">삭제</button></li>');
+				
+				_form[0].reset();
+			}
+		},
+		statusCode:{
+			500: function(){
+				$('#myModal').find(".modal-body p").html("IP가 잘못되었습니다.");
+				$('#myModal').modal('show');
+				$('#myModal').on('hide', function(){
+					_form.find("input:first").focus();
+				});
+			}
+		}
 	});
 }
 
-function more(){
-	var _li = $(this).parent().find("li:last");
-	
-	listView($(this).attr('data-kind'), _li.attr('data-next'));
+function deleteCustomerIPaddrs(){
+	var _button = $(this);
+	var _li = _button.parent().parent();
+	if(confirm('삭제하시겠습니까?')){
+		$.ajax({
+			url: customerIPaddrURL+_li.attr('data-id')+"/",
+			type: "DELETE",
+			success: function(){
+				_li.remove();
+			}
+		});
+	}
 }
 
 function listView(page){
 	var more = $(this);
-	var url = listViewURL;
+	more.append("<img src='/siteMedia/img/ajax-loader.gif' class='loading'>");
+	var _url = listViewURL;
 	var kind = more.attr('data-kind');
+	var _ul=more.parent().find("ul");
+	var _col="?col=";
+	col=more.attr('data-col');
+	dsc=more.attr('data-dsc');
+	last=more.attr('data-start');
+	page=page||"";
 	
-	if(page){
-		$.get(url+kind+"/"+page, function(result){
-			more.parent().find("ul").append(result);
-			
-			if(!more.parent().find("li:last").attr('data-next')){
-				more.hide();
+	_url+=kind+"/"+page;
+	if(page=="none"){
+		return false;
+	}
+	else if(page){
+		$.ajax({
+			url:_url,
+			type: "GET",
+			data: {"col":col, "dsc":dsc, "last":last},
+			success:function(result){
+				if($(more).attr('data-start')=="last"){
+					_ul.prepend(result)
+				}
+				else{
+					_ul.append(result);
+				}
+				
+				isoFormat2localeString(_ul);
+				
+				if($(more).attr('data-start')=="last"){
+					if(more.parent().find("li:first").attr('data-next')=="none"){
+						more.hide();
+					}
+				}
+				else{
+					if(more.parent().find("li:last").attr('data-next')=="none"){
+						more.hide();
+					}
+				}
+				more.find(".loading").remove();
 			}
 		});
 	}
 	else{
-		more.parent().find("ul").load(url+kind+"/", function(){
-			if(!more.parent().find("li:last").attr('data-next')){
+		_ul.load(_url, $.param({"col":col, "dsc":dsc, "last":last}), function(){
+			if(more.parent().find("li:last").attr('data-next')=="none"){
 				more.hide();
 			}
+			isoFormat2localeString(_ul);
+			more.find(".loading").remove();
 		});
 	}
 }
@@ -84,6 +182,7 @@ function saveCustomerIPaddrs(){
 			_form.find("input:first").focus();
 		}
 		else{
+			$('#myModal').find(".modal-body p").html("IP가 잘못되었습니다.");
 			$('#myModal').modal('show');
 			$('#myModal').on('hide', function(){
 				_form.find("input[name=ip]").focus();
@@ -117,6 +216,11 @@ function ModifyCustomerNote(){
 				$(this).parent().submit();
 			}
 		});
+		
+		var _tmp = _li.find("textarea").val()
+		_li.find("textarea").focus().val('').val(_tmp); // 그냥 _li.find("textarea").focus()하면 커서가 맨 앞으로 간다.
+														// 그런데 여기처럼 하면 맨뒤로 간다.
+														// _li.find("textarea").focus()
 	});
 }
 
@@ -131,13 +235,18 @@ function saveModifyCustomerNote(li){
 					if(result == "1"){
 						var _li=_form.parent().html(li).find("strong").html(contents).parent();
 						
-						_li.parent().find('button.delete').click(function(){
-							deleteCustomerNote.call(this);
-						});
+						// _li.parent().find('button.delete').click(function(){
+							// deleteCustomerNote.call(this);
+						// });
 						
-						_li.parent().find("button.modify").click(function(){
-							ModifyCustomerNote.call(this);
-						});
+						// _li.parent().find("button.modify").click(function(){
+							// ModifyCustomerNote.call(this);
+						// });
+						
+						//위 두부분을 주석처리 해야하는 이유는 노트(이력사항)부분을 ajax로 구현하기 전에는
+						//버튼에 onclick를 직접 코딩해주지않고, 이 js파일에서 바인드 시켰었다.
+						//하지만 노트를 아작스로 바꾸고 직접 응답에 온크릭에 함수호출을 하였으므로,
+						// 위 두부분까지 작동하면 바인드가 두번되므로 함수가 두번 호출되어 오작동을 일으킨다.
 						
 						_li.parent().parent().parent().parent().find("form.form-inline").children().each(function(){
 							$(this).attr("disabled", false)

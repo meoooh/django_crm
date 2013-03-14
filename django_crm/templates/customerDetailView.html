@@ -108,7 +108,6 @@
 				<td colspan="3" style="text-align: center;"><button class="equipmentAdd">추가</button></td>
 			</tr>
 		</table>
-		
 		<div class="row">
 			<div class="span5">
 				<div id="domainList">
@@ -122,24 +121,12 @@
 						<div class="more" data-kind="domains">
 							<a>더보기</a>
 						</div>
-						<div class="addCustomerIPaddrs">
+						<div class="addCustomerDomains">
 							<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
-								<input type="text" name="ip" placeholder="IP주소">
-								<input type="text" name="note" placeholder="메모">	
+								<input type="text" name="domains" placeholder="URL" style="width: 135px;">
+								<input type="text" name="domainsNote" placeholder="메모" style="width: 201px;">	
 								<button class="btn btn-mini" type="submit">추가</button>
 							</form>
-							<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-									<h3 id="myModalLabel">오류</h3>
-								</div>
-								<div class="modal-body">
-									<p>URL이 잘못되었습니다.</p>
-								</div>
-								<div class="modal-footer">
-									<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -158,52 +145,25 @@
 						</div>
 						<div class="addCustomerIPaddrs">
 							<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
-								<input type="text" name="ip" placeholder="IP주소">
-								<input type="text" name="note" placeholder="메모">	
+								<input type="text" name="ip" placeholder="IP주소" style="width: 135px;">
+								<input type="text" name="note" placeholder="메모" style="width: 201px;">	
 								<button class="btn btn-mini" type="submit">추가</button>
 							</form>
-							<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-									<h3 id="myModalLabel">오류</h3>
-								</div>
-								<div class="modal-body">
-									<p>IP주소가 잘못되었습니다.</p>
-								</div>
-								<div class="modal-footer">
-									<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
-		
-		
-		
-		<table class="table table-bordered" style="width: 100%;">
-			<tr>
-				<th>도메인 목록</th>
-			</tr>
-				{% for i in customerDetail.domains.all %}
-					<tr>
-						<td>{{ i.url }} - {{ i.notes.all.0.contents }}</td>
-					</tr>
-				{% endfor %}
-		</table>
 		<div id="note">
 			<div class="customerDetailViewBox">
 				<div class="customerDetailViewTitle">
 					이력사항
 				</div>
+				<div class="more" data-kind="notes" data-col="pk" data-start="last">
+					<a>더보기</a>
+				</div>
 				<div class="customerDetailViewList">
-					<ul class="customerDetailViewList unstyled">
-					{% for i in customerDetail.notes.all|dictsort:"date" %}
-						<li class="customerDetailViewList" data-id="{{ i.pk }}"><span class="time">{{ i.date|date:"c" }}</span><span class="contents"><strong>{{ i.contents }}</strong></span><span class="name">[{{ i.writer.get_profile.name }}]</span><span class="button"><button class="btn btn-mini modify" type="button">수정</button><button class="btn btn-mini delete" type="button">삭제</button></span></li>
-					{% endfor %}
-					</ul>
+					<ul class="customerDetailViewList unstyled"></ul>
 				</div>
 				<div class="addCustomerNotes">
 					<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
@@ -215,9 +175,22 @@
 		</div>
 	</div>
 </div>
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">오류</h3>
+	</div>
+	<div class="modal-body">
+		<p>IP주소가 잘못되었습니다.</p>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+	</div>
+</div>
 <script type="text/javascript">
 	var customerNoteURL = "{% url addCustomerNotes customerDetail.name %}";
 	var customerIPaddrURL = "{% url addCustomerIPaddrs customerDetail.name %}";
 	var listViewURL = "{% url listing customerDetail.name %}";
+	var customerDomainURL = "{% url actionCustomerDomains customerDetail.name %}";
 </script>
-<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=11">
+<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=11"></script>

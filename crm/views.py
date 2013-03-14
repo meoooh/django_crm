@@ -13,8 +13,6 @@ from datetime import date, datetime, timedelta
 from django.core.urlresolvers import reverse
 from crm.utility import *
 
-import iptools
-
 @login_required
 def mainPage(request):
 	variables = RequestContext(request, {
@@ -32,7 +30,7 @@ def userRegistration(request):
 		
 		if form.is_valid():
 			user = User.objects.create_user(
-					username=form.cleaned_data['userId'],
+					username=form.cleaned_data['username'],
 					password=form.cleaned_data['password1'],
 					email=form.cleaned_data['email'],
 					)
@@ -43,7 +41,7 @@ def userRegistration(request):
 			user=user.get_profile()
 #			import pdb
 #			pdb.set_trace()
-			user.name=form.cleaned_data['userName']
+			user.name=form.cleaned_data['name']
 			user.mobile=form.cleaned_data['mobile']
 
 			user.save()
@@ -69,6 +67,7 @@ def logoutPage(request):
 	# from django.http import HttpResponseRedirect
 
 def loginPage(request):
+	# import ipdb;ipdb.set_trace()
 	print request.META['REMOTE_ADDR'], request.META['HTTP_USER_AGENT']
 	if 'next' in request.GET:
 		n = request.GET['next']
@@ -487,14 +486,15 @@ def actionCustomerNote(request, slug, pk):
 	else:
 		return HttpResponse('actionCustomerNote: Not ajax is denied.')
 
-def addCustomerIPaddrs(request, slug):
+def actionCustomerIPaddrs(request, slug, pk):
 	if request.is_ajax():
-		if request.method == "POST":
-			try:
-				customer = Customer.objects.get(name=slug)
-			except ObjectDoesNotExist:
-				return HttpResponse(u'등록되지 않은 고객.')
-			else:
+		supportREST(request)
+		try:
+			customer = Customer.objects.get(name=slug)
+		except ObjectDoesNotExist:
+			return HttpResponse(u'등록되지 않은 고객.', status=500)
+		else:
+			if request.method == "POST":
 				jsonContext=[]
 				# import ipdb;ipdb.set_trace()
 				requestPOST = request.POST.copy()
@@ -521,18 +521,58 @@ def addCustomerIPaddrs(request, slug):
 					return HttpResponse(simplejson.dumps(jsonContext), content_type="application/json")
 				except:
 					return HttpResponse('0')
-		else:
-			return HttpResponse('addCustomerIP: Other methods is denied.')
+			elif request.method == "DELETE":
+				try:
+					ip=IPaddr.objects.get(pk=pk)
+				except ObjectDoesNotExist:
+					return HttpResponse(u'등록되지 않은 IP.', status=500)
+				else:
+					try:
+						# import ipdb;ipdb.set_trace()
+						customer.ipaddrs.remove(ip)
+					except:
+						printException(sys.exc_info())
+						return HttpResponse(u'remove() 실패.', status=500)
+					else:
+						Note.objects.create(
+							contents=u"%s 고객사에서 제거됨."%slug,
+							writer=request.user,
+							content_object=ip
+						)
+						return HttpResponse(u'1')
+			else:
+				return HttpResponse('addCustomerIP: Other methods is denied.')
+			#end if
+		#end else
+	#end if
 	else:
 		return HttpResponse('addCustomerIP: Not ajax is denied.')
 		
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 		
-def listing(request, slug, kind, page=1):
-	customer = Customer.objects.get(name=slug)
-	contact_list = getattr(customer, kind).all()
-	paginator = Paginator(contact_list, 5) # Show 25 contacts per page
+def listing(request, slug, kind, page):
+	customer=Customer.objects.get(name=slug)
+	contact_list=getattr(customer, kind).all()
+	htmlPage="listNext.html"
 	
+	# import ipdb;ipdb.set_trace()
+	
+	
+	if 'dsc' in request.GET and request.GET['dsc']:
+		if 'dsc' in request.GET:
+			contact_list=contact_list.order_by("-"+request.GET['col'])
+		else:
+			contact_list=contact_list.order_by(request.GET['col'])
+		
+	
+	paginator = Paginator(contact_list, 5) # Show 5 contacts per page
+	
+	if 'last' in request.GET and request.GET['last'] == "last":
+		page = page or paginator.num_pages
+		htmlPage = "listPrevious.html"
+		print "in", page
+	
+	# import ipdb;ipdb.set_trace()
 	try:
 		contacts = paginator.page(page)
 	except PageNotAnInteger:
@@ -541,9 +581,65 @@ def listing(request, slug, kind, page=1):
 	except EmptyPage:
 		# If page is out of range (e.g. 9999), deliver last page of results.
 		contacts = paginator.page(paginator.num_pages)
-
+		
 	variables = RequestContext(request, {
 		'contacts':contacts,
 	})
 		
-	return render_to_response('list.html', variables)
+	return render_to_response(htmlPage, variables)
+	
+def actionCustomerDomains(request, slug, pk):
+	if request.is_ajax():
+		supportREST(request)
+		try:
+			customer = Customer.objects.get(name=slug)
+		except ObjectDoesNotExist:
+			return HttpResponse(u'등록되지 않은 고객.', status=500)
+		else:
+			if request.method == "POST":
+				form = CustomerRegistrationForm(request.POST)
+				
+				if "domains" not in form.errors:
+					domain, created = Domain.objects.get_or_create(url=request.POST['domains'])
+					
+					domainsNote = request.POST['domainsNote']
+					
+					if domainsNote == '':
+						domainsNote = u"%s 고객사에서 추가함"%slug
+						
+					Note.objects.create(
+						contents=domainsNote,
+						writer=request.user,
+						content_object=domain,
+					)
+					customer.domains.add(domain)
+					
+					return HttpResponse(simplejson.dumps({'id':domain.pk}), content_type="application/json")
+				else:
+					return HttpResponse(status=500)
+			#end if request.method == "POST":
+			elif request.method == "DELETE":
+				try:
+					domain = Domain.objects.get(pk=pk)
+				except ObjectDoesNotExist:
+					return HttpResponse(u'등록되지 않은 URL.', status=500)
+				else:
+					try:
+						customer.domains.remove(domain)
+					except:
+						printException(sys.exc_info())
+						return HttpResponse(u'remove() 실패.', status=500)
+					else:
+						Note.objects.create(
+							contents=u"%s 고객사에서 삭제됨."%slug,
+							writer=request.user,
+							content_object=domain,
+						)
+						
+						return HttpResponse(status=204)
+			else:
+				return HttpResponse(u'0', status=500)
+		#end else
+	#end if request.is_ajax():
+	else:
+		return HttpResponse(u"Not ajax is denied", status=500)

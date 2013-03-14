@@ -70,11 +70,9 @@ class Note(models.Model):
 	content_type = models.ForeignKey(ContentType)
 	object_id = models.PositiveIntegerField()
 	content_object = generic.GenericForeignKey('content_type', 'object_id')
-	
-	"""
+
 	class Meta:
-		ordering = ['date'] # date를 기준으로 정렬
-	"""
+		ordering = ['pk'] # date를 기준으로 정렬
 	
 	def __unicode__(self):
 		#return {u'name':u'%s'%self.writer.get_profile().name, u'contents':u'%s'%self.contents, u'date':u'%s'%self.date}
@@ -84,7 +82,12 @@ class Note(models.Model):
 		# import ipdb;ipdb.set_trace()
 		#return {u'name':u'%s'%self.writer.get_profile().name, u'contents':u'%s'%self.contents, u'date':u'%s'%self.date.strftime("%Y-%m-%d %I:%M:%S %p")}
 		return {u'id':self.pk, u'name':self.writer.get_profile().name, u'contents':self.contents, u'date':self.date.isoformat()}
-	
+		
+	def span(self):
+		# import ipdb;ipdb.set_trace()
+		return u'<span class="time">%s</span><span class="contents"><strong>%s</strong></span><span class="name">[%s]</span><span class="button"><button class="btn btn-mini modify" type="button" onclick="ModifyCustomerNote.call(this);">수정</button><button class="btn btn-mini delete" type="button" onclick="deleteCustomerNote.call(this);">삭제</button></span>'%(self.date.isoformat(), self.contents, self.writer.get_profile().name)
+		# return u'한글'+self.contents
+		
 class IPaddr(models.Model):
 	notes = generic.GenericRelation(Note, null=True)
 	addr = models.GenericIPAddressField(unique=True,)
@@ -97,7 +100,7 @@ class IPaddr(models.Model):
 		return "addr: %s, country: %s, len(notes): %d"%(self.addr, self.country, self.notes.all().count())
 		
 	def span(self):
-		return '<span class="ipaddr">%s</span> - <span class="note">%s</span>'%(self.addr, self.notes.all()[0].contents)
+		return u'<span class="ipaddr">%s</span> - <span class="note">%s</span><span class="button"> <button class="btn btn-mini delete" type="button" onclick="deleteCustomerIPaddrs.call(this);">삭제</button></span>'%(self.addr, self.notes.all()[0].contents)
 	
 class PersonInCharge(models.Model):
 	name = models.CharField(max_length=50,)
@@ -120,7 +123,7 @@ class Domain(models.Model):
 		return "url: %s, len(notes): %d"%(self.url, self.notes.all().count())
 		
 	def span(self):
-		return '<span class="domain">%s</span>'%(self.url)
+		return u'<span class="domain">%s</span> <button class="btn btn-mini delete" type="button" onclick="deleteCustomerDomains.call(this);">삭제</button>'%(self.url)
 	
 class Equipment(models.Model):
 	types =(

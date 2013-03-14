@@ -3,6 +3,11 @@
 import urllib2
 import simplejson
 import iptools # http://python-iptools.readthedocs.org/en/latest/
+import sys
+
+def printException(exc):
+	for i in exc:
+		print i
 
 def GeoIP(s):
 	"""
@@ -42,3 +47,28 @@ def ipValidation(t):
 			return iptools.IpRange(t)
 			
 	return False
+	
+def supportREST(request):
+
+	method = request.method
+
+	if method == 'PUT' or method == 'DELETE':
+
+		if hasattr(request, '_post'):
+			del request._post
+			del request._files
+
+		try:
+			request.method = 'POST'
+			request._load_post_and_files()
+			request.method = method
+
+		except AttributeError:
+			request.META['REQUEST_METHOD'] = 'POST'
+			request._load_post_and_files()
+			request.META['REQUEST_METHOD'] = method
+
+		request.PUT = request.POST
+		request.DELETE = request.POST
+
+	return request
