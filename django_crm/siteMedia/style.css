@@ -49,3 +49,11 @@ span.contents{
 div{
 	word-break: break-all;
 }
+
+ul.form{
+    margin: 0px;
+}
+
+li > input, textarea, select{
+    width: 100%;
+}

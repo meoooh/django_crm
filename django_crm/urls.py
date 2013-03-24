@@ -6,6 +6,7 @@ from crm.views import *
 # from django.contrib import admin
 # admin.autodiscover()
 
+
 siteMedia = os.path.join(
 		os.path.dirname(__file__), 'siteMedia'
 		)
@@ -41,4 +42,5 @@ urlpatterns = patterns('',
 	url(r'^customer/(?P<slug>[^/]+)/IPaddrs/((?P<pk>[\d]+)?/)?$', actionCustomerIPaddrs, name="addCustomerIPaddrs"),
 	url(r'^list/(?P<slug>[^/]+)/((?P<kind>[^/]+)?/)?(?P<page>[^/]+)?$', listing, name="listing"),
 	url(r'^customer/(?P<slug>[^/]+)/Domains/(?P<pk>[\d]+)?$', actionCustomerDomains, name="actionCustomerDomains"),
+	url(r'^customer/(?P<slug>[^/]+)/Equipments/(?P<pk>[\d]+)?$', actionCustomerEquipments, name="actionCustomerEquipments"),
 )

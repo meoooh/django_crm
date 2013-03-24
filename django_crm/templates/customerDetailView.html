@@ -1,196 +1,164 @@
 <div>
-	<div>
-		<h1>{{ customerDetail.name }}</h1><hr>
-	</div>
-	<div>
-		<table class="table table-bordered" style="width: 100%;">
-			<tr>
-				<th>기본 정보</th>
-			</tr>
-			<tr>
-				<th>서비스번호</th>
-				<td>{{ customerDetail.serviceNumber }}</td>
-				<th>서비스명</th>
-				<td>{{ customerDetail.serviceName }}</td>
-				<th>상세서비스</th>
-				<td>{{ customerDetail.detailedServiceName }}</td>
-			</tr>
-			<tr>
-				<th>개통일</th>
-				<td><span class="time">{{ customerDetail.date|date:"c" }}</span></td>
-				<th>위치</th>
-				<td>{{ customerDetail.position }}</td>
-				<th>고객폴더</th>
-				<td>{{ customerDetail.dataFolder }}</td>
-			</tr>
-			<tr>
-				<th>작업자</th>
-				<td>{% for i in customerDetail.workers.all %}{{ i.userprofile.name }}{% endfor %}</td>
-				<th>담당영업</th>
-				<td>{% for i in customerDetail.salespersons.all %}{{ i.userprofile.name }}{% endfor %}</td>
-				<th>비고</th>
-				<td>aa</td>
-			</tr>
-		</table>
-		<table style="width: 100%;">
-			<tr>
-				<td>
-					<table class="table table-bordered" style="width: 100%;">
-						<tr>
-							<th>담당자(정)</th>
-						</tr>
-						{% if customerDetail.personInCharges.all.0.name %}
-							<tr>
-								<th>이름</th><td>{{ customerDetail.personInCharges.all.0.name }}</td>
-							</tr>
-							<tr>
-								<th>유선전화</th><td>{{ customerDetail.personInCharges.all.0.telephone1 }}</td>
-							</tr>
-							<tr>
-								<th>휴대전화</th><td>{{ customerDetail.personInCharges.all.0.mobile1 }}</td>
-							</tr>
-							<tr>
-								<th>전자우편</th><td>{{ customerDetail.personInCharges.all.0.email1 }}</td>
-							</tr>
-							<tr>
-								<th>비고</th><td>{{ customerDetail.personInCharges.all.0.notes.all }}</td>
-							</tr>
-						{% else %}
-							<tr>
-								<td>담당자를 추가해 주세요.</td>
-							</tr>
-						{% endif %}
-					</table>
-				</td>
-				<td>
-					<table class="table table-bordered" style="width: 100%;">
-						<tr>
-							<th>담당자(부)</th>
-						</tr>
-						{% if customerDetail.personInCharges.all.1.name %}
-							<tr>
-								<th>이름</th><td>{{ customerDetail.personInCharges.all.1.name }}</td>
-							</tr>
-							<tr>
-								<th>유선전화</th><td>{{ customerDetail.personInCharges.all.1.telephone1 }}</td>
-							</tr>
-							<tr>
-								<th>휴대전화</th><td>{{ customerDetail.personInCharges.all.1.mobile1 }}</td>
-							</tr>
-							<tr>
-								<th>전자우편</th><td>{{ customerDetail.personInCharges.all.1.email1 }}</td>
-							</tr>
-							<tr>
-								<th>비고</th><td>{{ customerDetail.personInCharges.all.1.notes.all }}</td>
-							</tr>
-						{% else %}
-							<tr>
-								<td>담당자를 추가해 주세요.</td>
-							</tr>
-						{% endif %}
-					</table>
-				</td>
-			</tr>
-		</table>
-		<table id="equipmentList" class="table table-bordered" style="width: 100%;">
-			<tr>
-				<th>장비 목록</th>
-			</tr>
-			<tr class="info">
-				<td>종류</td><td>주소</td><td>비고</td>
-			</tr>
-				{% for i in customerDetail.equipments.all %}
-					<tr>
-						<td>{{ i.type }}</td><td>{{ i.ipaddr.addr }}</td><td> {{ i.ipaddr.notes.all.0.contents }}</td>
-					</tr>
-				{% endfor %}
-			<tr>
-				<td colspan="3" style="text-align: center;"><button class="equipmentAdd">추가</button></td>
-			</tr>
-		</table>
-		<div class="row">
-			<div class="span5">
-				<div id="domainList">
-					<div class="customerDetailViewBox">
-						<div class="customerDetailViewTitle">
-							도메인 목록
-						</div>
-						<div class="customerDetailViewList">
-							<ul class="customerDetailViewList unstyled"></ul>
-						</div>
-						<div class="more" data-kind="domains">
-							<a>더보기</a>
-						</div>
-						<div class="addCustomerDomains">
-							<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
-								<input type="text" name="domains" placeholder="URL" style="width: 135px;">
-								<input type="text" name="domainsNote" placeholder="메모" style="width: 201px;">	
-								<button class="btn btn-mini" type="submit">추가</button>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="span5">
-				<div id="ipaddrList">
-					<div class="customerDetailViewBox">
-						<div class="customerDetailViewTitle">
-							IP 목록
-						</div>
-						<div class="customerDetailViewList">
-							<ul class="customerDetailViewList unstyled"></ul>
-						</div>
-						<div class="more" data-kind="ipaddrs">
-							<a>더보기</a>
-						</div>
-						<div class="addCustomerIPaddrs">
-							<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
-								<input type="text" name="ip" placeholder="IP주소" style="width: 135px;">
-								<input type="text" name="note" placeholder="메모" style="width: 201px;">	
-								<button class="btn btn-mini" type="submit">추가</button>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="note">
-			<div class="customerDetailViewBox">
-				<div class="customerDetailViewTitle">
-					이력사항
-				</div>
-				<div class="more" data-kind="notes" data-col="pk" data-start="last">
-					<a>더보기</a>
-				</div>
-				<div class="customerDetailViewList">
-					<ul class="customerDetailViewList unstyled"></ul>
-				</div>
-				<div class="addCustomerNotes">
-					<form method="post" style="margin-bottom: 0" action="/" class="form-inline">
-						<textarea name="notes" placeholder="내용" style="width:714px; height:35px;"></textarea>
-						<button class="btn btn-mini" type="submit">추가</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div>
+        <h1>{{ customerDetail.name }}</h1><hr>
+    </div>
+    <div>
+        <table class="table table-bordered" style="width: 100%;">
+            <tr>
+                <th>기본 정보</th>
+            </tr>
+            <tr>
+                <th>서비스번호</th>
+                <td>{{ customerDetail.serviceNumber }}</td>
+                <th>서비스명</th>
+                <td>{{ customerDetail.serviceName }}</td>
+                <th>상세서비스</th>
+                <td>{{ customerDetail.detailedServiceName }}</td>
+            </tr>
+            <tr>
+                <th>개통일</th>
+                <td><span class="time">{{ customerDetail.date|date:"c" }}</span></td>
+                <th>위치</th>
+                <td>{{ customerDetail.position }}</td>
+                <th>고객폴더</th>
+                <td>{{ customerDetail.dataFolder }}</td>
+            </tr>
+            <tr>
+                <th>작업자</th>
+                <td>{% for i in customerDetail.workers.all %}{{ i.userprofile.name }}{% endfor %}</td>
+                <th>담당영업</th>
+                <td>{% for i in customerDetail.salespersons.all %}{{ i.userprofile.name }}{% endfor %}</td>
+                <th>비고</th>
+                <td>aa</td>
+            </tr>
+        </table>
+        <div class="row">
+            <div class="span4">
+                <div id="personInCharge">
+                    <div class="customerDetailViewBox">
+                        <div class="customerDetailViewTitle">
+                            담당자 목록
+                        </div>
+                        <div class="customerDetailViewList">
+                            <ul class="customerDetailViewList unstyled"></ul>
+                        </div>
+                        <div class="more" data-kind="personInCharges">
+                            <a>더보기</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span2">
+                <div id="equipment">
+                    <div class="customerDetailViewBox">
+                        <div class="customerDetailViewTitle">
+                            장비목록
+                        </div>
+                        <div class="customerDetailViewList">
+                            <ul class="customerDetailViewList unstyled"></ul>
+                        </div>
+                        <div class="more" data-kind="equipments">
+                            <a>더보기</a>
+                        </div>
+                        <div class="addCustomerEquipments">
+                            <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
+                                <ul class="unstyled form">
+                                <li>{{ form.equipmentsType }}</li>
+                                <li><input type="text" name="equipmentsIpaddr" placeholder="IP"></li>
+                                <li><input type="text" name="equipmentsNote" placeholder="메모"></li>
+                                <li><button class="btn btn-mini" type="submit">추가</button></li>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span2">
+                <div id="domainList">
+                    <div class="customerDetailViewBox">
+                        <div class="customerDetailViewTitle">
+                            도메인 목록
+                        </div>
+                        <div class="customerDetailViewList">
+                            <ul class="customerDetailViewList unstyled"></ul>
+                        </div>
+                        <div class="more" data-kind="domains">
+                            <a>더보기</a>
+                        </div>
+                        <div class="addCustomerDomains">
+                            <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
+                                <ul class="unstyled form">
+                                <li><input type="text" name="domains" placeholder="URL"></li>
+                                <li><input type="text" name="domainsNote" placeholder="메모">  </li>  
+                                <li><button class="btn btn-mini" type="submit">추가</button></li>
+                                </ul>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span2">
+                <div id="ipaddrList">
+                    <div class="customerDetailViewBox">
+                        <div class="customerDetailViewTitle">
+                            IP 목록
+                        </div>
+                        <div class="customerDetailViewList">
+                            <ul class="customerDetailViewList unstyled"></ul>
+                        </div>
+                        <div class="more" data-kind="ipaddrs">
+                            <a>더보기</a>
+                        </div>
+                        <div class="addCustomerIPaddrs">
+                            <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
+                                <ul class="unstyled form">
+                                <li><input type="text" name="ip" placeholder="IP주소"></li>
+                                <li><input type="text" name="note" placeholder="메모"></li>
+                                <li><button class="btn btn-mini" type="submit">추가</button></li>
+                                </ul>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="note">
+            <div class="customerDetailViewBox">
+                <div class="customerDetailViewTitle">
+                    이력사항
+                </div>
+                <div class="more" data-kind="notes" data-col="pk" data-start="last">
+                    <a>더보기</a>
+                </div>
+                <div class="customerDetailViewList">
+                    <ul class="customerDetailViewList unstyled"></ul>
+                </div>
+                <div class="addCustomerNotes">
+                    <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
+                        <textarea name="notes" placeholder="내용" style="width:714px; height:35px;"></textarea>
+                        <button class="btn btn-mini" type="submit">추가</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3 id="myModalLabel">오류</h3>
-	</div>
-	<div class="modal-body">
-		<p>IP주소가 잘못되었습니다.</p>
-	</div>
-	<div class="modal-footer">
-		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-	</div>
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">오류</h3>
+    </div>
+    <div class="modal-body">
+        <p>IP주소가 잘못되었습니다.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
 </div>
 <script type="text/javascript">
-	var customerNoteURL = "{% url addCustomerNotes customerDetail.name %}";
-	var customerIPaddrURL = "{% url addCustomerIPaddrs customerDetail.name %}";
-	var listViewURL = "{% url listing customerDetail.name %}";
-	var customerDomainURL = "{% url actionCustomerDomains customerDetail.name %}";
+    var customerNoteURL = "{% url addCustomerNotes customerDetail.name %}";
+    var customerIPaddrURL = "{% url addCustomerIPaddrs customerDetail.name %}";
+    var listViewURL = "{% url listing customerDetail.name %}";
+    var customerDomainURL = "{% url actionCustomerDomains customerDetail.name %}";
+    var customerEquipmentURL = "{% url actionCustomerEquipments customerDetail.name %}";
 </script>
 <script type="text/javascript" src="/siteMedia/customerDetailView.js?a=11"></script>

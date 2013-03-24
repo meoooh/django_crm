@@ -213,7 +213,7 @@ class CustomerRegistrationForm(forms.Form):
 			label='',
 			choices=types,
 			initial ='ing',
-			widget=forms.Select(attrs={'style': 'width:85px'}),
+			widget=forms.Select(),
 			required=False,
 		)
 	

@@ -26,18 +26,18 @@ function init(){
 		
 		$(more).click(function(){
 			if($(more).attr('data-start')){
-				listView.call(more, $(more).parent().find("li:first").attr('data-next'));
+				listView.call(more, $(more).parent().find("ul.customerDetailViewList > li:first").attr('data-next'));
 			}
 			else{
-				listView.call(more, $(more).parent().find("li:last").attr('data-next'));
+				listView.call(more, $(more).parent().find("ul.customerDetailViewList > li:last").attr('data-next'));
 			}
 		});
-		$(more).parent().find("ul").dblclick(function(){
+		$(more).parent().find("ul.customerDetailViewList").dblclick(function(){
 			if($(more).attr('data-start')){
-				listView.call(more, $(more).parent().find("li:first").attr('data-next'));
+				listView.call(more, $(more).parent().find("ul.customerDetailViewList > li:first").attr('data-next'));
 			}
 			else{
-				listView.call(more, $(more).parent().find("li:last").attr('data-next'));
+				listView.call(more, $(more).parent().find("ul.customerDetailViewList > li:last").attr('data-next'));
 			}
 		});
 		listView.call(more);
@@ -48,9 +48,46 @@ function init(){
 		return false;
 	});
 	
-	
+	$("div.addCustomerEquipments form").submit(function(){
+		saveCustomerEquipments.call(this);
+		return false;
+	});
 	
 	isoFormat2localeString();
+}
+
+function deleteCustomerEquipments(){
+    var _button = this;
+    var _url = customerEquipmentURL;
+    var _li = $(_button).parent().parent().parent();
+    
+    if(confirm('삭제하시겠습니까?')){
+        $.ajax({
+            url: _url+_li.attr('data-id'),
+            type: "DELETE",
+            statusCode:{
+                204:function(){
+                    _li.remove();
+                },
+            },
+        });
+    }
+}
+
+function saveCustomerEquipments(){
+    var _form = this;
+    var _url = customerEquipmentURL;
+    var _div = $(_form).parent().parent();
+    var _ul = _div.find("ul.customerDetailViewList");
+    
+    $.ajax({
+        url: _url,
+        type: "POST",
+        data: $(_form).serialize(),
+        success: function(result){
+            _ul.append('<li class="customerDetailViewList" data-id="'+result['pk']+'" data-next="'+_ul.find('li:last').attr('data-next')+'"><ul class="unstyled"><li><span class="type">'+$(_form).serializeArray()[0].value+'</span></li><li><span class="ipaddr">'+$(_form).serializeArray()[1].value+'</span></li><li><span class="button"><button class="btn btn-mini delete" type="button" onclick="alert(\'not yet\');">삭제</button></span></li></ul></li>');
+        },
+    });
 }
 
 function deleteCustomerDomains(){
@@ -73,8 +110,8 @@ function deleteCustomerDomains(){
 function saveCustomerDomains(){
 	var _form=$(this);
 	var _div=_form.parent().parent();
-	var _ul=_div.find("ul");
-	var _li=_ul.find("li:last");
+	var _ul=_div.find("ul.customerDetailViewList");
+	var _li=_ul.find("ul.customerDetailViewList > li:last");
 	
 	$.ajax({
 		url: customerDomainURL+"?ajax",
@@ -89,7 +126,7 @@ function saveCustomerDomains(){
 		},
 		statusCode:{
 			500: function(){
-				$('#myModal').find(".modal-body p").html("IP가 잘못되었습니다.");
+				$('#myModal').find(".modal-body p").html("URL이 잘못되었습니다.");
 				$('#myModal').modal('show');
 				$('#myModal').on('hide', function(){
 					_form.find("input:first").focus();
@@ -115,10 +152,12 @@ function deleteCustomerIPaddrs(){
 
 function listView(page){
 	var more = $(this);
-	more.append("<img src='/siteMedia/img/ajax-loader.gif' class='loading'>");
+    if(!more.find(".loading").length){ // 이미 삽입되어있나 검사
+        more.append("<img src='/siteMedia/img/ajax-loader.gif' class='loading'>");
+    }
 	var _url = listViewURL;
 	var kind = more.attr('data-kind');
-	var _ul=more.parent().find("ul");
+	var _ul=more.parent().find("ul.customerDetailViewList");
 	var _col="?col=";
 	col=more.attr('data-col');
 	dsc=more.attr('data-dsc');
@@ -145,12 +184,12 @@ function listView(page){
 				isoFormat2localeString(_ul);
 				
 				if($(more).attr('data-start')=="last"){
-					if(more.parent().find("li:first").attr('data-next')=="none"){
+					if(more.parent().find("ul.customerDetailViewList > li:first").attr('data-next')=="none"){
 						more.hide();
 					}
 				}
 				else{
-					if(more.parent().find("li:last").attr('data-next')=="none"){
+					if(more.parent().find("ul.customerDetailViewList > li:last").attr('data-next')=="none"){
 						more.hide();
 					}
 				}
@@ -160,7 +199,7 @@ function listView(page){
 	}
 	else{
 		_ul.load(_url, $.param({"col":col, "dsc":dsc, "last":last}), function(){
-			if(more.parent().find("li:last").attr('data-next')=="none"){
+			if(more.parent().find("ul.customerDetailViewList > li:last").attr('data-next')=="none"){
 				more.hide();
 			}
 			isoFormat2localeString(_ul);
