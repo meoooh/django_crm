@@ -2,25 +2,7 @@
 {% block title %}처음{% endblock %}
 {% block content %}
 <div class="row">
-	<div class="span2">
-		<div id="pic"><img src="http://i1.daumcdn.net/cfs.tistory/static/admin/editor/renew/sicon_org.gif"
-		class="img-polaroid"></div>
-		<div id="username" style="padding-bottom:20px; padding-top:20px;">
-			<strong>{{ user.get_profile.name }}({{ user.username }})</strong>님, 입장.
-		</div>
-		<ul class="nav nav-pills nav-stacked">
-			<li class="active"><a tabindex="-1" href="{% url crm.views.mainPage %}">뉴스피드</a></li>
-			<li><a tabindex="-1" href="{% url customer %}">고객관리</a></li>
-			<li><a tabindex="-1" href="#">침입탐지대응</a></li>
-			<div class="btn-group">
-			<button class="btn" onclick="location.href='{% url todayWork %}'">근무일지</button>
-			<button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-			<ul class="dropdown-menu">
-				<li><a href="#">Action</a></li>
-			</ul>
-		</div>
-		</ul>
-	</div>
+	{% include "menu.html" %}
 	<div class="span10">
 		<h1>뉴스피드</h1><hr>
 		{{ user.get_profile.name }}, 로그인1<p> {{ request.user.username }}

@@ -662,7 +662,7 @@ def actionCustomerEquipments(request, slug, pk):
         try:
             customer = Customer.objects.get(name=slug)
         except ObjectDoesNotExist:
-            return HttpRespons(u'등록되지 않은 고객.', status=500)
+            return HttpResponse(u'등록되지 않은 고객.', status=500)
         else:
             if request.method == "POST":
                 form = CustomerRegistrationForm(request.POST)
@@ -714,3 +714,49 @@ def actionCustomerEquipments(request, slug, pk):
     #end if request.is_ajax():
     else:
         return HttpResponse(u"Not ajax is denied", status=500)
+        
+def actionCustomerPersonInCharges(request, slug, pk):
+    if request.is_ajax():
+        supportREST(request)
+        try:
+            customer = Customer.objects.get(name=slug)
+        except:
+            return HttpResponse(u'등록되지 않은 고객.', status=500)
+        else:
+            if request.method == "POST":
+                form = CustomerRegistrationForm(request.POST)
+                
+                if "personInChargesEmail" not in form.errors:
+                    try:
+                        personInCharge= PersonInCharge.objects.create(
+                            name=request.POST['personInChargesName'],
+                            telephone1=request.POST['personInChargesTel'],
+                            mobile1=request.POST['personInChargesMobile'],
+                            email1=request.POST['personInChargesEmail'],
+                        )
+                    except:
+                        printException(sys.exc_info())
+                        return HttpResponse(sys.exc_info(), status=500)
+                    else:
+                        customer.personInCharges.add(personInCharge)
+                        
+                        return HttpResponse(simplejson.dumps({"id":personInCharge.pk}), content_type="application/json")
+                else:
+                    print form.errors
+                    return HttpResponse("담당자 전자우편 오류", status=500)
+            #end if request.method == "POST":
+            elif request.method == "DELETE":
+                try:
+                    personInCharge = PersonInCharge.objects.get(pk=pk)
+                except:
+                    printException(sys.exc_info())
+                    return HttpResponse(u"등록 되지 않은 담당자", status=500)
+                else:
+                    customer.personInCharges.remove(personInCharge)
+                    
+                    return HttpResponse(status=204)
+            else:
+                return HttpResponse(u"Method 오류", status=500)
+    #end if request.is_ajax():
+    else:
+        return HttpResponse(u"3", status=500)

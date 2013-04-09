@@ -22,4 +22,8 @@ function init(){
 	isoFormat2localeString();
 }
 
+function hilightingMenu(){
+    $(this).attr('class','active');
+}
+
 $(document).ready(init);

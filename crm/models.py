@@ -116,7 +116,7 @@ class PersonInCharge(models.Model):
         return "name: %s, telephone1: %s, telephone2: %s, mobile1: %s, mobile2: %s, email1: %s, email2: %s, len(notes): %d"%(self.name, self.telephone1, self.telephone2, self.mobile1, self.mobile2, self.email1, self.email2, self.notes.all().count())
         
     def span(self):
-        return u'<ul class="unstyled"><li><span class="name">%s</span></li><li><span class="tel">%s</span></li><li><span class="mobile">%s</span></li><li><span class="email">%s</span></li></ul>'%(self.name, self.telephone1, self.mobile1, self.email1)
+        return u'<ul class="unstyled"><li><span class="name">%s</span><span class="button"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerPersonInCharges.call(this);">x</button></span></li><li><span class="tel">%s</span></li><li><span class="mobile">%s</span></li><li><span class="email">%s</span></li></ul>'%(self.name, self.telephone1, self.mobile1, self.email1)
 
     
 class Domain(models.Model):

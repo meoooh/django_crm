@@ -43,4 +43,5 @@ urlpatterns = patterns('',
 	url(r'^list/(?P<slug>[^/]+)/((?P<kind>[^/]+)?/)?(?P<page>[^/]+)?$', listing, name="listing"),
 	url(r'^customer/(?P<slug>[^/]+)/Domains/(?P<pk>[\d]+)?$', actionCustomerDomains, name="actionCustomerDomains"),
 	url(r'^customer/(?P<slug>[^/]+)/Equipments/(?P<pk>[\d]+)?$', actionCustomerEquipments, name="actionCustomerEquipments"),
+    url(r'^customer/(?P<slug>[^/]+)/PersonInCharges/(?P<pk>[\d]+)?$', actionCustomerPersonInCharges, name="actionCustomerPersonInCharges"),
 )

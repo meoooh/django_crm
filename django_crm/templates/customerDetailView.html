@@ -45,6 +45,17 @@
                         <div class="more" data-kind="personInCharges">
                             <a>더보기</a>
                         </div>
+                        <div class="addCustomerPersonInCharges">
+                            <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
+                                <ul class="unstyled form">
+                                    <li>{{ form.personInChargesName }}</li>
+                                    <li>{{ form.personInChargesTel }}</li>
+                                    <li>{{ form.personInChargesMobile }}</li>
+                                    <li>{{ form.personInChargesEmail }}</li>
+                                    <li><button class="btn btn-mini" type="submit">추가</button></li>
+                                </ul>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,7 +63,7 @@
                 <div id="equipment">
                     <div class="customerDetailViewBox">
                         <div class="customerDetailViewTitle">
-                            장비목록
+                            장비 목록
                         </div>
                         <div class="customerDetailViewList">
                             <ul class="customerDetailViewList unstyled"></ul>
@@ -63,10 +74,11 @@
                         <div class="addCustomerEquipments">
                             <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
                                 <ul class="unstyled form">
-                                <li>{{ form.equipmentsType }}</li>
-                                <li><input type="text" name="equipmentsIpaddr" placeholder="IP"></li>
-                                <li><input type="text" name="equipmentsNote" placeholder="메모"></li>
-                                <li><button class="btn btn-mini" type="submit">추가</button></li>
+                                    <li>{{ form.equipmentsType }}</li>
+                                    <li><input type="text" name="equipmentsIpaddr" placeholder="IP"></li>
+                                    <li><input type="text" name="equipmentsNote" placeholder="메모"></li>
+                                    <li><button class="btn btn-mini" type="submit">추가</button></li>
+                                </ul>
                             </form>
                         </div>
                     </div>
@@ -87,9 +99,9 @@
                         <div class="addCustomerDomains">
                             <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
                                 <ul class="unstyled form">
-                                <li><input type="text" name="domains" placeholder="URL"></li>
-                                <li><input type="text" name="domainsNote" placeholder="메모">  </li>  
-                                <li><button class="btn btn-mini" type="submit">추가</button></li>
+                                    <li><input type="text" name="domains" placeholder="URL"></li>
+                                    <li><input type="text" name="domainsNote" placeholder="메모">  </li>  
+                                    <li><button class="btn btn-mini" type="submit">추가</button></li>
                                 </ul>
                             </form>
                         </div>
@@ -111,9 +123,9 @@
                         <div class="addCustomerIPaddrs">
                             <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
                                 <ul class="unstyled form">
-                                <li><input type="text" name="ip" placeholder="IP주소"></li>
-                                <li><input type="text" name="note" placeholder="메모"></li>
-                                <li><button class="btn btn-mini" type="submit">추가</button></li>
+                                    <li><input type="text" name="ip" placeholder="IP주소"></li>
+                                    <li><input type="text" name="note" placeholder="메모"></li>
+                                    <li><button class="btn btn-mini" type="submit">추가</button></li>
                                 </ul>
                             </form>
                         </div>
@@ -160,5 +172,6 @@
     var listViewURL = "{% url listing customerDetail.name %}";
     var customerDomainURL = "{% url actionCustomerDomains customerDetail.name %}";
     var customerEquipmentURL = "{% url actionCustomerEquipments customerDetail.name %}";
+    var customerPersonInChargeURL = "{% url actionCustomerPersonInCharges customerDetail.name %}";
 </script>
-<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=11"></script>
+<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=12"></script>
