@@ -760,3 +760,17 @@ def actionCustomerPersonInCharges(request, slug, pk):
     #end if request.is_ajax():
     else:
         return HttpResponse(u"3", status=500)
+        
+def customerDetail(request, slug):
+    if request.method == "DELETE":
+        try:
+            Customer.objects.get(name=slug).delete()
+        except:
+            return HttpResponse(status=500)
+        else:
+            return HttpResponse(
+                simplejson.dumps({"redirect":reverse('customer')}),
+                content_type="application/json",
+            )
+    else:
+        return customerDetailView.as_view()(request, slug=slug)

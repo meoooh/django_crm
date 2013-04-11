@@ -61,6 +61,20 @@ function init(){
     isoFormat2localeString();
 }
 
+function deleteCustomer(name){
+    if(confirm('삭제하시겠습니까?')){
+        $.ajax({
+            type: "DELETE",
+            url: $(location).attr('href'),
+            statusCode:{
+                200:function(result){
+                    $(location).attr('href', result['redirect']);
+                },
+            },
+        });
+    }
+}
+ 
 function deleteCustomerPersonInCharges(){
     var _button = this;
     var _li = $(_button).parent().parent().parent().parent();
@@ -264,7 +278,7 @@ function saveCustomerIPaddrs(){
     
     $.post(customerIPaddrURL+"?ajax", _form.serialize(), function(result){
         if(result != "0"){
-            $.each(result, function(){
+            $.each(result, function(){ //each... 반환값이 리스트 형태로 있을때 리스트를 순환한다.
                 _div.find("ul.customerDetailViewList").append('<li class="customerDetailViewList" data-id="'+this.pk+'" data-next="'+_li.attr('data-next')+'"><span class="ipaddr">'+this.addr+'</span><span class="button"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerIPaddrs.call(this);;">x</button></span></li>');
             });
             _form[0].reset();

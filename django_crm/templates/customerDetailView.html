@@ -1,6 +1,6 @@
 <div>
     <div>
-        <h1>{{ customerDetail.name }}</h1><hr>
+        <h1>{{ customerDetail.name }}<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ customerDetail.name }}');">x</button></h1><hr>
     </div>
     <div>
         <table class="table table-bordered" style="width: 100%;">
@@ -174,4 +174,4 @@
     var customerEquipmentURL = "{% url actionCustomerEquipments customerDetail.name %}";
     var customerPersonInChargeURL = "{% url actionCustomerPersonInCharges customerDetail.name %}";
 </script>
-<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=12"></script>
+<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=13"></script>
