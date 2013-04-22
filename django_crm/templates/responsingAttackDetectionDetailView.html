@@ -1,0 +1,45 @@
+<div>
+    <div>
+        <h1>{{ responsingAttackDetectionDetailView.victimIp.addr}}에 대한 {{ responsingAttackDetectionDetailView.attackerIp.addr }}의 {% for i in responsingAttackDetectionDetailView.kinds %}{% if responsingAttackDetectionDetailView.kind == i.0 %}{{ i.1 }}{% endif %}{% endfor %}공격<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ customerDetail.name }}');">x</button></h1><hr>
+    </div>
+    <div>
+        <table class="table table-bordered" style="width: 100%;">
+            <tr>
+                <th>기본 정보</th>
+            </tr>
+            <tr>
+                <th>공격명</th>
+                <td>{% for i in responsingAttackDetectionDetailView.kinds %}{% if responsingAttackDetectionDetailView.kind == i.0 %}{{ i.1 }}{% endif %}{% endfor %}</td>
+                <th>처리자</th>
+                <td><a href="{% url userDetail user.username %}">{{ responsingAttackDetectionDetailView.user.get_profile.name }}</a></td>
+            </tr>
+            <tr>
+                <th>공격자</th>
+                <td><a href="{% url ipDetail responsingAttackDetectionDetailView.attackerIp.addr %}">{{ responsingAttackDetectionDetailView.attackerIp.addr }}</a></td>
+                <th>희생자</th>
+                <td><a href="{% url ipDetail responsingAttackDetectionDetailView.victimIp.addr %}">{{ responsingAttackDetectionDetailView.victimIp.addr }}</a></td>
+            </tr>
+            <tr>
+                <th>일시</th>
+                <td><span class="time">{{ responsingAttackDetectionDetailView.date|date:"c" }}</span></td>
+                <th>고객사</th>
+                <td><a href="{% url customerDetailView responsingAttackDetectionDetailView.customer.name %}">{{ responsingAttackDetectionDetailView.customer.name }}</a></td>
+            </tr>
+            <tr>
+                <th colspan="4">비고</th>
+            </tr>
+            <tr>
+                <td colspan="4">{{ responsingAttackDetectionDetailView.note }}</td>
+            </tr>
+            <tr>
+                <th colspan="4">통보</th>
+            </tr>
+            <tr>
+                <td colspan="4">{{ responsingAttackDetectionDetailView.emailRecipient }}</td>
+            </tr>
+            <tr>
+                <td colspan="4">{{ responsingAttackDetectionDetailView.smsRecipient }}</td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -7,7 +7,7 @@
 		<ul class="nav nav-pills nav-stacked" id="sideMenu">
 			<li onclick="hilightingMenu.call(this);"><a tabindex="-1" href="{% url crm.views.mainPage %}">뉴스피드</a></li>
 			<li onclick="hilightingMenu.call(this);"><a tabindex="-1" href="{% url customer %}">고객관리</a></li>
-			<li onclick="hilightingMenu.call(this);"><a tabindex="-1" href="#">침입탐지대응</a></li>
+			<li onclick="hilightingMenu.call(this);"><a tabindex="-1" href="{% url responsingAttackDetection %}">침입탐지대응</a></li>
 			<div class="btn-group">
 			<button class="btn" onclick="location.href='{% url todayWork %}'">근무일지</button>
 			<button class="btn dropdown-toggle" data-toggle="dropdown">

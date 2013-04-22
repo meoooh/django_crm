@@ -2,12 +2,15 @@
 
 import urllib2
 import simplejson
-import iptools # http://python-iptools.readthedocs.org/en/latest/
+import iptools  # http://python-iptools.readthedocs.org/en/latest/
 import sys
+from django.http import Http404
+
 
 def printException(exc):
 	for i in exc:
 		print i
+
 
 def GeoIP(s):
 	"""
@@ -23,11 +26,12 @@ def GeoIP(s):
 			if key == "country_name":
 				return value
 		else:
-			raise Http404("GeoIP 오류")
+			raise Http404
 	except Exception, msg:
 		print msg
-		raise Http404(msg)
-		
+		raise Http404
+
+
 def ipValidation(t):
 	if '/' in t:
 		if iptools.validate_cidr(t):
@@ -47,7 +51,8 @@ def ipValidation(t):
 			return iptools.IpRange(t)
 			
 	return False
-	
+
+
 def supportREST(request):
 
 	method = request.method

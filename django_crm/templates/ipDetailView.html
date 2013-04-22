@@ -1,0 +1,106 @@
+<div>
+    <div>
+        <h1>{{ ipDetailView.addr }}<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ userDetailView.name }}');">x</button></h1><hr />
+    </div>
+    <div class="row">
+        <div class="span10">
+            <table class="table table-bordered">
+                <tr>
+                    <td colspan="2">기본정보</td>
+                </tr>
+                <tr>
+                    <td>IP</td>
+                    <th>{{ ipDetailView.addr }}</th>
+                </tr>
+                <tr>
+                    <td>국가</td>
+                    <th class="country"></th>
+                </tr>
+                <tr>
+                    <td>소유</td>
+                    <th>{% for i in ipDetailView.customer_ipaddrs_ipaddr_set.all %}<a href="{% url customerDetailView i.name %}">{{ i.name }}</a>{% endfor %}</th>
+                </tr>
+                <tr>
+                    <td>장비</td>
+                    <th>{% for i in ipDetailView.equipment_set.all %}<a href="{% url customerDetailView i.ipaddr.addr %}">{{ i.type }}</a>{% endfor %}</th>
+                </tr>
+                <tr>
+                    <td colspan="2">이력</td>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        <ul>
+                        {% for i in ipDetailView.notes.all %}
+                            <li><span class="time">{{ i.date|date:"c" }}</span> {{ i.contents }} - <a href="{% url userDetail i.writer.username %}">{{ i.writer.get_profile.name }}</a></li>
+                        {% empty %}
+                            <li>...</li>
+                        {% endfor %}
+                        </ul>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span5">
+            <ul class="unstyled">
+                <li>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td colspan="2">공격한 이력</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <ul>
+                                {% for i in ipDetailView.ResponsingAttackDetection_attackerIp_set.all %}
+                                    <li><a href="{% url responsingAttackDetectionDetail i.slug %}">{{ i.slug }}</a></li>
+                                {% empty %}
+                                    <li>...</li>
+                                {% endfor %}
+                                </ul>
+                            </th>
+                        </tr>
+                    </table>
+                </li>
+            </ul>
+        </div>
+        <div class="span5">
+            <ul class="unstyled">
+                <li>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td colspan="2">공격당한 이력</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <ul>
+                                {% for i in ipDetailView.ResponsingAttackDetection_victimIp_set.all %}
+                                    <li><a href="{% url responsingAttackDetectionDetail i.slug %}">{{ i.slug }}</a></li>
+                                {% empty %}
+                                    <li>...</li>
+                                {% endfor %}
+                                </ul>
+                            </th>
+                        </tr>
+                    </table>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">오류</h3>
+    </div>
+    <div class="modal-body">
+        <p>IP주소가 잘못되었습니다.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+<script type="text/javascript">
+    var getIpAddressCountry = "{% url getIpAddressCountry ipDetailView.addr %}";
+</script>
+<script type="text/javascript" src="/siteMedia/ipDetailView.js?a=1"></script>

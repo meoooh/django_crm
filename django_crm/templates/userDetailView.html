@@ -1,0 +1,112 @@
+<div>
+    <div>
+        <h1>{{ userDetailView.get_profile.name }}({{ userDetailView.username }})<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ userDetailView.name }}');">x</button></h1><hr />
+    </div>
+    <div class="row">
+        <div class="span10">
+            <table class="table table-bordered">
+                <tr>
+                    <td colspan="2">기본정보</td>
+                </tr>
+                <tr>
+                    <td>직급</td>
+                    <th>{{ userDetailView.get_profile.position }}</th>
+                </tr>
+                <tr>
+                    <td>직책</td>
+                    <th>{{ userDetailView.get_profile.function }}</th>
+                </tr>
+                <tr>
+                    <td>소속</td>
+                    <th>{{ userDetailView.get_profile.team }}</th>
+                </tr>
+                <tr>
+                    <td>휴대전화<br />번호</td>
+                    <th>{{ userDetailView.get_profile.mobile }}</th>
+                </tr>
+                <tr>
+                    <td>전자우편</td>
+                    <th>{{ userDetailView.email }}</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span5">
+            <ul class="unstyled">
+                <li>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td colspan="2">관리중인 고객사</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <ul>
+                                {% for i in userDetailView.customer_salespersons_user_set.all %}
+                                    <li><a href="{% url customerDetailView i.name %}">{{ i.name }}</a></li>
+                                {% empty %}
+                                    <li>...</li>
+                                {% endfor %}
+                                </ul>
+                            </th>
+                        </tr>
+                    </table>
+                </li>
+            </ul>
+        </div>
+        <div class="span5">
+            <ul class="unstyled">
+                <li>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td colspan="2">작업내역</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <ul>
+                                {% for i in userDetailView.customer_workers_user_set.all %}
+                                    <li><a href="{% url customerDetailView i.name %}">{{ i.name }}</a></li>
+                                {% empty %}
+                                    <li>...</li>
+                                {% endfor %}
+                                </ul>
+                            </th>
+                        </tr>
+                    </table>
+                </li>
+                <li>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td colspan="2">침입탐지 내역</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <ul>
+                                {% for i in userDetailView.responsingattackdetection_set.all %}
+                                    <li><a href="{% url responsingAttackDetectionDetail i.slug %}">{{ i.slug }}</a></li>
+                                {% empty %}
+                                    <li>...</li>
+                                {% endfor %}
+                                </ul>
+                            </th>
+                        </tr>
+                    </table>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">오류</h3>
+    </div>
+    <div class="modal-body">
+        <p>IP주소가 잘못되었습니다.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    </div>
+</div>
+<script type="text/javascript">
+</script>

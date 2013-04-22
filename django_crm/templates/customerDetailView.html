@@ -1,6 +1,6 @@
 <div>
     <div>
-        <h1>{{ customerDetail.name }}<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ customerDetail.name }}');">x</button></h1><hr>
+        <h1>{{ customerDetail.name }}<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ customerDetail.name }}');">x</button></h1><hr />
     </div>
     <div>
         <table class="table table-bordered" style="width: 100%;">
@@ -25,15 +25,15 @@
             </tr>
             <tr>
                 <th>작업자</th>
-                <td>{% for i in customerDetail.workers.all %}{{ i.userprofile.name }}{% endfor %}</td>
+                <td>{% for i in customerDetail.workers.all %}<a href="{% url userDetail i.username %}">{{ i.userprofile.name }}</a>{% endfor %}</td>
                 <th>담당영업</th>
-                <td>{% for i in customerDetail.salespersons.all %}{{ i.userprofile.name }}{% endfor %}</td>
+                <td>{% for i in customerDetail.salespersons.all %}<a href="{% url userDetail i.username %}">{{ i.userprofile.name }}</a>{% endfor %}</td>
                 <th>비고</th>
                 <td>aa</td>
             </tr>
         </table>
         <div class="row">
-            <div class="span4">
+            <div class="span3">
                 <div id="personInCharge">
                     <div class="customerDetailViewBox">
                         <div class="customerDetailViewTitle">
@@ -84,7 +84,7 @@
                     </div>
                 </div>
             </div>
-            <div class="span2">
+            <div class="span3">
                 <div id="domainList">
                     <div class="customerDetailViewBox">
                         <div class="customerDetailViewTitle">
