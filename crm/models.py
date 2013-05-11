@@ -65,7 +65,7 @@ class WorkDailyRecord(models.Model):
         )
 
 
-class Note(models.Model):
+class History(models.Model):
     contents = models.TextField()
     writer = models.ForeignKey(User, to_field='username')
     date = models.DateTimeField(auto_now_add=True)
@@ -93,18 +93,19 @@ class Note(models.Model):
 
 
 class IPaddr(models.Model):
-    notes = generic.GenericRelation(Note, null=True)
+    history = generic.GenericRelation(History, null=True)
     addr = models.GenericIPAddressField(unique=True,)
     country = models.CharField(max_length=30, null=True)
+    memo = models.CharField(max_length=255, null=True)
 
     class Meta:
         ordering = ['addr']  # 정렬
 
     def __unicode__(self):
-        return "addr: %s, country: %s, len(notes): %d" % (self.addr, self.country, self.notes.all().count())
+        return "addr: %s, country: %s, len(history): %d" % (self.addr, self.country, self.history.all().count())
 
     def span(self):
-        return u'<span class="ipaddr"><a href="%s">%s</a></span><span class="button"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerIPaddrs.call(this);">x</button></span>' % (reverse('ipDetail', args=[self.addr]), self.addr)
+        return u'<span class="ipaddr"><a href="%s">%s</a></span><span class="button"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerIPaddrs.call(this);">x</button></span>' % (reverse('ipDetail', kwargs={'slug': self.addr}), self.addr)
 
     def popup(self):
         return u''
@@ -118,10 +119,10 @@ class PersonInCharge(models.Model):
     mobile2 = models.CharField(null=True, max_length=20)
     email1 = models.EmailField(null=True)
     email2 = models.EmailField(null=True)
-    notes = generic.GenericRelation(Note, null=True)
+    history = generic.GenericRelation(History, null=True)
 
     def __unicode__(self):
-        return "name: %s, telephone1: %s, telephone2: %s, mobile1: %s, mobile2: %s, email1: %s, email2: %s, len(notes): %d" % (self.name, self.telephone1, self.telephone2, self.mobile1, self.mobile2, self.email1, self.email2, self.notes.all().count())
+        return "name: %s, telephone1: %s, telephone2: %s, mobile1: %s, mobile2: %s, email1: %s, email2: %s, len(history): %d" % (self.name, self.telephone1, self.telephone2, self.mobile1, self.mobile2, self.email1, self.email2, self.history.all().count())
 
     def span(self):
         return u'<ul class="unstyled"><li><span class="name">%s</span><span class="button"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerPersonInCharges.call(this);">x</button></span></li><li><span class="tel">%s</span></li><li><span class="mobile">%s</span></li><li><span class="email">%s</span></li></ul>' % (self.name, self.telephone1, self.mobile1, self.email1)
@@ -129,10 +130,11 @@ class PersonInCharge(models.Model):
 
 class Domain(models.Model):
     url = models.URLField(unique=True,)
-    notes = generic.GenericRelation(Note, null=True)
+    history = generic.GenericRelation(History, null=True)
+    memo = models.CharField(max_length=255, null=True)
 
     def __unicode__(self):
-        return "url: %s, len(notes): %d" % (self.url, self.notes.all().count())
+        return "url: %s, len(history): %d" % (self.url, self.history.all().count())
 
     def span(self):
         return u'<span class="domain">%s</span><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerDomains.call(this);">x</button>' % (self.url)
@@ -141,21 +143,29 @@ class Domain(models.Model):
 class Equipment(models.Model):
 
     types = (
-        ('IDS', 'IDS'),
-        ('IPS', 'IPS'),
-        ('방화벽', '방화벽'),
-        ('웹방화벽', '웹방화벽'),
-        ('스위치', '스위치'),
-        ('Anti-DDos', 'Anti-DDos'),
-        ('Log', 'Log'),
-        ('UTM', 'UTM'),
-        ('기타', '기타'),
+        ('ids', 'IDS'),
+        ('ips', 'IPS'),
+        ('fw', '방화벽'),
+        ('waf', '웹방화벽'),
+        ('SW', '스위치'),
+        ('ddos', 'Anti-DDos'),
+        ('log', 'Log'),
+        ('utm', 'UTM'),
+        ('etc', '기타'),
     )
 
-    # no = models.CharField(
-    #     max_length=255,
-    #     null=True,
-    # )
+    no = models.CharField(
+        max_length=255,
+        null=True,
+        unique=True,
+    )
+
+    os = models.CharField(
+        max_length=255,
+        null=True,
+    )
+
+    memo = models.CharField(max_length=255, null=True)
 
     type = models.CharField(
         choices=types,
@@ -163,7 +173,9 @@ class Equipment(models.Model):
         max_length=4,
         null=True,
     )
+
     ipaddr = models.ForeignKey(IPaddr, to_field='addr')
+    history = generic.GenericRelation(History, null=True,)
 
     class Meta:
         ordering = ['pk']
@@ -173,7 +185,7 @@ class Equipment(models.Model):
 
     def span(self):
         # import ipdb;ipdb.set_trace()
-        return u'<ul class="unstyled"><li><span class="type">%s</span><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerEquipments.call(this);">×</button></li><li><span class="ipaddr"><a href="%s">%s</a></span></li></ul>' % (self.type, reverse('ipDetail', args=[self.ipaddr.addr]), self.ipaddr.addr)
+        return u'<ul class="unstyled"><li><span class="no"><a href="%s">%s</a></span><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerEquipments.call(this);">×</button></li><li><span class="type">%s</span></li><li><span class="ipaddr"><a href="%s">%s</a></span></li></ul>' % (reverse('equipmentDetail', kwargs={'slug': self.no}), self.no, dict(self.types)[self.type].decode('utf-8'), reverse('ipDetail', kwargs={'slug': self.ipaddr.addr}), self.ipaddr.addr)
 
 
 class Customer(models.Model):
@@ -186,13 +198,14 @@ class Customer(models.Model):
     dataFolder = models.CharField(null=True, max_length=50,)
     workers = models.ManyToManyField(User, related_name='customer_workers_user_set', null=True)
     salespersons = models.ManyToManyField(User, related_name='customer_salespersons_user_set', null=True)
-    notes = generic.GenericRelation(Note, null=True)
+    history = generic.GenericRelation(History, null=True)
     ipaddrs = models.ManyToManyField(IPaddr, related_name='customer_ipaddrs_ipaddr_set', null=True)
     domains = models.ManyToManyField(Domain, related_name='customer_domains_domain_set', null=True)
     equipments = models.ManyToManyField(Equipment, related_name='customer_equipments_equipment_set', null=True)
     alertEmails = models.ManyToManyField(PersonInCharge, related_name='customer_alertEmails_personincharge_set', null=True)
     alertSMSs = models.ManyToManyField(PersonInCharge, related_name='customer_alertSMSs_personincharge_set', null=True)
     date = models.DateTimeField(auto_now_add=True)
+    memo = models.CharField(max_length=255, null=True,)
 
     def __unicode__(self):
         return "name: %s" % self.name
@@ -249,7 +262,7 @@ class ResponsingAttackDetection(models.Model):
         blank=True,
     )
     date = models.DateTimeField(auto_now_add=True)
-    note = models.TextField(
+    memo = models.TextField(
         null=True,
         blank=True,
     )
@@ -264,5 +277,37 @@ class ResponsingAttackDetection(models.Model):
         )
         super(ResponsingAttackDetection, self).save(*args, **kwargs)
 
+    def span(self):
+        return u'<a href="%s">%s</a>' % (reverse('responsingAttackDetectionDetail', kwargs={'slug': self.slug}), self.slug)
+
     def __unicode__(self, *args, **kwargs):
-        return u"유형: %s, 공격자: %s, 고객사: %s, 일시: %s, 비고: %s" % (self.kind, self.attackerIp.addr, self.customer.name, self.date, self.note)
+        return u"유형: %s, 공격자: %s, 고객사: %s, 일시: %s, 비고: %s" % (self.kind, self.attackerIp.addr, self.customer.name, self.date, self.memo)
+
+
+class ChatRoom(models.Model):
+    subject = models.CharField(max_length=255, blank=True, null=True)
+    participant = models.ManyToManyField(User)
+    isRead = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.subject
+
+    # 이거 어떻게 해야되지....?
+    # def save(self, *args, **kwargs):
+    #     super(ChatRoom, self).save(*args, **kwargs)
+    #     self.subject = ', '.join(
+    #         user.get_profile().name for user in self.participant.all()
+    #     )
+
+
+class ChatMessage(models.Model):
+    message = models.CharField(max_length=255, blank=True, null=True)
+    writer = models.ForeignKey(User, to_field='username')
+    room = models.ForeignKey(ChatRoom)
+    date = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return self.message
+
+    class Meta:
+        ordering = ['pk']

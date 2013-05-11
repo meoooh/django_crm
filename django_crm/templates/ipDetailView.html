@@ -22,7 +22,17 @@
                 </tr>
                 <tr>
                     <td>장비</td>
-                    <th>{% for i in ipDetailView.equipment_set.all %}<a href="{% url customerDetailView i.ipaddr.addr %}">{{ i.type }}</a>{% endfor %}</th>
+                    <th>
+                        <ul>
+                        {% for i in ipDetailView.equipment_set.all %}
+                        <li><a href="{% url equipmentDetail i.no %}">{{ i.no }}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </th>
+                </tr>
+                <tr>
+                    <td>비고</td>
+                    <th>{{ ipDetailView.memo }}</th>
                 </tr>
                 <tr>
                     <td colspan="2">이력</td>
@@ -30,7 +40,7 @@
                 <tr>
                     <th colspan="2">
                         <ul>
-                        {% for i in ipDetailView.notes.all %}
+                        {% for i in ipDetailView.history.all %}
                             <li><span class="time">{{ i.date|date:"c" }}</span> {{ i.contents }} - <a href="{% url userDetail i.writer.username %}">{{ i.writer.get_profile.name }}</a></li>
                         {% empty %}
                             <li>...</li>

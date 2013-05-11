@@ -1,3 +1,30 @@
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+
+    jsonData="";
+
+      $.ajax({
+        url: "{% url yearTong customerDetail.name 2013 %}",
+        success: function(result){
+            jsonData = result;
+        },
+      });
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable(jsonData);
+
+        var options = {
+          title: 'Statistics',
+          is3D: true
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('chart'));
+        chart.draw(data, options);
+      }
+    </script>
+
 <div>
     <div>
         <h1>{{ customerDetail.name }}<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ customerDetail.name }}');">x</button></h1><hr />
@@ -74,6 +101,7 @@
                         <div class="addCustomerEquipments">
                             <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
                                 <ul class="unstyled form">
+                                    <li>{{ form.equipmentsNo }}</li>
                                     <li>{{ form.equipmentsType }}</li>
                                     <li><input type="text" name="equipmentsIpaddr" placeholder="IP"></li>
                                     <li><input type="text" name="equipmentsNote" placeholder="메모"></li>
@@ -138,7 +166,7 @@
                 <div class="customerDetailViewTitle">
                     이력사항
                 </div>
-                <div class="more" data-kind="notes" data-col="pk" data-start="last">
+                <div class="more" data-kind="history" data-col="pk" data-start="last">
                     <a>더보기</a>
                 </div>
                 <div class="customerDetailViewList">
@@ -152,6 +180,20 @@
                 </div>
             </div>
         </div>
+        <div>
+            <div class="customerDetailViewBox">
+                <div class="customerDetailViewTitle">
+                    침입탐지이력
+                </div>
+                <div class="more" data-kind="responsingattackdetection_set" data-col="pk" data-start="last">
+                    <a>더보기</a>
+                </div>
+                <div class="customerDetailViewList">
+                    <ul class="customerDetailViewList unstyled"></ul>
+                </div>
+            </div>
+        </div>
+        <div id="chart" style="width: 900px; height: 500px;"></div>
     </div>
 </div>
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -173,5 +215,6 @@
     var customerDomainURL = "{% url actionCustomerDomains customerDetail.name %}";
     var customerEquipmentURL = "{% url actionCustomerEquipments customerDetail.name %}";
     var customerPersonInChargeURL = "{% url actionCustomerPersonInCharges customerDetail.name %}";
+    var customerIpDetailURL = "{% url ipDetail %}";
 </script>
-<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=13"></script>
+<script type="text/javascript" src="/siteMedia/customerDetailView.js?a=14"></script>

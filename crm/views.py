@@ -80,7 +80,7 @@ def logoutPage(request):
 def loginPage(request):
     # print request
     # import ipdb;ipdb.set_trace()
-    print request.META['REMOTE_ADDR'], request.META['HTTP_USER_AGENT']
+    # print request.META['REMOTE_ADDR'], request.META['HTTP_USER_AGENT']
     if 'next' in request.GET:
         request.GET['next']
     loginReturnValue = login(request=request)
@@ -250,6 +250,11 @@ def searchUser(request):
         users = UserProfile.objects.filter(name__istartswith=request.GET['q'])
 
         return HttpResponse('\n'.join(user.name for user in users))
+    elif 'query' and 'kind' and 'what' in request.GET:
+        # import ipdb;ipdb.set_trace()
+        objs = eval(request.GET['kind'].capitalize()).objects.filter(name__icontains=request.GET['query'])
+
+        return HttpResponse(simplejson.dumps([getattr(obj, request.GET['what']) for obj in objs]))
     return HttpResponse()
 
 
@@ -354,13 +359,14 @@ def customerRegistration(request):
                 dataFolder=form.cleaned_data['dataFolder'],
             )
 
-            personInCharge, created = PersonInCharge.objects.get_or_create(
-                name=form.cleaned_data['personInChargesName'],
-                telephone1=form.cleaned_data['personInChargesTel'],
-                mobile1=form.cleaned_data['personInChargesMobile'],
-                email1=form.cleaned_data['personInChargesEmail'],
-            )
-            customer.personInCharges.add(personInCharge)
+            if form.cleaned_data['personInChargesName'] or form.cleaned_data['personInChargesTel'] or form.cleaned_data['personInChargesMobile'] or form.cleaned_data['personInChargesEmail']:
+                personInCharge, created = PersonInCharge.objects.get_or_create(
+                    name=form.cleaned_data['personInChargesName'],
+                    telephone1=form.cleaned_data['personInChargesTel'],
+                    mobile1=form.cleaned_data['personInChargesMobile'],
+                    email1=form.cleaned_data['personInChargesEmail'],
+                )
+                customer.personInCharges.add(personInCharge)
 
             worker = UserProfile.objects.get(name=form.cleaned_data['workers']).user
             customer.workers.add(worker)
@@ -369,54 +375,91 @@ def customerRegistration(request):
             customer.salespersons.add(salesperson)
 
             for i in form.cleaned_data['ipaddrs'].split(','):
+                if i == '':
+                    continue
                 if ipValidation(i.strip()):
                     for j in iptools.IpRange(i.strip()):
                         ipaddr, created = IPaddr.objects.get_or_create(
                             addr=j,
                         )
-#                        ipaddr.country=GeoIP(j)
-                        note = Note(
+                        if created:
+                            ipaddr.memo = form.cleaned_data['ipaddrsMemo'],
+                            ipaddr.save()
+                        elif form.cleaned_data['ipaddrsMemo'] != '':
+                            history = History(
+                                content_object=ipaddr,
+                                contents=form.cleaned_data['ipaddrsMemo'],
+                                writer=request.user,
+                            )
+                            history.save()
+                        # ipaddr.country=GeoIP(j)
+                        history = History(
                             content_object=ipaddr,
-                            contents=form.cleaned_data['ipaddrsNote'],
+                            contents=u"%s의 IP로 추가됨." % customer.name,
                             writer=request.user,
                         )
-                        note.save()
+                        history.save()
                         customer.ipaddrs.add(ipaddr)
                 else:
                     # validation 실패시...
                     pass
 
             for i in form.cleaned_data['domains'].split(','):
+                if i == '':
+                    continue
                 domain, created = Domain.objects.get_or_create(
                     url=i,
                 )
-                note = Note(
+                if created:
+                    domain.memo = form.cleaned_data['domainsMemo']
+                    domain.save()
+                elif form.cleaned_data['domainsMemo'] == '':
+                    history = History(
+                        content_object=domain,
+                        contents=form.cleaned_data['domainsMemo'],
+                        writer=request.user,
+                    )
+                    history.save()
+
+                history = History(
                     content_object=domain,
-                    contents=form.cleaned_data['domainsNote'],
+                    contents=u"%s의 도메인으로 추가됨." % customer.name,
                     writer=request.user,
                 )
-                note.save()
+                history.save()
                 customer.domains.add(domain)
             if ipValidation(form.cleaned_data['equipmentsIpaddr']):
                 ipaddr, created = IPaddr.objects.get_or_create(
                     addr=form.cleaned_data['equipmentsIpaddr'],
                 )
+                if created:
+                    history = History(
+                        content_object=ipaddr,
+                        contents=u"%s의 장비 IP로 추가됨." % customer.name,
+                        writer=request.user,
+                    )
+                    history.save()
                 #ipaddr.country=GeoIP(j)
                 equipment, created = Equipment.objects.get_or_create(
                     ipaddr=ipaddr
                 )
-                equipment.type = form.cleaned_data['equipmentsType']
-                equipment.save()
-                note = Note(
+                if created:
+                    equipment.type = form.cleaned_data['equipmentsType']
+                    equipment.no = form.cleaned_data['equipmentsType'] + u"_" + form.cleaned_data['equipmentsNo']
+                    equipment.memo = form.cleaned_data['equipmentsMemo']
+                    equipment.save()
+                history = History(
                     content_object=ipaddr,
-                    contents=form.cleaned_data['equipmentsNote'],
+                    contents=u"%s의 장비로 추가됨." % customer.name,
                     writer=request.user,
                 )
-                note.save()
+                history.save()
                 customer.equipments.add(equipment)
 
             for i in form.cleaned_data['alertEmails'].split(','):
                 # import pdb;pdb.set_trace()
+                if i == '':
+                    continue
                 personInCharge, created = PersonInCharge.objects.get_or_create(
                     email1=i,
                 )
@@ -426,6 +469,8 @@ def customerRegistration(request):
                 customer.alertEmails.add(personInCharge)
 
             for i in form.cleaned_data['alertSMSs'].split(','):
+                if i == '':
+                    continue
                 personInCharge, created = PersonInCharge.objects.get_or_create(
                     mobile1=i,
                 )
@@ -434,12 +479,14 @@ def customerRegistration(request):
                     personInCharge.save()
                 customer.alertSMSs.add(personInCharge)
 
-            note = Note(
-                content_object=customer,
-                contents=form.cleaned_data['notes'],
-                writer=request.user,
-            )
-            note.save()
+            if form.cleaned_data['memo']:
+                customer.memo = u"신규"
+                note = History(
+                    content_object=customer,
+                    contents=form.cleaned_data['memo'],
+                    writer=request.user,
+                )
+                note.save()
 
             customer.save()
             return HttpResponseRedirect(reverse('customer'))  # from django.core.urlresolvers import reverse
@@ -482,14 +529,14 @@ def addCustomerNotes(request, slug):
             except ObjectDoesNotExist:
                 return HttpResponse(u'등록되지 않은 고객.')
             else:
-                note = Note(
+                history = History(
                     content_object=customer,
                     contents=request.POST['notes'],
                     writer=request.user,
                 )
-                note.save()
+                history.save()
                 # import ipdb;ipdb.set_trace()
-                return HttpResponse(simplejson.dumps(note.to_dict()), content_type="application/json")
+                return HttpResponse(simplejson.dumps(history.to_dict()), content_type="application/json")
     else:
         return HttpResponse('addCustomerNotes: Other methods is denied.')
 
@@ -499,12 +546,12 @@ def actionCustomerNote(request, slug, pk):
     if request.is_ajax():
         content_type = ContentType.objects.get_for_model(Customer)
         try:
-            note = Note.objects.get(content_type=content_type, pk=pk)
+            history = History.objects.get(content_type=content_type, pk=pk)
         except ObjectDoesNotExist:
             return HttpResponse(u'등록되지 않은 메모.')
 
         if request.method == "DELETE":
-            note.delete()
+            history.delete()
 
             return HttpResponse(u'1')
         elif request.method == "PUT":
@@ -513,9 +560,9 @@ def actionCustomerNote(request, slug, pk):
 
             if key == "contents":
                 import urllib
-                note.contents = urllib.unquote(value).replace("+", " ")
+                history.contents = urllib.unquote(value).replace("+", " ")
                 # 뭔가 깔끔하게 해결할수있는 방법이 있을꺼 같다... 찾아봐야지...
-                note.save()
+                history.save()
             else:
                 return HttpResponse(
                     'actionCustomerNote: Other key is denied.',
@@ -523,7 +570,7 @@ def actionCustomerNote(request, slug, pk):
             return HttpResponse(u'1')
         elif request.method == "GET":
             return HttpResponse(
-                simplejson.dumps({"contents": note.contents}),
+                simplejson.dumps({"contents": history.contents}),
                 content_type="application/json"
             )
         else:
@@ -555,11 +602,21 @@ def actionCustomerIPaddrs(request, slug, pk):
                             ip, created = IPaddr.objects.get_or_create(
                                 addr=i,
                             )
+
+                            if created:
+                                ip.memo = request.POST['note']
+                                ip.save()
+                            else:
+                                History.objects.create(
+                                    contents=request.POST['note'],
+                                    writer=request.user,
+                                    content_object=ip,
+                                )
                         except:
                             return HttpResponse('0')
                         else:
-                            Note.objects.create(
-                                contents=request.POST['note'],
+                            History.objects.create(
+                                contents=u'%s의 IP로 추가됨.' % customer.name,
                                 writer=request.user,
                                 content_object=ip,
                             )
@@ -582,7 +639,7 @@ def actionCustomerIPaddrs(request, slug, pk):
                         printException(sys.exc_info())
                         return HttpResponse(u'remove() 실패.', status=500)
                     else:
-                        Note.objects.create(
+                        History.objects.create(
                             contents=u"%s 고객사에서 제거됨." % slug,
                             writer=request.user,
                             content_object=ip
@@ -657,7 +714,7 @@ def actionCustomerDomains(request, slug, pk):
                     if domainsNote == '':
                         domainsNote = u"%s 고객사에서 추가함" % slug
 
-                    Note.objects.create(
+                    History.objects.create(
                         contents=domainsNote,
                         writer=request.user,
                         content_object=domain,
@@ -683,7 +740,7 @@ def actionCustomerDomains(request, slug, pk):
                         printException(sys.exc_info())
                         return HttpResponse(u'remove() 실패.', status=500)
                     else:
-                        Note.objects.create(
+                        History.objects.create(
                             contents=u"%s 고객사에서 삭제됨." % slug,
                             writer=request.user,
                             content_object=domain,
@@ -699,68 +756,89 @@ def actionCustomerDomains(request, slug, pk):
 
 
 def actionCustomerEquipments(request, slug, pk):
-    if request.is_ajax():
-        supportREST(request)
-        try:
-            customer = Customer.objects.get(name=slug)
-        except ObjectDoesNotExist:
-            return HttpResponse(u'등록되지 않은 고객.', status=500)
-        else:
-            if request.method == "POST":
-                form = CustomerRegistrationForm(request.POST)
-                if 'equipmentsType' not in form.errors:
-                    try:
-                        for i in ipValidation(
-                            request.POST['equipmentsIpaddr'],
-                        ):
-                            try:
-                                ip, created = IPaddr.objects.get_or_create(
-                                    addr=i
-                                )
-                                Note.objects.create(
-                                    content_object=ip,
-                                    writer=request.user,
-                                    contents=u"%s 고객사의 장비로 추가됨." % slug,
-                                )
-                                equipment = Equipment.objects.create(
-                                    ipaddr=ip,
-                                    type=request.POST['equipmentsType'],
-                                )
-
-                                customer.equipments.add(equipment)
-                            except:
-                                printException(sys.exc_info())
-                                return HttpResponse(u"1", status=500)
-                            else:
-                                return HttpResponse(
-                                    simplejson.dumps({"id": equipment.pk}),
-                                    content_type="application/json"
-                                )
-                    except:
-                        return HttpResponse(u"3", status=500)
-                else:
-                    print form.errors
-                    return HttpResponse(u"2", status=500)
-            elif request.method == "DELETE":
-                try:
-                    equipment = Equipment.objects.get(pk=pk)
-
-                    customer.equipments.remove(equipment)
-
-                    Note.objects.create(
-                        contents=u"%s 고객사에서 삭제됨." % slug,
-                        writer=request.user,
-                        content_object=equipment.ipaddr,
-                    )
-                except:
-                    return HttpResponse(u"remove() error", status=500)
-                else:
-                    return HttpResponse(status=204)
-            else:
-                return HttpResponse(u"3", status=500)
-    #end if request.is_ajax():
+    # if request.is_ajax():
+    supportREST(request)
+    try:
+        customer = Customer.objects.get(name=slug)
+    except ObjectDoesNotExist:
+        return HttpResponse(u'등록되지 않은 고객.', status=500)
     else:
-        return HttpResponse(u"Not ajax is denied", status=500)
+        if request.method == "POST":
+            form = CustomerRegistrationForm(request.POST)
+            if 'equipmentsType' not in form.errors:
+                try:
+                    for i in ipValidation(
+                        request.POST['equipmentsIpaddr'],
+                    ):
+                        try:
+                            ip, created = IPaddr.objects.get_or_create(
+                                addr=i
+                            )
+                            History.objects.create(
+                                content_object=ip,
+                                writer=request.user,
+                                contents=u"%s 고객사의 장비로 추가됨." % slug,
+                            )
+                            equipment, created = Equipment.objects.get_or_create(
+                                ipaddr=ip,
+                            )
+
+                            if created:
+                                equipment.type = request.POST['equipmentsType']
+                                equipment.no = request.POST['equipmentsType'] + u"_" + request.POST['equipmentsNo']
+                                equipment.memo = request.POST['equipmentsNote']
+                                equipment.save()
+                            else:
+                                History.objects.create(
+                                    content_object=equipment,
+                                    writer=request.user,
+                                    contents=request.POST['equipmentsNote'],
+                                )
+
+                            History.objects.create(
+                                content_object=equipment,
+                                writer=request.user,
+                                contents=u"%s 고객사의 장비로 추가됨." % slug,
+                            )
+                            History.objects.create(
+                                content_object=equipment,
+                                writer=request.user,
+                                contents=request.POST['equipmentsNote'],
+                            )
+                            customer.equipments.add(equipment)
+                        except:
+                            printException(sys.exc_info())
+                            return HttpResponse(u"1", status=500)
+                        else:
+                            return HttpResponse(
+                                simplejson.dumps({"id": equipment.pk}),
+                                content_type="application/json"
+                            )
+                except:
+                    return HttpResponse(u"3", status=500)
+            else:
+                print form.errors
+                return HttpResponse(u"2", status=500)
+        elif request.method == "DELETE":
+            try:
+                equipment = Equipment.objects.get(pk=pk)
+
+                customer.equipments.remove(equipment)
+
+                History.objects.create(
+                    contents=u"%s 고객사에서 삭제됨." % slug,
+                    writer=request.user,
+                    content_object=equipment.ipaddr,
+                )
+            except:
+                return HttpResponse(u"remove() error", status=500)
+            else:
+                return HttpResponse(status=204)
+        else:
+            return HttpResponse(u"3", status=500)
+    #end if request.is_ajax():
+    # else:
+    #     return HttpResponse(u"Not ajax is denied", status=500)
 
 
 def actionCustomerPersonInCharges(request, slug, pk):
@@ -828,6 +906,7 @@ def customerDetail(request, slug):
     else:
         return customerDetailView.as_view()(request, slug=slug)
 
+
 @login_required
 def responsingAttackDetection(request):
     if request.method == "GET":
@@ -845,15 +924,26 @@ def responsingAttackDetection(request):
         form = ResponsingAttackDetectionForm(request.POST)
 
         if form.is_valid():
+            customer = Customer.objects.get(
+                name=form.cleaned_data['customer'],
+            )
             attackerIp, isAttackerIpCreated = IPaddr.objects.get_or_create(
                 addr=form.cleaned_data['attackerIp'],
             )
             victimIp, isVictimIpCreated = IPaddr.objects.get_or_create(
                 addr=form.cleaned_data['victimIp'],
             )
-            customer = Customer.objects.get(
-                name=form.cleaned_data['customer'],
-            )
+
+            try:
+                customer.ipaddrs.get(addr=victimIp.addr)
+            except ObjectDoesNotExist:
+                customer.ipaddrs.add(victimIp)
+
+                History.objects.create(
+                    contents=u'%s IP로 추가됨.' % customer.name,
+                    content_object=victimIp,
+                    writer=request.user,
+                )
             ResponsingAttackDetection.objects.create(
                 kind=form.cleaned_data['kind'],
                 attackerIp=attackerIp,
@@ -862,10 +952,20 @@ def responsingAttackDetection(request):
                 customer=customer,
                 emailRecipient=form.cleaned_data['emailRecipient'],
                 smsRecipient=form.cleaned_data['smsRecipient'],
-                note=form.cleaned_data['note'],
+                memo=form.cleaned_data['note'],
             )
 
-        return HttpResponseRedirect(reverse('responsingAttackDetection'))
+            return HttpResponseRedirect(reverse('responsingAttackDetection'))
+
+        variables = RequestContext(request, {
+            'form': form,
+            'action': reverse('responsingAttackDetection')
+        })
+
+        return render_to_response(
+            'responsingAttackDetectionNew.html',
+            variables
+        )
 
 
 def responsingAttackDetectionNew(request):
@@ -942,3 +1042,76 @@ class IpDetailView(DetailView):
 @login_required
 def getIpAddressCountry(request, ip):
     return HttpResponse(GeoIP(ip))
+
+
+@login_required
+def board(request):
+    pass
+
+
+@login_required
+def boardNew(request):
+    pass
+
+
+@login_required
+def equipmentDetail(request, slug):
+    if request.method == 'GET':
+        return EquipmentDetailView.as_view()(request, slug=slug)
+
+
+class EquipmentDetailView(DetailView):
+    model = Equipment
+    template_name = 'equipmentDetail.html'
+    slug_field = 'no'
+    context_object_name = 'equipmentDetailView'
+
+
+def yearTong(request, slug, year):
+    ret = [['Attack', 'Count']]
+
+    customer = Customer.objects.get(name=slug)
+
+    for i in ResponsingAttackDetection.kinds:
+        ret.append(
+            [
+                i[1],
+                customer.responsingattackdetection_set.filter(kind=i[0]).count()
+            ]
+        )
+
+    return HttpResponse(
+        simplejson.dumps(ret),
+        content_type="application/json"
+    )
+    # pass
+
+
+@login_required
+def messageList(request):
+    if request.method == "GET":
+        return MessageListView.as_view()(request)
+
+class MessageListView(ListView):
+    model = ChatRoom
+    template_name = 'message.html'
+    context_object_name = 'MessageListView'
+    allow_empty = True
+
+
+@login_required
+def messageDetail(request, pk):
+    if request.method == "GET":
+        # import ipdb;ipdb.set_trace()
+        return MessageDetailView.as_view()(request, pk=pk)
+
+
+class MessageDetailView(DetailView):
+    model = ChatRoom
+    template_name = 'messageDetail.html'
+    context_object_name = 'MessageDetailView'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MessageDetailView, self).get_context_data(*args, **kwargs)
+        context['form'] = ChatMessageForm()
+        return context

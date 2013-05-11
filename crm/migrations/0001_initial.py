@@ -48,8 +48,8 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('crm_workdailyrecord_target_user', ['workdailyrecord_id', 'user_id'])
 
-        # Adding model 'Note'
-        db.create_table('crm_note', (
+        # Adding model 'History'
+        db.create_table('crm_history', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('contents', self.gf('django.db.models.fields.TextField')()),
             ('writer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], to_field='username')),
@@ -57,13 +57,14 @@ class Migration(SchemaMigration):
             ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
             ('object_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
         ))
-        db.send_create_signal('crm', ['Note'])
+        db.send_create_signal('crm', ['History'])
 
         # Adding model 'IPaddr'
         db.create_table('crm_ipaddr', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('addr', self.gf('django.db.models.fields.GenericIPAddressField')(unique=True, max_length=39)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=30, null=True)),
+            ('memo', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
         ))
         db.send_create_signal('crm', ['IPaddr'])
 
@@ -84,12 +85,16 @@ class Migration(SchemaMigration):
         db.create_table('crm_domain', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('url', self.gf('django.db.models.fields.URLField')(unique=True, max_length=200)),
+            ('memo', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
         ))
         db.send_create_signal('crm', ['Domain'])
 
         # Adding model 'Equipment'
         db.create_table('crm_equipment', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('no', self.gf('django.db.models.fields.CharField')(max_length=255, unique=True, null=True)),
+            ('os', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
+            ('memo', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
             ('type', self.gf('django.db.models.fields.CharField')(default='etc', max_length=4, null=True)),
             ('ipaddr', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['crm.IPaddr'], to_field='addr')),
         ))
@@ -105,6 +110,7 @@ class Migration(SchemaMigration):
             ('serviceNumber', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('dataFolder', self.gf('django.db.models.fields.CharField')(max_length=50, null=True)),
             ('date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('memo', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
         ))
         db.send_create_signal('crm', ['Customer'])
 
@@ -184,7 +190,7 @@ class Migration(SchemaMigration):
             ('emailRecipient', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
             ('smsRecipient', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
             ('date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('note', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
+            ('memo', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50)),
         ))
         db.send_create_signal('crm', ['ResponsingAttackDetection'])
@@ -203,8 +209,8 @@ class Migration(SchemaMigration):
         # Removing M2M table for field target_user on 'WorkDailyRecord'
         db.delete_table('crm_workdailyrecord_target_user')
 
-        # Deleting model 'Note'
-        db.delete_table('crm_note')
+        # Deleting model 'History'
+        db.delete_table('crm_history')
 
         # Deleting model 'IPaddr'
         db.delete_table('crm_ipaddr')
@@ -297,6 +303,7 @@ class Migration(SchemaMigration):
             'equipments': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'customer_equipments_equipment_set'", 'null': 'True', 'to': "orm['crm.Equipment']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ipaddrs': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'customer_ipaddrs_ipaddr_set'", 'null': 'True', 'to': "orm['crm.IPaddr']"}),
+            'memo': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'personInCharges': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'customer_personincharges_personincharge_set'", 'null': 'True', 'to': "orm['crm.PersonInCharge']"}),
             'position': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True'}),
@@ -308,28 +315,33 @@ class Migration(SchemaMigration):
         'crm.domain': {
             'Meta': {'object_name': 'Domain'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'memo': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'url': ('django.db.models.fields.URLField', [], {'unique': 'True', 'max_length': '200'})
         },
         'crm.equipment': {
             'Meta': {'ordering': "['pk']", 'object_name': 'Equipment'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'ipaddr': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['crm.IPaddr']", 'to_field': "'addr'"}),
+            'memo': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
+            'no': ('django.db.models.fields.CharField', [], {'max_length': '255', 'unique': 'True', 'null': 'True'}),
+            'os': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),
             'type': ('django.db.models.fields.CharField', [], {'default': "'etc'", 'max_length': '4', 'null': 'True'})
         },
-        'crm.ipaddr': {
-            'Meta': {'ordering': "['addr']", 'object_name': 'IPaddr'},
-            'addr': ('django.db.models.fields.GenericIPAddressField', [], {'unique': 'True', 'max_length': '39'}),
-            'country': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
-        'crm.note': {
-            'Meta': {'ordering': "['pk']", 'object_name': 'Note'},
+        'crm.history': {
+            'Meta': {'ordering': "['pk']", 'object_name': 'History'},
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
             'contents': ('django.db.models.fields.TextField', [], {}),
             'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'writer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'to_field': "'username'"})
+        },
+        'crm.ipaddr': {
+            'Meta': {'ordering': "['addr']", 'object_name': 'IPaddr'},
+            'addr': ('django.db.models.fields.GenericIPAddressField', [], {'unique': 'True', 'max_length': '39'}),
+            'country': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'memo': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'})
         },
         'crm.personincharge': {
             'Meta': {'object_name': 'PersonInCharge'},
@@ -351,7 +363,7 @@ class Migration(SchemaMigration):
             'emailRecipient': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'kind': ('django.db.models.fields.CharField', [], {'default': "'Defacement'", 'max_length': '2', 'null': 'True', 'blank': 'True'}),
-            'note': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'memo': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
             'smsRecipient': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'to_field': "'username'"}),

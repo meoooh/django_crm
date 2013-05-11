@@ -29,7 +29,7 @@
                 <th colspan="4">비고</th>
             </tr>
             <tr>
-                <td colspan="4">{{ responsingAttackDetectionDetailView.note }}</td>
+                <td colspan="4">{% if responsingAttackDetectionDetailView.note %}{{ responsingAttackDetectionDetailView.note }}{% else %}...{% endif %}</td>
             </tr>
             <tr>
                 <th colspan="4">통보</th>

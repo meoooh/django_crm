@@ -59,7 +59,28 @@ function init(){
     });
     
     isoFormat2localeString();
-}
+
+/*    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawChart);
+*/}
+
+/*function drawChart() {
+    var data = google.visualization.arrayToDataTable([
+        ['Task', 'Hours per Day'],
+        ['Work',     11],
+        ['Eat',      2],
+        ['Commute',  2],
+        ['Watch TV', 2],
+        ['Sleep',    7]
+    ]);
+
+    var options = {
+        title: 'My Daily Activities'
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('chart'));
+    chart.draw(data, options);
+}*/
 
 function deleteCustomer(name){
     if(confirm('삭제하시겠습니까?')){
@@ -143,7 +164,7 @@ function saveCustomerEquipments(){
         type: "POST",
         data: $(_form).serialize(),
         success: function(result){ // 자식만 검색하는 방법 (">li"), $.children("li"), jQuery(">li", abc);
-            _ul.append('<li class="customerDetailViewList" data-id="'+result['id']+'" data-next="'+_ul.find('>li:last').attr('data-next')+'"><ul class="unstyled"><li><span class="type">'+$(_form).serializeArray()[0].value+'</span><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerEquipments.call(this);">x</button></li><li><span class="ipaddr">'+$(_form).serializeArray()[1].value+'</span></li>');
+            _ul.append('<li class="customerDetailViewList" data-id="'+result['id']+'" data-next="'+_ul.find('>li:last').attr('data-next')+'"><ul class="unstyled"><li><span class="no">'+$(_form).serializeArray()[1].value.toLowerCase()+'_'+$(_form).serializeArray()[0].value+'</span></li><li><span class="type">'+$(_form).serializeArray()[1].value+'</span><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerEquipments.call(this);">x</button></li><li><span class="ipaddr"><a href="'+customerIpDetailURL+$(_form).serializeArray()[2].value+'">'+$(_form).serializeArray()[2].value+'</a></span></li>');
             
             _form.reset();
             $(_form).find("input:first").focus();
@@ -279,7 +300,7 @@ function saveCustomerIPaddrs(){
     $.post(customerIPaddrURL+"?ajax", _form.serialize(), function(result){
         if(result != "0"){
             $.each(result, function(){ //each... 반환값이 리스트 형태로 있을때 리스트를 순환한다.
-                _div.find("ul.customerDetailViewList").append('<li class="customerDetailViewList" data-id="'+this.pk+'" data-next="'+_li.attr('data-next')+'"><span class="ipaddr">'+this.addr+'</span><span class="button"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerIPaddrs.call(this);;">x</button></span></li>');
+                _div.find("ul.customerDetailViewList").append('<li class="customerDetailViewList" data-id="'+this.pk+'" data-next="'+_li.attr('data-next')+'"><span class="ipaddr"><a href="'+customerIpDetailURL+this.addr+'">'+this.addr+'</a></span><span class="button"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomerIPaddrs.call(this);;">x</button></span></li>');
             });
             _form[0].reset();
             _form.find("input:first").focus();

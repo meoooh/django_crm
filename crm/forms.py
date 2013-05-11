@@ -148,7 +148,7 @@ class CustomerRegistrationForm(forms.Form):
         required=False,
     )
 
-    personInChargesEmail = forms.CharField(
+    personInChargesEmail = forms.EmailField(
         label='',
         max_length=70,
         widget=forms.TextInput(attrs={'placeholder': '담당자 전자우편'}),
@@ -204,7 +204,7 @@ class CustomerRegistrationForm(forms.Form):
         required=False,
     )
 
-    notes = forms.CharField(
+    memo = forms.CharField(
         label='',
         widget=forms.Textarea(attrs={'placeholder': '비고', 'style': 'width:764px; height:35px;'}),
         required=False,
@@ -216,7 +216,7 @@ class CustomerRegistrationForm(forms.Form):
         required=False,
         min_length=1,
     )
-    ipaddrsNote = forms.CharField(
+    ipaddrsMemo = forms.CharField(
         label='',
         min_length=1,
         widget=forms.TextInput(attrs={'placeholder': '호스트 비고'}),
@@ -229,7 +229,7 @@ class CustomerRegistrationForm(forms.Form):
         required=False,
     )
 
-    domainsNote = forms.CharField(
+    domainsMemo = forms.CharField(
         label='',
         min_length=1,
         widget=forms.TextInput(attrs={'placeholder': '도메인 비고'}),
@@ -248,6 +248,13 @@ class CustomerRegistrationForm(forms.Form):
         ('etc', '기타'),
     )
 
+    equipmentsNo = forms.CharField(
+        label='',
+        widget=forms.TextInput(attrs={'placeholder': '장비고유번호'}),
+        max_length=255,
+        required=False,
+    )
+
     equipmentsType = forms.ChoiceField(
         label='',
         choices=types,
@@ -262,7 +269,7 @@ class CustomerRegistrationForm(forms.Form):
         required=False,
     )
 
-    equipmentsNote = forms.CharField(
+    equipmentsMemo = forms.CharField(
         label='',
         widget=forms.Textarea(attrs={'placeholder':  '장비정보', 'style': 'width:764px; height:35px;'}),
         required=False,
@@ -284,6 +291,10 @@ class CustomerRegistrationForm(forms.Form):
 
     def clean_name(self):
         if 'name' in self.cleaned_data:
+            if re.search(u'^[가-힣A-Za-z0-9_]+$', self.cleaned_data['name']) is None:
+                raise forms.ValidationError(
+                    '아이디는 한글, 알파벳, 숫자, 밑줄(_)만 가능합니다.',
+                )
             try:
                 Customer.objects.get(name=self.cleaned_data['name'])
             except ObjectDoesNotExist:
@@ -295,7 +306,9 @@ class CustomerRegistrationForm(forms.Form):
             raise forms.ValidationError('올바른 고객사 이름이 아닙니다.')
 
     def clean_personInChargesMobile(self):
-        if 'personInChargesMobile' in self.cleaned_data:
+        if self.cleaned_data['personInChargesMobile'] == '':
+            return self.cleaned_data['personInChargesMobile']
+        elif 'personInChargesMobile' in self.cleaned_data:
             mobile = self.cleaned_data['personInChargesMobile']
             if re.search(r'^01(0|1|6|7|8|9)\d{7,8}$', mobile) is None:  # re.search(a, b)는 b가 a와 일치 하지 않을때 None를 반환함.
                 _mobile = ''
@@ -367,6 +380,7 @@ class ResponsingAttackDetectionForm(forms.Form):
     )
     note = forms.CharField(
         widget=forms.Textarea,
+        required=False,
     )
 
     def clean_customer(self):
@@ -374,10 +388,15 @@ class ResponsingAttackDetectionForm(forms.Form):
             try:
                 Customer.objects.get(name=self.cleaned_data['customer'])
             except:
-                print 'f'
                 raise forms.ValidationError('등록되지 않은 고객사 입니다.')
             else:
-                print 't'
                 return self.cleaned_data['customer']
         else:
-            raise form.ValidationError('오류')
+            raise forms.ValidationError('오류')
+
+
+class ChatMessageForm(forms.Form):
+    message = forms.CharField(
+        max_length=255,
+        label='',
+    )
