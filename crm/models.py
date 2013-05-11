@@ -9,13 +9,13 @@ from django.core.urlresolvers import reverse
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, to_field='username')
-    mobile = models.CharField(unique=True, max_length=20,)
-    lastIp = models.GenericIPAddressField(null=True)
-    position = models.CharField(max_length=20, null=True)
-    function = models.CharField(max_length=20, null=True)
-    level = models.CharField(max_length=20, null=True)
-    team = models.CharField(max_length=20, null=True)
-    name = models.CharField(max_length=70)
+    mobile = models.CharField(unique=True, max_length=20, null=True, blank=True)
+    lastIp = models.GenericIPAddressField(null=True, blank=True)
+    position = models.CharField(max_length=20, null=True, blank=True)
+    function = models.CharField(max_length=20, null=True, blank=True)
+    level = models.CharField(max_length=20, null=True, blank=True)
+    team = models.CharField(max_length=20, null=True, blank=True)
+    name = models.CharField(max_length=70, null=True, blank=True)
 
     def __unicode__(self):
         return '%s, %s, %s, %s, %s, %s, %s, %s' % (

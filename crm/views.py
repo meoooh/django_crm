@@ -12,6 +12,7 @@ from crm.models import *
 from django.core.urlresolvers import reverse
 from crm.utility import *
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 
 def logging(request):
@@ -86,7 +87,11 @@ def loginPage(request):
     loginReturnValue = login(request=request)
 
     if request.method == 'POST' and request.user.is_authenticated():
-        user = request.user.get_profile()
+        try:
+            user = request.user.get_profile()
+        except ObjectDoesNotExist:
+            UserProfile.objects.create(user=request.user) # 처음에 syncdb할때 관리자 계정은 userprofile가 생기지 않기때문에 이 구문이 필요...
+            user = request.user.get_profile()
         user.lastIp = request.META.get('REMOTE_ADDR')
         user.save()
 

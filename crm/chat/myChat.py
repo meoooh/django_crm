@@ -42,8 +42,10 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
             session_key = self.session.conn_info.cookies['sessionid'].value
             
             ##### 에러방지를 위한 임시코드 시작 ###
-            User.objects.create(username='tmp')
-            User.objects.get(username='tmp').delete()
+            # User.objects.create(username='tmp')
+            # User.objects.get(username='tmp').delete()
+            User.objects.all().update() # https://www.facebook.com/groups/django/permalink/529096727126831/?comment_id=529184507118053&offset=0&total_comments=5
+            # https://www.facebook.com/groups/django/permalink/529096727126831/?comment_id=529192777117226&offset=0&total_comments=10
             ##### 에러방지를 위한 임시코드 끝 ###
 
             session = Session.objects.get(session_key=session_key)  # 여기서 세션값을 가져오지 못하는 에러가 있음... 그런데 db insert 작업후에는 정상적으로 가져옴...
