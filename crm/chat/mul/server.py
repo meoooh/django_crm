@@ -22,11 +22,13 @@ class MultiplexStaticHandler(tornado.web.RequestHandler):
 
 # Connections
 class AnnConnection(SockJSConnection):
+    participants = set()
     def on_open(self, info):
         self.send('Ann says hi!!')
+        self.participants.add(self)
 
     def on_message(self, message):
-        import ipdb;ipdb.set_trace()
+        # import ipdb;ipdb.set_trace()
         self.send('Ann nods: ' + message)
 
 
@@ -35,7 +37,7 @@ class BobConnection(SockJSConnection):
         self.send('Bob doesn\'t agree.')
 
     def on_message(self, message):
-        import ipdb;ipdb.set_trace()
+        # import ipdb;ipdb.set_trace()
         self.send('Bob says no to: ' + message)
 
 
@@ -50,7 +52,7 @@ if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
 
     # Create multiplexer
-    router = MultiplexConnection.get(ann=AnnConnection, bob=BobConnection, carl=CarlConnection)
+    router = MultiplexConnection.get(annn=AnnConnection, bob=AnnConnection, carl=CarlConnection)
 
     # Register multiplexer
     EchoRouter = SockJSRouter(router, '/echo')

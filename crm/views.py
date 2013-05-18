@@ -48,8 +48,7 @@ def userRegistration(request):
             # http://www.turnkeylinux.org/blog/django-profile
             # http://stackoverflow.com/questions/5477925/django-1-3-userprofile-matching-query-does-not-exist
             user = user.get_profile()
-#            import pdb
-#            pdb.set_trace()
+            # import pdb;pdb.set_trace()
             user.name = form.cleaned_data['name']
             user.mobile = form.cleaned_data['mobile']
 
@@ -257,7 +256,7 @@ def searchUser(request):
         return HttpResponse('\n'.join(user.name for user in users))
     elif 'query' and 'kind' and 'what' in request.GET:
         # import ipdb;ipdb.set_trace()
-        objs = eval(request.GET['kind'].capitalize()).objects.filter(name__icontains=request.GET['query'])
+        objs = eval(request.GET['kind'].strip()).objects.filter(name__icontains=request.GET['query'])
 
         return HttpResponse(simplejson.dumps([getattr(obj, request.GET['what']) for obj in objs]))
     return HttpResponse()
@@ -1037,6 +1036,7 @@ def ipDetail(request, slug):
         else:
             return HttpResponse("no ip", status=404)
 
+
 class IpDetailView(DetailView):
     model = IPaddr
     slug_field = 'addr'
@@ -1051,12 +1051,67 @@ def getIpAddressCountry(request, ip):
 
 @login_required
 def board(request):
-    pass
+    if request.method == "GET":
+        return BoardListView.as_view()(request)
+    elif request.method == "POST":
+        form = BoardForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            # import ipdb;ipdb.set_trace()
+            Board.objects.create(
+                writer=request.user,
+                contents=form.cleaned_data['contents'],
+                subject=form.cleaned_data['subject'],
+                img=form.cleaned_data['img'],
+                notImg=form.cleaned_data['notImg'],
+            )
+
+            return HttpResponseRedirect(reverse('board'))
+
+        variables = RequestContext(request, {
+            'form': form,
+            'action': reverse('board')
+        })
+
+        return render_to_response(
+            'boardNew.html',
+            variables,
+        )
+
+
+class BoardListView(ListView):
+    model = Board
+    template_name = 'board.html'
+    context_object_name = 'Board'
 
 
 @login_required
 def boardNew(request):
-    pass
+    if request.method == "GET":
+        form = BoardForm()
+
+        variables = RequestContext(request, {
+            'form': form,
+            'action': reverse('board')
+        })
+
+        return render_to_response(
+            'boardNew.html',
+            variables,
+        )
+
+
+@login_required
+def boardDetail(request, pk):
+    if request.method == "GET":
+        return BoardDetailView.as_view()(request, pk=pk)
+
+
+class BoardDetailView(DetailView):
+    model = Board
+    template_name = 'boardDetail.html'
+    context_object_name = 'BoardDetailView'
+
 
 
 @login_required

@@ -145,7 +145,7 @@ function add(){
 	var item = t.parent(); //div
 	
 	$.post(workDailyRecord+"?ajax", t.serialize(), function(result){
-			item.find("tbody").append($("tr", result).get(0));
+			item.find("table").append($("tr", result).get(0));
 			t.each(function(){
 				this.reset();
 			});

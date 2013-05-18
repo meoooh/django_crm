@@ -311,3 +311,15 @@ class ChatMessage(models.Model):
 
     class Meta:
         ordering = ['pk']
+
+
+class Board(models.Model):
+    writer = models.ForeignKey(User, to_field='username')
+    contents = models.TextField(null=True, blank=True,)
+    subject = models.CharField(max_length=255, null=True, blank=True,)
+    img = models.ImageField(upload_to='attachment/..', null=True, blank=True,)
+    notImg = models.FileField(upload_to='attachment/..', null=True, blank=True,)
+    history = generic.GenericRelation(History, null=True)
+
+    def __unicode__(self):
+        return self.subject

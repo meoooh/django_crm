@@ -400,3 +400,9 @@ class ChatMessageForm(forms.Form):
         max_length=255,
         label='',
     )
+
+
+class BoardForm(forms.ModelForm):
+    class Meta:
+        model = Board
+        fields = ('subject', 'contents', 'img', 'notImg')

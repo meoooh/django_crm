@@ -27,6 +27,7 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
     """Chat connection implementation"""
     # Class level variable
     participants = set()
+    room = dict()
 
     def on_open(self, info):
         # import ipdb;ipdb.set_trace()
@@ -37,14 +38,24 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
         # Broadcast message
         # import ipdb;ipdb.set_trace()
         message = simplejson.loads(message)
+        # import ipdb;ipdb.set_trace()
+
+        if message.get('join', False):
+            roomId = message['join']
+
+            if not self.room.get(roomId, False):
+                self.room[roomId] = set()
+            self.room[roomId].add(self)
+
+            return
         try:
             # 세션값으로 User 얻기(이부분 mysql로 하면 에러난다...)
             session_key = self.session.conn_info.cookies['sessionid'].value
-            
+
             ##### 에러방지를 위한 임시코드 시작 ###
             # User.objects.create(username='tmp')
             # User.objects.get(username='tmp').delete()
-            User.objects.all().update() # https://www.facebook.com/groups/django/permalink/529096727126831/?comment_id=529184507118053&offset=0&total_comments=5
+            # User.objects.all().update() # https://www.facebook.com/groups/django/permalink/529096727126831/?comment_id=529184507118053&offset=0&total_comments=5
             # https://www.facebook.com/groups/django/permalink/529096727126831/?comment_id=529192777117226&offset=0&total_comments=10
             ##### 에러방지를 위한 임시코드 끝 ###
 
@@ -56,7 +67,8 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
             # https://www.facebook.com/groups/django/permalink/529096727126831/
             # http://scottbarnham.com/blog/2008/12/04/get-user-from-session-key-in-django/
 
-            chatRoom = ChatRoom.objects.get(pk=message['roomId'])
+            if message.get('roomId', False):
+                chatRoom = ChatRoom.objects.get(pk=message.get('roomId', None))
         except:
             print
             print
@@ -86,7 +98,7 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
         ret['msg'] = chatMessage.message
         ret['date'] = chatMessage.date.isoformat()
 
-        self.broadcast(self.participants, simplejson.dumps(ret))
+        self.broadcast(self.room[message['roomId']], simplejson.dumps(ret))
 
     def on_close(self):
         # Remove client from the clients list and broadcast leave message

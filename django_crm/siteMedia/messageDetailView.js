@@ -16,6 +16,7 @@ function init(){
 
     conn.onopen = function() {
         console.log('open');
+        conn.send('{"join":"'+roomId+'"}');
     };
     conn.onmessage = function(e) {
         var tr = '';
@@ -50,10 +51,13 @@ function init(){
         }
 
         chatTable.append(tr);
+        $(window).scrollTop($(window).scrollTop()+10000) // 스크롤 맨 밑으로 내리기
     };
     conn.onclose = function() {
         console.log('close');
     };
+
+    $("#id_message").focus();
 
     $('form').submit(function(){
         var form = this;

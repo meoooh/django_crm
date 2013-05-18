@@ -2,15 +2,19 @@ from django.conf.urls import patterns, include, url
 import os.path
 from crm.views import *
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
+print settings.MEDIA_ROOT
 
 siteMedia = os.path.join(
     os.path.dirname(__file__), 'siteMedia'
 )
+
+# import ipdb;ipdb.set_trace()
 
 urlpatterns = patterns('',
     # Examples:
@@ -75,6 +79,9 @@ urlpatterns = patterns('',
     url(r'^board/new/$',
         boardNew,
         name="boardNew"),
+    url(r'^board/(?P<pk>[^/]+)/$',
+        boardDetail,
+        name="boardDetail"),
     url(r'^equipment/(?P<slug>[^/]+)?/?$',
         equipmentDetail,
         name="equipmentDetail"),
@@ -87,4 +94,7 @@ urlpatterns = patterns('',
     url(r'^message/(?P<pk>[^/]+)/?$',
         messageDetail,
         name="messageDetail"),
+    url(r'^attachment/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': settings.MEDIA_ROOT},
+        name="attachment"),
 )

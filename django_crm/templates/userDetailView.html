@@ -52,6 +52,24 @@
                         </tr>
                     </table>
                 </li>
+                <li>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td colspan="2">게시글</td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <ul>
+                                {% for i in userDetailView.board_set.all %}
+                                    <li><a href="{% url boardDetail i.pk %}">{{ i.subject }}</a></li>
+                                {% empty %}
+                                    <li>...</li>
+                                {% endfor %}
+                                </ul>
+                            </th>
+                        </tr>
+                    </table>
+                </li>
             </ul>
         </div>
         <div class="span5">

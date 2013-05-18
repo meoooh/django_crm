@@ -14,7 +14,7 @@ class ChannelSession(session.BaseSession):
         self.base.send('msg,' + self.name + ',' + msg)
 
     def on_message(self, msg):
-        import ipdb;ipdb.set_trace()
+        # import ipdb;ipdb.set_trace()
         self.conn.on_message(msg)
 
     def close(self, code=3000, message='Go away!'):
@@ -44,7 +44,7 @@ class MultiplexConnection(conn.SockJSConnection):
         self.handler = DummyHandler(self.session.conn_info)
 
     def on_message(self, msg):
-        import ipdb;ipdb.set_trace()
+        # import ipdb;ipdb.set_trace()
         parts = msg.split(',', 2)
         op, chan = parts[0], parts[1]
 
@@ -76,5 +76,5 @@ class MultiplexConnection(conn.SockJSConnection):
 
     @classmethod
     def get(cls, **kwargs):
-        import ipdb;ipdb.set_trace()
+        # import ipdb;ipdb.set_trace()
         return type('MultiplexRouter', (MultiplexConnection,), dict(channels=kwargs))

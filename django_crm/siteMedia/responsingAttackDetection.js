@@ -5,7 +5,7 @@ $(document).ready(function(){
 				userSearch,
 				{
 					query: query,
-					kind: 'customer',
+					kind: 'Customer',
 					what: 'name'
 				},
 				function(result){
