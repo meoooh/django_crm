@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}게시판{% endblock %}
+{% block content %}
+<div class="row">
+	{% include "menu.html" %}
+	<div class="span10">
+		{% include "boardList.html" %}
+	</div>
+</div>
+
+<script type="text/javascript">
+		var userSearch = "{% url crm.views.searchUser %}"
+</script>
+<script type="text/javascript" src="/siteMedia/userAutocomplete.js">
+</script>
+<script type="text/javascript" src="/siteMedia/jquery.autocomplete.js">
+</script>
+<script type="text/javascript" src="/siteMedia/textareaAutoResize/jquery.autosize.js">
+</script>
+<link rel="stylesheet" href="/siteMedia/jquery.autocomplete.css"
+type="text/css" />
+{% endblock %}
+{% block head %}
+	<script type="text/javascript">
+		var workDailyRecord = "{% url todayWork %}"
+	</script>
+	<script type="text/javascript" src="/siteMedia/workDailyRecord.js">
+	</script>
+{% endblock %}

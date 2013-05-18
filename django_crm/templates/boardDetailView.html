@@ -1,0 +1,43 @@
+<div>
+    <div>
+        <h1>{{ BoardDetailView.subject }}<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ customerDetail.name }}');">x</button></h1><hr />
+    </div>
+    <div style="height: 300px;">
+        <div style="text-align: right;">
+            <a href="{% url userDetail BoardDetailView.writer.username %}">{{ BoardDetailView.writer.get_profile.name }}</a>
+        </div>
+        {% if BoardDetailView.notImg %}
+	        <div style="text-align: right;">
+	        	첨부: <a href="{{ BoardDetailView.notImg.url }}">{{ BoardDetailView.notImg.name }}</a>
+	        </div>
+        {% endif %}
+        {% if BoardDetailView.img %}
+	        <div>
+	        	<img src="{{ BoardDetailView.img.url }}">
+	        </div>
+        {% endif %}
+        <div>
+        	{{ BoardDetailView.contents }}
+    	</div>
+    </div>
+    <div id="note">
+            <div class="customerDetailViewBox">
+                <div class="customerDetailViewTitle">
+                    댓글
+                </div>
+                <div class="more" data-kind="history" data-col="pk" data-start="last">
+                    <a>더보기</a>
+                </div>
+                <div class="customerDetailViewList">
+                    <ul class="customerDetailViewList unstyled"></ul>
+                </div>
+                <div class="addCustomerNotes">
+                    <form method="post" style="margin-bottom: 0" action="/" class="form-inline">
+                        <textarea name="notes" placeholder="내용" style="width:714px; height:35px;"></textarea>
+                        <button class="btn btn-mini" type="submit">추가</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+</div>
+<script type="text/javascript">

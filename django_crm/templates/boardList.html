@@ -1,0 +1,31 @@
+<div>
+	<div>
+		<h1>게시판<button class="btn btn-mini" type="button" onclick="location.href='{% url crm.views.boardNew %}'">게시물 등록</button></h1><hr>
+	</div>
+	<div>
+		<table class="table table-hover">
+			<tr>
+				<th>번호</th>
+				<th>제목</th>
+				<th>작성자</th>
+			</tr>
+			{% for b in Board %}
+				<tr>
+					<td>
+						<a href="{% url boardDetail b.pk %}">{{ b.pk }}</a>
+					</td>
+					<td>
+						<a href="{% url boardDetail b.pk %}">
+							{{ b.subject }}
+						</a>
+					</td>
+					<td>
+						<a href="{% url boardDetail b.pk %}">
+							{{ b.writer.get_profile.name }}
+						</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>

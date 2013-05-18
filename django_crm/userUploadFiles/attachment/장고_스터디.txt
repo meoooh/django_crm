@@ -1,0 +1,7 @@
+½ºÅÂ½¬ 
+git stash list
+git stash save
+git stash pop
+git stash pop --index=5
+git stash save --patch
+git branch -d `git branch --merged`
