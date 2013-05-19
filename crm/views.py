@@ -662,23 +662,41 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def listing(request, slug, kind, page):
     customer = Customer.objects.get(name=slug)
-    contact_list = getattr(customer, kind).all()
-    htmlPage = "listNext.html"
+    # contact_list = getattr(customer, kind).all()
+    # htmlPage = "listNext.html"
+
+    if request.GET['sort'] == 'asc':
+        contact_list = getattr(customer, kind).all().order_by(request.GET['column'])
+    elif request.GET['sort'] == 'dsc':
+        contact_list = getattr(customer, kind).all().order_by("-"+request.GET['column'])
+    else:
+        print "request.GET['sort'] == 'asc' else"
+
+    paginator = Paginator(contact_list, 5)
+
+    if request.GET['startingPoint'] == 'top':
+        htmlPage = "listNext.html"
+        page = page or 1
+    elif request.GET['startingPoint'] == 'bottom':
+        htmlPage = "listPrevious.html"
+        page = page or paginator.num_pages
+    else:
+        print "request.GET['startingPoint'] == 'top' else"
 
     # import ipdb;ipdb.set_trace()
 
-    if 'dsc' in request.GET and request.GET['dsc']:
-        if 'dsc' in request.GET:
-            contact_list = contact_list.order_by("-" + request.GET['col'])
-        else:
-            contact_list = contact_list.order_by(request.GET['col'])
+    # if 'dsc' in request.GET and request.GET['dsc']:
+    #     if 'dsc' in request.GET:
+    #         contact_list = contact_list.order_by("-" + request.GET['col'])
+    #     else:
+    #         contact_list = contact_list.order_by(request.GET['col'])
 
-    paginator = Paginator(contact_list, 5)  # Show 5 contacts per page
+    # paginator = Paginator(contact_list, 5)  # Show 5 contacts per page
 
-    if 'last' in request.GET and request.GET['last'] == "last":
-        page = page or paginator.num_pages
-        htmlPage = "listPrevious.html"
-        print "in", page
+    # if 'last' in request.GET and request.GET['last'] == "last":
+    #     page = page or paginator.num_pages
+    #     htmlPage = "listPrevious.html"
+    #     print "in", page
 
     # import ipdb;ipdb.set_trace()
     try:
@@ -686,6 +704,7 @@ def listing(request, slug, kind, page):
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         contacts = paginator.page(1)
+        print "views.py def listing contacts = paginator.page(page) except"
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         contacts = paginator.page(paginator.num_pages)

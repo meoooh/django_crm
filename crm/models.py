@@ -287,7 +287,6 @@ class ResponsingAttackDetection(models.Model):
 class ChatRoom(models.Model):
     subject = models.CharField(max_length=255, blank=True, null=True)
     participant = models.ManyToManyField(User)
-    isRead = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.subject
@@ -305,6 +304,7 @@ class ChatMessage(models.Model):
     writer = models.ForeignKey(User, to_field='username')
     room = models.ForeignKey(ChatRoom)
     date = models.DateTimeField(auto_now=True)
+    isRead = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.message

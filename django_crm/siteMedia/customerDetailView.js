@@ -25,7 +25,7 @@ function init(){
         var more = this;
         
         $(more).click(function(){
-            if($(more).attr('data-start')){
+            if($(more).attr('data-startingPoint') == 'bottom'){
                 listView.call(more, $(more).parent().find("ul.customerDetailViewList > li:first").attr('data-next'));
             }
             else{
@@ -33,7 +33,7 @@ function init(){
             }
         });
         $(more).parent().find("ul.customerDetailViewList").dblclick(function(){
-            if($(more).attr('data-start')){
+            if($(more).attr('data-startingPoint')){
                 listView.call(more, $(more).parent().find("ul.customerDetailViewList > li:first").attr('data-next'));
             }
             else{
@@ -241,10 +241,17 @@ function listView(page){
     var _url = listViewURL;
     var kind = more.attr('data-kind');
     var _ul=more.parent().find("ul.customerDetailViewList");
-    var _col="?col=";
-    col=more.attr('data-col');
-    dsc=more.attr('data-dsc');
-    last=more.attr('data-start');
+
+    var _data={};
+    try{
+        _data.column = more.attr('data-column');
+        _data.sort = more.attr('data-sort');
+        _data.startingPoint = more.attr('data-startingPoint');
+    }
+    catch(e){
+        alert(e.message+"listView() var _data={} 오류");
+    }
+
     page=page||"";
     
     _url+=kind+"/"+page;
@@ -255,9 +262,9 @@ function listView(page){
         $.ajax({
             url:_url,
             type: "GET",
-            data: {"col":col, "dsc":dsc, "last":last},
+            data: _data,
             success:function(result){
-                if($(more).attr('data-start')=="last"){
+                if($(more).attr('data-startingPoint')=="bottom"){
                     _ul.prepend(result)
                 }
                 else{
@@ -266,7 +273,7 @@ function listView(page){
                 
                 isoFormat2localeString(_ul);
                 
-                if($(more).attr('data-start')=="last"){
+                if($(more).attr('data-startingPoint')=="bottom"){
                     if(more.parent().find("ul.customerDetailViewList > li:first").attr('data-next')=="none"){
                         more.hide();
                     }
@@ -281,7 +288,7 @@ function listView(page){
         });
     }
     else{
-        _ul.load(_url, $.param({"col":col, "dsc":dsc, "last":last}), function(){
+        _ul.load(_url, $.param(_data), function(){
             if(more.parent().find("ul.customerDetailViewList > li:last").attr('data-next')=="none" || !more.parent().find("ul.customerDetailViewList > li:last").length){
                 more.hide();
             }
