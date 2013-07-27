@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}새 메세지{% endblock %}
+{% block content %}
+<div class="row">
+	{% include "menu.html" %}
+	<div class="span10">
+		<h1>새 메세지<button class="btn btn-mini btn-primary" type="button" onclick="location.href='{% url messageList %}'">메세지 등록</button></h1><hr>
+		{% include "baseForm.html" %}
+	</div>
+</div>
+
+<script type="text/javascript">
+	var userSearch = "{% url crm.views.searchUser %}"
+</script>
+<script type="text/javascript" src="/siteMedia/userAutocomplete.js">
+</script>
+<script type="text/javascript" src="/siteMedia/jquery.autocomplete.js">
+</script>
+<script type="text/javascript" src="/siteMedia/textareaAutoResize/jquery.autosize.js">
+</script>
+<link rel="stylesheet" href="/siteMedia/jquery.autocomplete.css"
+type="text/css" />
+<script type="text/javascript" src="/siteMedia/responsingAttackDetection.js">
+</script>
+<script>
+	{% include "sockjs-tornado" %}
+</script>
+<script>
+	function init(){
+		$("#id_subject").focus(function() { this.select(); });
+		$("#id_subject").click(function() { this.select(); });
+
+		$("#id_participants").autocomplete(
+			'/user/search/',
+			{multiple: true, multipleSeparator: ','}
+		);
+	}
+	$(document).ready(init);
+</script>
+{% endblock %}
