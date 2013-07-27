@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, to_field='username')
-    mobile = models.CharField(unique=True, max_length=20, null=True, blank=True)
+    mobile = models.CharField(max_length=20, null=True, blank=True)
     lastIp = models.GenericIPAddressField(null=True, blank=True)
     position = models.CharField(max_length=20, null=True, blank=True)
     function = models.CharField(max_length=20, null=True, blank=True)
@@ -286,7 +286,7 @@ class ResponsingAttackDetection(models.Model):
 
 class ChatRoom(models.Model):
     subject = models.CharField(max_length=255, blank=True, null=True)
-    participant = models.ManyToManyField(User)
+    participants = models.ManyToManyField(User)
 
     def __unicode__(self):
         return self.subject
@@ -301,10 +301,19 @@ class ChatRoom(models.Model):
 
 class ChatMessage(models.Model):
     message = models.CharField(max_length=255, blank=True, null=True)
-    writer = models.ForeignKey(User, to_field='username')
+    writer = models.ForeignKey(
+        User,
+        to_field='username',
+        related_name="writer_user_set",
+    )
     room = models.ForeignKey(ChatRoom)
     date = models.DateTimeField(auto_now=True)
-    isRead = models.BooleanField(default=False)
+    isRead = models.ManyToManyField(
+        User,
+        related_name="isRead_user_set",
+        null=True,
+        blank=True,
+    )
 
     def __unicode__(self):
         return self.message

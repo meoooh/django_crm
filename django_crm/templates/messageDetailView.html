@@ -1,6 +1,11 @@
+<script type="text/javascript">
+    var userId = "{{ user.username }}";
+    var roomId = "{{ MessageDetailView.pk }}";
+</script>
+<script type="text/javascript" src="/siteMedia/messageDetailView.js?a=3"></script>
 <div>
     <div>
-        <h1>{{ MessageDetailView.subject }}<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ userDetailView.name }}');">x</button></h1><hr />
+        <h1>{{ MessageDetailView.subject }}<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="deleteCustomer.call(this, '{{ userDetailView.name }}');">x</button></h1>{% for user in MessageDetailView.participants.all %}{{ user.get_profile.name }}, {% endfor %}<hr />
     </div>
     <div class="row">
         <div class="span10">
@@ -10,16 +15,18 @@
                     {% if md.writer == user %}
                     <td width="50%">&nbsp;</td>
                     <td>
-                        <ul class="unstyled" title="{{ md.date|date:'c' }}">
+                        <ul class="unstyled chatMessage" data-pk="{{ md.pk }}" title="{{ md.date|date:'c' }}">
                             <li><strong>{{ md.writer.get_profile.name }}</strong></li>
                             <li>{{ md.message }}</li>
+                            <li><font size="1">{{ md.date|timesince }}</font></li>
                         </ul>
                     </td>
                     {% else %}
                     <td width="50%">
-                        <ul class="unstyled" title="{{ md.date|date:'c' }}">
+                        <ul class="unstyled chatMessage {% if user not in md.isRead.all %}isRead{% endif %}" data-pk="{{ md.pk }}" title="{{ md.date|date:'c' }}">
                             <li><strong>{{ md.writer.get_profile.name }}</strong></li>
                             <li>{{ md.message }}</li>
+                            <li><font size="1">{{ md.date|timesince }}</font></li>
                         </ul>
                     </td>
                     <td>&nbsp;</td>
@@ -27,16 +34,11 @@
                 </tr>
                 {% endfor %}
             </table>
-            <form class="form-inline">
+            <div id="typing"></div>
+            <form class="form-inline" id="chat_broadcast">
                 {{ form.message }}<!-- 이거 짜잉나게 왜 높이 이상하게 나오는지 모르겠음... 여기선 잘나옴  http://twitter.github.io/bootstrap/base-css.html#forms -->
                 <input type="submit" class="btn">
             </form>
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    var userId = "{{ user.username }}";
-    var roomId = "{{ MessageDetailView.pk }}";
-</script>
-<script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
-<script type="text/javascript" src="/siteMedia/messageDetailView.js?a=1"></script>

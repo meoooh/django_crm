@@ -89,7 +89,7 @@ def loginPage(request):
         try:
             user = request.user.get_profile()
         except ObjectDoesNotExist:
-            UserProfile.objects.create(user=request.user) # 처음에 syncdb할때 관리자 계정은 userprofile가 생기지 않기때문에 이 구문이 필요...
+            UserProfile.objects.create(user=request.user)  # 처음에 syncdb할때 관리자 계정은 userprofile가 생기지 않기때문에 이 구문이 필요...
             user = request.user.get_profile()
         user.lastIp = request.META.get('REMOTE_ADDR')
         user.save()
@@ -1132,7 +1132,6 @@ class BoardDetailView(DetailView):
     context_object_name = 'BoardDetailView'
 
 
-
 @login_required
 def equipmentDetail(request, slug):
     if request.method == 'GET':
@@ -1168,8 +1167,45 @@ def yearTong(request, slug, year):
 
 @login_required
 def messageList(request):
+    # import ipdb;ipdb.set_trace()
     if request.method == "GET":
         return MessageListView.as_view()(request)
+    if request.method == "POST":
+        form = MessageForm(request.POST)
+
+        if form.is_valid():
+            chatRoom = ChatRoom.objects.create(
+                subject=form.cleaned_data['subject']
+            )
+
+            participants = form.cleaned_data['participants'].split(',')
+
+            for participant in participants:
+                participant = participant.strip()
+                try:
+                    user = UserProfile.objects.get(name=participant).user
+                except:
+                    continue
+                chatRoom.participants.add(user)
+                chatRoom.participants.add(request.user)
+
+            return HttpResponseRedirect(
+                reverse(
+                    'messageDetail',
+                    kwargs={'pk': chatRoom.pk},
+                )
+            )
+
+        variables = RequestContext(request, {
+            'form': form,
+            'action': reverse('messageList')
+        })
+
+        return render_to_response(
+            'messageNew.html',
+            variables,
+        )
+
 
 class MessageListView(ListView):
     model = ChatRoom
@@ -1194,3 +1230,19 @@ class MessageDetailView(DetailView):
         context = super(MessageDetailView, self).get_context_data(*args, **kwargs)
         context['form'] = ChatMessageForm()
         return context
+
+
+@login_required
+def messageNew(request):
+    if request.method == 'GET':
+        form = MessageForm()
+
+        variables = RequestContext(request, {
+            'form': form,
+            'action': reverse('messageList')
+        })
+
+        return render_to_response(
+            'messageNew.html',
+            variables,
+        )

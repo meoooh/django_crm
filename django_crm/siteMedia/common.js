@@ -1,3 +1,24 @@
+var conn = null;
+
+if(conn===null){
+    conn = new SockJS('http://meoooh.iptime.org:7070/chat');
+}
+else{
+    conn.close();
+    conn = new SockJS('http://meoooh.iptime.org:7070/chat');
+}
+
+function noti(obj, pk){ // ['noti', ['msg', {'roomId': roomId}]]
+    var text = [];
+    text.push("noti");
+    text.push([]);
+    text[1].push(obj);
+    text[1].push({});
+    text[1][1].roomId = pk;
+
+    conn.send( JSON.stringify(text) );
+}
+
 function isoFormat2localeString(obj){
 		if(!obj){
 			$("span.time").each(function(){
@@ -21,9 +42,4 @@ function change(){
 function init(){
 	isoFormat2localeString();
 }
-
-function hilightingMenu(){
-    $(this).attr('class','active');
-}
-
 $(document).ready(init);

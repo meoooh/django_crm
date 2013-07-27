@@ -12,8 +12,10 @@ class Migration(SchemaMigration):
         db.create_table('crm_chatmessage', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('message', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-            ('writer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], to_field='username')),
+            ('writer', self.gf('django.db.models.fields.related.ForeignKey')(related_name='writer_user_set', to_field='username', to=orm['auth.User'])),
             ('room', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['crm.ChatRoom'])),
+            ('date', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('isRead', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='isRead_user_set', to_field='username', null=True, to=orm['auth.User'])),
         ))
         db.send_create_signal('crm', ['ChatMessage'])
 
@@ -60,18 +62,27 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'crm.chatmessage': {
-            'Meta': {'object_name': 'ChatMessage'},
+        'crm.board': {
+            'Meta': {'object_name': 'Board'},
+            'contents': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'img': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'notImg': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'writer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'to_field': "'username'"})
+        },
+        'crm.chatmessage': {
+            'Meta': {'ordering': "['pk']", 'object_name': 'ChatMessage'},
+            'date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'isRead': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'isRead_user_set'", 'to_field': "'username'", 'null': 'True', 'to': "orm['auth.User']"}),
             'message': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'room': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['crm.ChatRoom']"}),
-            'writer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'to_field': "'username'"})
+            'writer': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'writer_user_set'", 'to_field': "'username'", 'to': "orm['auth.User']"})
         },
         'crm.chatroom': {
             'Meta': {'object_name': 'ChatRoom'},
-            'date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'notification': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'participant': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.User']", 'symmetrical': 'False'}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'})
         },
@@ -154,14 +165,14 @@ class Migration(SchemaMigration):
         },
         'crm.userprofile': {
             'Meta': {'object_name': 'UserProfile'},
-            'function': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
+            'function': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'lastIp': ('django.db.models.fields.GenericIPAddressField', [], {'max_length': '39', 'null': 'True'}),
-            'level': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
-            'mobile': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '70'}),
-            'position': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
-            'team': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
+            'lastIp': ('django.db.models.fields.GenericIPAddressField', [], {'max_length': '39', 'null': 'True', 'blank': 'True'}),
+            'level': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'mobile': ('django.db.models.fields.CharField', [], {'max_length': '20', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '70', 'null': 'True', 'blank': 'True'}),
+            'position': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'team': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'to_field': "'username'", 'unique': 'True'})
         },
         'crm.workdailyrecord': {

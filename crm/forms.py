@@ -397,8 +397,9 @@ class ResponsingAttackDetectionForm(forms.Form):
 
 class ChatMessageForm(forms.Form):
     message = forms.CharField(
-        max_length=255,
+        min_length=1,
         label='',
+        widget=forms.TextInput(attrs={'placeholder': '내용'}),
     )
 
 
@@ -406,3 +407,19 @@ class BoardForm(forms.ModelForm):
     class Meta:
         model = Board
         fields = ('subject', 'contents', 'img', 'notImg')
+
+
+class MessageForm(forms.Form):
+    subject = forms.CharField(
+        min_length=1,
+        label='',
+        initial='제목 없음',
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': '메세지 제목'}),
+    )
+
+    participants = forms.CharField(
+        min_length=1,
+        label='',
+        widget=forms.TextInput(attrs={'placeholder': '대화상대'}),
+    )

@@ -17,6 +17,19 @@ from django.contrib.sessions.models import Session
 from crm.utility import printException
 
 
+def getUser(s):
+    import ipdb;ipdb.set_trace()
+    try:
+        session = Session.objects.get(session_key=s)
+        uid = session.get_decoded().get('_auth_user_id')
+        return User.objects.get(pk=uid)
+    except:
+        printException(sys.exc_info())
+        print "\n\n\n\ngetUser except!!\n\n\n\n"
+        print "\n\n\n\ns: "+s+"\n\n\n\n"
+        # exit()
+
+
 class IndexHandler(tornado.web.RequestHandler):
     """Regular HTTP handler to serve the chatroom page"""
     def get(self):
@@ -37,68 +50,91 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
     def on_message(self, message):
         # Broadcast message
         # import ipdb;ipdb.set_trace()
-        message = simplejson.loads(message)
-        # import ipdb;ipdb.set_trace()
+        message = simplejson.loads(message)  # ['join',{'join': roomId}]
+        sess = self.session.conn_info.cookies['sessionid'].value
 
-        if message.get('join', False):
-            roomId = message['join']
+        if message[0] == 'msg':  # 채팅시 ['msg',{'roomId': roomId, 'msg':'바보'}]
+            message = message[1]
+            try:
+                user = getUser(sess)
+                chatRoom = ChatRoom.objects.get(pk=message['roomId'])
+            except:
+                printException(sys.exc_info())
+                print "\n\ncrm.chat.myChat.py except1\n\n"
+
+            try:
+                chatMessage = ChatMessage.objects.create(
+                    message=message['msg'],
+                    writer=user,
+                    room=chatRoom,
+                )
+            except:
+                printException(sys.exc_info())
+                print "\n\ncrm.chat.myChat.py except2\n\n"
+
+            ret = []  # ['msg']
+            ret.append('msg')
+            ret.append({})
+            ret[1]['id'] = chatMessage.writer.username
+            ret[1]['name'] = chatMessage.writer.get_profile().name
+            ret[1]['msg'] = chatMessage.message
+            ret[1]['date'] = chatMessage.date.isoformat()
+            ret[1]['pk'] = chatMessage.pk
+
+            self.broadcast(self.room[message['roomId']], simplejson.dumps(ret))
+        elif message[0] == 'read':
+            import ipdb;ipdb.set_trace()
+            message = message[1]
+
+            try:
+                user = getUser(sess).get_profile().name
+            except:
+                printException(sys.exc_info())
+                print "\n\ncrm.chat.myChat.py except3\n\n"
+
+            chatMessage = ChatMessage.objects.get(pk=message['msgPk'])
+            chatMessage.isRead.add(user)
+        elif message[0] == 'typing':
+            # import ipdb;ipdb.set_trace()
+            roomId = message[1]['roomId']
+
+            ret = ['typing', getUser(sess).get_profile().name]
+
+            self.broadcast(self.room[roomId], simplejson.dumps(ret))
+        elif message[0] == 'noti':  # JSON 형식: ['noti', ['msg', {'roomId': roomId}]]
+            # import ipdb;ipdb.set_trace()
+            # message = message[1]
+
+            if message[1][0] == 'msg':
+            # if message[0] == 'msg':
+                # message = message[0]
+
+                try:
+                    chatRoom = ChatRoom.objects.get(pk=message[1][1]['roomId'])
+                except:
+                    print "\n\ncrm.chat.myChat.py except4\n\n"
+                    printException(sys.exc_info())
+                    print "\n\ncrm.chat.myChat.py except5\n\n"
+                    return
+
+                users = chatRoom.participants.all()
+
+                for u in self.participants:
+                    if getUser(u.session.conn_info.cookies['sessionid'].value) in users:
+                        u.send(simplejson.dumps(message))
+            elif message[1][0] == 'mail':
+                pass
+            else:
+                pass
+        elif message[0] == 'join':  # 입장시 ['join',{'join': roomId}]
+            # import ipdb;ipdb.set_trace()
+            roomId = message[1]['join']
 
             if not self.room.get(roomId, False):
                 self.room[roomId] = set()
             self.room[roomId].add(self)
-
-            return
-        try:
-            # 세션값으로 User 얻기(이부분 mysql로 하면 에러난다...)
-            session_key = self.session.conn_info.cookies['sessionid'].value
-
-            ##### 에러방지를 위한 임시코드 시작 ###
-            # User.objects.create(username='tmp')
-            # User.objects.get(username='tmp').delete()
-            # User.objects.all().update() # https://www.facebook.com/groups/django/permalink/529096727126831/?comment_id=529184507118053&offset=0&total_comments=5
-            # https://www.facebook.com/groups/django/permalink/529096727126831/?comment_id=529192777117226&offset=0&total_comments=10
-            ##### 에러방지를 위한 임시코드 끝 ###
-
-            session = Session.objects.get(session_key=session_key)  # 여기서 세션값을 가져오지 못하는 에러가 있음... 그런데 db insert 작업후에는 정상적으로 가져옴...
-            uid = session.get_decoded().get('_auth_user_id')
-            user = User.objects.get(pk=uid)
-            # 참조
-            # https://www.facebook.com/groups/django/permalink/518594774843693/
-            # https://www.facebook.com/groups/django/permalink/529096727126831/
-            # http://scottbarnham.com/blog/2008/12/04/get-user-from-session-key-in-django/
-
-            if message.get('roomId', False):
-                chatRoom = ChatRoom.objects.get(pk=message.get('roomId', None))
-        except:
-            print
-            print
-            print self.session.conn_info.cookies['sessionid'].value
-            printException(sys.exc_info())
-            print "crm.chat.myChat.py except!!!!!!!!!!!!!!!!!!!!!!!!!"
-            print
-            print
-            print
-            print
-            print
-            print
-            return
-
-        try:
-            chatMessage = ChatMessage.objects.create(
-                message=message['msg'],
-                writer=user,
-                room=chatRoom,
-            )
-        except:
-            return
-
-        ret = {}
-        ret['id'] = chatMessage.writer.username
-        ret['name'] = chatMessage.writer.get_profile().name
-        ret['msg'] = chatMessage.message
-        ret['date'] = chatMessage.date.isoformat()
-
-        self.broadcast(self.room[message['roomId']], simplejson.dumps(ret))
+        else:
+            print "\n\nmyChat.py on_message else6\n\n"
 
     def on_close(self):
         # Remove client from the clients list and broadcast leave message

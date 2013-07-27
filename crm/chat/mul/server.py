@@ -61,6 +61,6 @@ if __name__ == "__main__":
     app = tornado.web.Application(
             [(r"/", IndexHandler), (r"/multiplex.js", MultiplexStaticHandler)] + EchoRouter.urls
     )
-    app.listen(7070)
+    app.listen(6060)
 
     tornado.ioloop.IOLoop.instance().start()
