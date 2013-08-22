@@ -4,13 +4,13 @@
 <div class="row">
 	{% include "menu.html" %}
 	<div class="span10">
-		<h1>게시물<button class="btn btn-mini btn-primary" type="button" onclick="location.href='{% url board %}'">게시물 등록</button></h1><hr>
+		<h1>게시물<button class="btn btn-mini btn-primary" type="button" onclick="location.href='{% url 'board' %}'">게시물 등록</button></h1><hr>
 		{% include "baseForm.html" %}
 	</div>
 </div>
 
 <script type="text/javascript">
-		var userSearch = "{% url crm.views.searchUser %}"
+		var userSearch = "{% url 'crm.views.searchUser' %}"
 </script>
 <script type="text/javascript" src="/siteMedia/userAutocomplete.js">
 </script>

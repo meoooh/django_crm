@@ -6,7 +6,7 @@ conn.onmessage = function(e){
 
 		if(result[0] == 'msg'){
 			$("ul.nav>li#message").attr('class', 'active');
-			$("ul.nav>li#message>a").attr('href', '{% url messageList %}'+result[1]['roomId']);
+			$("ul.nav>li#message>a").attr('href', '{% url 'messageList' %}'+result[1]['roomId']);
 		}
 	}
 	else if(result[0] == 'mail'){

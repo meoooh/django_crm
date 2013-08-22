@@ -43,7 +43,7 @@
                             <th>
                                 <ul>
                                 {% for i in userDetailView.customer_salespersons_user_set.all %}
-                                    <li><a href="{% url customerDetailView i.name %}">{{ i.name }}</a></li>
+                                    <li><a href="{% url 'customerDetailView' i.name %}">{{ i.name }}</a></li>
                                 {% empty %}
                                     <li>...</li>
                                 {% endfor %}
@@ -61,7 +61,7 @@
                             <th>
                                 <ul>
                                 {% for i in userDetailView.board_set.all %}
-                                    <li><a href="{% url boardDetail i.pk %}">{{ i.subject }}</a></li>
+                                    <li><a href="{% url 'boardDetail' i.pk %}">{{ i.subject }}</a></li>
                                 {% empty %}
                                     <li>...</li>
                                 {% endfor %}
@@ -83,7 +83,7 @@
                             <th>
                                 <ul>
                                 {% for i in userDetailView.customer_workers_user_set.all %}
-                                    <li><a href="{% url customerDetailView i.name %}">{{ i.name }}</a></li>
+                                    <li><a href="{% url 'customerDetailView' i.name %}">{{ i.name }}</a></li>
                                 {% empty %}
                                     <li>...</li>
                                 {% endfor %}
@@ -101,7 +101,7 @@
                             <th>
                                 <ul>
                                 {% for i in userDetailView.responsingattackdetection_set.all %}
-                                    <li><a href="{% url responsingAttackDetectionDetail i.slug %}">{{ i.slug }}</a></li>
+                                    <li><a href="{% url 'responsingAttackDetectionDetail' i.slug %}">{{ i.slug }}</a></li>
                                 {% empty %}
                                     <li>...</li>
                                 {% endfor %}

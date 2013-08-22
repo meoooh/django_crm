@@ -18,14 +18,14 @@
                 </tr>
                 <tr>
                     <td>소유</td>
-                    <th>{% for i in ipDetailView.customer_ipaddrs_ipaddr_set.all %}<a href="{% url customerDetailView i.name %}">{{ i.name }}</a>{% endfor %}</th>
+                    <th>{% for i in ipDetailView.customer_ipaddrs_ipaddr_set.all %}<a href="{% url 'customerDetailView' i.name %}">{{ i.name }}</a>{% endfor %}</th>
                 </tr>
                 <tr>
                     <td>장비</td>
                     <th>
                         <ul>
                         {% for i in ipDetailView.equipment_set.all %}
-                        <li><a href="{% url equipmentDetail i.no %}">{{ i.no }}</a></li>
+                        <li><a href="{% url 'equipmentDetail' i.no %}">{{ i.no }}</a></li>
                         {% endfor %}
                         </ul>
                     </th>
@@ -41,7 +41,7 @@
                     <th colspan="2">
                         <ul>
                         {% for i in ipDetailView.history.all %}
-                            <li><span class="time">{{ i.date|date:"c" }}</span> {{ i.contents }} - <a href="{% url userDetail i.writer.username %}">{{ i.writer.get_profile.name }}</a></li>
+                            <li><span class="time">{{ i.date|date:"c" }}</span> {{ i.contents }} - <a href="{% url 'userDetail' i.writer.username %}">{{ i.writer.get_profile.name }}</a></li>
                         {% empty %}
                             <li>...</li>
                         {% endfor %}
@@ -63,7 +63,7 @@
                             <th>
                                 <ul>
                                 {% for i in ipDetailView.ResponsingAttackDetection_attackerIp_set.all %}
-                                    <li><a href="{% url responsingAttackDetectionDetail i.slug %}">{{ i.slug }}</a></li>
+                                    <li><a href="{% url 'responsingAttackDetectionDetail' i.slug %}">{{ i.slug }}</a></li>
                                 {% empty %}
                                     <li>...</li>
                                 {% endfor %}
@@ -85,7 +85,7 @@
                             <th>
                                 <ul>
                                 {% for i in ipDetailView.ResponsingAttackDetection_victimIp_set.all %}
-                                    <li><a href="{% url responsingAttackDetectionDetail i.slug %}">{{ i.slug }}</a></li>
+                                    <li><a href="{% url 'responsingAttackDetectionDetail' i.slug %}">{{ i.slug }}</a></li>
                                 {% empty %}
                                     <li>...</li>
                                 {% endfor %}
@@ -111,6 +111,6 @@
     </div>
 </div>
 <script type="text/javascript">
-    var getIpAddressCountry = "{% url getIpAddressCountry ipDetailView.addr %}";
+    var getIpAddressCountry = "{% url 'getIpAddressCountry' ipDetailView.addr %}";
 </script>
 <script type="text/javascript" src="/siteMedia/ipDetailView.js?a=1"></script>

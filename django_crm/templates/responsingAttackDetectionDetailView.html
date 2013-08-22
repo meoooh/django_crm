@@ -11,19 +11,19 @@
                 <th>공격명</th>
                 <td>{% for i in responsingAttackDetectionDetailView.kinds %}{% if responsingAttackDetectionDetailView.kind == i.0 %}{{ i.1 }}{% endif %}{% endfor %}</td>
                 <th>처리자</th>
-                <td><a href="{% url userDetail user.username %}">{{ responsingAttackDetectionDetailView.user.get_profile.name }}</a></td>
+                <td><a href="{% url 'userDetail' user.username %}">{{ responsingAttackDetectionDetailView.user.get_profile.name }}</a></td>
             </tr>
             <tr>
                 <th>공격자</th>
-                <td><a href="{% url ipDetail responsingAttackDetectionDetailView.attackerIp.addr %}">{{ responsingAttackDetectionDetailView.attackerIp.addr }}</a></td>
+                <td><a href="{% url 'ipDetail' responsingAttackDetectionDetailView.attackerIp.addr %}">{{ responsingAttackDetectionDetailView.attackerIp.addr }}</a></td>
                 <th>희생자</th>
-                <td><a href="{% url ipDetail responsingAttackDetectionDetailView.victimIp.addr %}">{{ responsingAttackDetectionDetailView.victimIp.addr }}</a></td>
+                <td><a href="{% url 'ipDetail' responsingAttackDetectionDetailView.victimIp.addr %}">{{ responsingAttackDetectionDetailView.victimIp.addr }}</a></td>
             </tr>
             <tr>
                 <th>일시</th>
                 <td><span class="time">{{ responsingAttackDetectionDetailView.date|date:"c" }}</span></td>
                 <th>고객사</th>
-                <td><a href="{% url customerDetailView responsingAttackDetectionDetailView.customer.name %}">{{ responsingAttackDetectionDetailView.customer.name }}</a></td>
+                <td><a href="{% url 'customerDetailView' responsingAttackDetectionDetailView.customer.name %}">{{ responsingAttackDetectionDetailView.customer.name }}</a></td>
             </tr>
             <tr>
                 <th colspan="4">비고</th>

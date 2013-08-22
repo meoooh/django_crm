@@ -1,12 +1,12 @@
 <div>
 	<div>
-		<h1>메세지<button class="btn btn-mini" type="button" onclick="location.href='{% url messageNew %}'">메세지 등록</button></h1><hr>
+		<h1>메세지<button class="btn btn-mini" type="button" onclick="location.href='{% url 'messageNew' %}'">메세지 등록</button></h1><hr>
 	</div>
 	<div>
 		<table class="table table-hover">
 			{% for ml in MessageListView %}
 				{% if user in ml.participants.all %}
-				<tr onclick="location.href='{% url messageDetail ml.pk %}'" onmouseover="style.cursor='pointer';">
+				<tr onclick="location.href='{% url 'messageDetail' ml.pk %}'" onmouseover="style.cursor='pointer';">
 					<td>{{ ml.subject }}</td>
 					<td>{% if ml.isRead %}V{% endif %}</td>
 				</tr>

@@ -1,6 +1,6 @@
 <div>
 	<div>
-		<h1>침입탐지대응<button class="btn btn-mini" type="button" onclick="location.href='{% url responsingAttackDetectionNew %}'">추가</button></h1><hr>
+		<h1>침입탐지대응<button class="btn btn-mini" type="button" onclick="location.href='{% url 'responsingAttackDetectionNew' %}'">추가</button></h1><hr>
 	</div>
 	<div>
 		<table class="table table-hover">
@@ -13,20 +13,20 @@
 			{% for rl in responsingAttackDetection %}
 				<tr>
 					<td>
-						<a href="{% url responsingAttackDetectionDetail rl.slug %}">{% for i in rl.kinds %}{% if rl.kind == i.0 %}{{ i.1 }}{% endif %}{% endfor %}</a>
+						<a href="{% url 'responsingAttackDetectionDetail' rl.slug %}">{% for i in rl.kinds %}{% if rl.kind == i.0 %}{{ i.1 }}{% endif %}{% endfor %}</a>
 					</td>
 					<td>
-						<a href="{% url responsingAttackDetectionDetail rl.slug %}">
+						<a href="{% url 'responsingAttackDetectionDetail' rl.slug %}">
 							{{ rl.customer.name }}
 						</a>
 					</td>
 					<td>
-						<a href="{% url responsingAttackDetectionDetail rl.slug %}">
+						<a href="{% url 'responsingAttackDetectionDetail' rl.slug %}">
 							{{ rl.attackerIp.addr }}
 						</a>
 					</td>
 					<td>
-						<a href="{% url responsingAttackDetectionDetail rl.slug %}">
+						<a href="{% url 'responsingAttackDetectionDetail' rl.slug %}">
 							{{ rl.victimIp.addr }}
 						</a>
 					</td>

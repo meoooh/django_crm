@@ -4,7 +4,7 @@
     </div>
     <div style="height: 300px;">
         <div style="text-align: right;">
-            <a href="{% url userDetail BoardDetailView.writer.username %}">{{ BoardDetailView.writer.get_profile.name }}</a>
+            <a href="{% url 'userDetail' BoardDetailView.writer.username %}">{{ BoardDetailView.writer.get_profile.name }}</a>
         </div>
         {% if BoardDetailView.notImg %}
 	        <div style="text-align: right;">

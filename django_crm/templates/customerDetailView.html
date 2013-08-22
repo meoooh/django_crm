@@ -6,7 +6,7 @@
     jsonData="";
 
       $.ajax({
-        url: "{% url yearTong customerDetail.name 2013 %}",
+        url: "{% url 'yearTong' customerDetail.name 2013 %}",
         success: function(result){
             jsonData = result;
         },
@@ -52,9 +52,9 @@
             </tr>
             <tr>
                 <th>작업자</th>
-                <td>{% for i in customerDetail.workers.all %}<a href="{% url userDetail i.username %}">{{ i.userprofile.name }}</a>{% endfor %}</td>
+                <td>{% for i in customerDetail.workers.all %}<a href="{% url 'userDetail' i.username %}">{{ i.userprofile.name }}</a>{% endfor %}</td>
                 <th>담당영업</th>
-                <td>{% for i in customerDetail.salespersons.all %}<a href="{% url userDetail i.username %}">{{ i.userprofile.name }}</a>{% endfor %}</td>
+                <td>{% for i in customerDetail.salespersons.all %}<a href="{% url 'userDetail' i.username %}">{{ i.userprofile.name }}</a>{% endfor %}</td>
                 <th>비고</th>
                 <td>aa</td>
             </tr>
@@ -209,12 +209,12 @@
     </div>
 </div>
 <script type="text/javascript">
-    var customerNoteURL = "{% url addCustomerNotes customerDetail.name %}";
-    var customerIPaddrURL = "{% url addCustomerIPaddrs customerDetail.name %}";
-    var listViewURL = "{% url listing customerDetail.name %}";
-    var customerDomainURL = "{% url actionCustomerDomains customerDetail.name %}";
-    var customerEquipmentURL = "{% url actionCustomerEquipments customerDetail.name %}";
-    var customerPersonInChargeURL = "{% url actionCustomerPersonInCharges customerDetail.name %}";
-    var customerIpDetailURL = "{% url ipDetail %}";
+    var customerNoteURL = "{% url 'addCustomerNotes' customerDetail.name %}";
+    var customerIPaddrURL = "{% url 'addCustomerIPaddrs' customerDetail.name %}";
+    var listViewURL = "{% url 'listing' customerDetail.name %}";
+    var customerDomainURL = "{% url 'actionCustomerDomains' customerDetail.name %}";
+    var customerEquipmentURL = "{% url 'actionCustomerEquipments' customerDetail.name %}";
+    var customerPersonInChargeURL = "{% url 'actionCustomerPersonInCharges' customerDetail.name %}";
+    var customerIpDetailURL = "{% url 'ipDetail' %}";
 </script>
 <script type="text/javascript" src="/siteMedia/customerDetailView.js?a=14"></script>

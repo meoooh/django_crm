@@ -1,6 +1,6 @@
 <div>
 	<div>
-		<h1>고객관리<button class="btn btn-mini" type="button" onclick="location.href='{% url crm.views.customerRegistration %}'">고객 등록</button></h1><hr>
+		<h1>고객관리<button class="btn btn-mini" type="button" onclick="location.href='{% url 'crm.views.customerRegistration' %}'">고객 등록</button></h1><hr>
 	</div>
 	<div>
 		<table class="table table-hover">
@@ -15,30 +15,30 @@
 			{% for cl in customerList %}
 				<tr>
 					<td>
-						<a href="{% url customerDetailView cl.name %}">{{ cl.name }}</a>
+						<a href="{% url 'customerDetailView' cl.name %}">{{ cl.name }}</a>
 					</td>
 					<td>
-						<a href="{% url customerDetailView cl.name %}">
+						<a href="{% url 'customerDetailView' cl.name %}">
 							{{ cl.equipments.all.0.ipaddr.addr }}
 						</a>
 					</td>
 					<td>
-						<a href="{% url customerDetailView cl.name %}">
+						<a href="{% url 'customerDetailView' cl.name %}">
 							{{ cl.equipments.all.1.ipaddr.addr }}
 						</a>
 					</td>
 					<td>
-						<a href="{% url customerDetailView cl.name %}">
+						<a href="{% url 'customerDetailView' cl.name %}">
 							{{ cl.personInCharges.all.0.name }}
 						</a>
 					</td>
 					<td>
-						<a href="{% url customerDetailView cl.name %}">
+						<a href="{% url 'customerDetailView' cl.name %}">
 							{{ cl.personInCharges.all.0.mobile1 }}
 						</a>
 					</td>
 					<td>
-						<a href="{% url customerDetailView cl.name %}">
+						<a href="{% url 'customerDetailView' cl.name %}">
 							{{ cl.dataFolder }}
 						</a>
 					</td>

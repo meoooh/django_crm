@@ -9,7 +9,7 @@
 </div>
 
 <script type="text/javascript">
-		var userSearch = "{% url crm.views.searchUser %}"
+		var userSearch = "{% url 'crm.views.searchUser' %}"
 </script>
 <script type="text/javascript" src="/siteMedia/userAutocomplete.js">
 </script>
@@ -25,7 +25,7 @@ type="text/css" />
 {% endblock %}
 {% block head %}
 	<script type="text/javascript">
-		var workDailyRecord = "{% url todayWork %}"
+		var workDailyRecord = "{% url 'todayWork' %}"
 	</script>
 	<script type="text/javascript" src="/siteMedia/workDailyRecord.js">
 	</script>
