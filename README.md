@@ -19,7 +19,7 @@ Django_crm
     * [Django](https://www.djangoproject.com) 1.5.2
     * [SockJs-tornado](https://github.com/mrjoes/sockjs-tornado)
     * [iptools](https://github.com/bd808/python-iptools)
-    * [simplejson](http://simplejson.readthedocs.org/)
+    * [simplejson](https://github.com/simplejson/simplejson)
 
 기능설명
 --------
