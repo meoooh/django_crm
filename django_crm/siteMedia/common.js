@@ -1,11 +1,12 @@
 var conn = null;
+var url = document.domain;
 
 if(conn===null){
-    conn = new SockJS('http://meoooh.iptime.org:7070/chat');
+    conn = new SockJS('http://'+url+':7070/chat');
 }
 else{
     conn.close();
-    conn = new SockJS('http://meoooh.iptime.org:7070/chat');
+    conn = new SockJS('http://'+url+':7070/chat');
 }
 
 function noti(obj, pk){ // ['noti', ['msg', {'roomId': roomId}]]

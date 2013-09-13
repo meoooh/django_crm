@@ -2,8 +2,7 @@
 
 import urllib2
 import simplejson
-import iptools  # http://python-iptools.readthedocs.org/en/latest/
-import sys
+import iptools   # http://python-iptools.readthedocs.org/en/latest/
 from django.http import Http404
 
 
@@ -34,20 +33,20 @@ def GeoIP(s):
 
 def ipValidation(t):
 	if '/' in t:
-		if iptools.validate_cidr(t):
+		if iptools.ipv4.validate_cidr(t):
 			return iptools.IpRange(t)
 	elif '-' in t:
 		s, e = t.split('-')
 		
-		if iptools.validate_ip(s) and iptools.validate_ip(e):
+		if iptools.ipv4.validate_ip(s) and iptools.ipv4.validate_ip(e):
 			return iptools.IpRange(s, e)
 	elif '~' in t:
 		s, e = t.split('~')
 		
-		if iptools.validate_ip(s) and iptools.validate_ip(e):
+		if iptools.ipv4.validate_ip(s) and iptools.ipv4.validate_ip(e):
 			return iptools.IpRange(s, e)
 	else:
-		if iptools.validate_ip(t):
+		if iptools.ipv4.validate_ip(t):
 			return iptools.IpRange(t)
 			
 	return False

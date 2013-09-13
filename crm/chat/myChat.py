@@ -9,7 +9,7 @@ import sockjs.tornado
 import os
 import sys
 
-sys.path.append('/root/django_crm')
+sys.path.append( os.path.join(os.path.dirname(__file__), '..', '..') )
 os.environ['DJANGO_SETTINGS_MODULE'] = 'django_crm.settings'
 from crm.models import *
 import simplejson
@@ -18,7 +18,7 @@ from crm.utility import printException
 
 
 def getUser(s):
-    import ipdb;ipdb.set_trace()
+    # import ipdb;ipdb.set_trace()
     try:
         session = Session.objects.get(session_key=s)
         uid = session.get_decoded().get('_auth_user_id')
@@ -83,11 +83,11 @@ class ChatConnection(sockjs.tornado.SockJSConnection):
 
             self.broadcast(self.room[message['roomId']], simplejson.dumps(ret))
         elif message[0] == 'read':
-            import ipdb;ipdb.set_trace()
+            # import ipdb;ipdb.set_trace()
             message = message[1]
 
             try:
-                user = getUser(sess).get_profile().name
+                user = getUser(sess)
             except:
                 printException(sys.exc_info())
                 print "\n\ncrm.chat.myChat.py except3\n\n"
