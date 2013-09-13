@@ -65,7 +65,7 @@ Django_crm
 
 ![country](http://img.naver.net/static/www/u/2013/0819/nmms_111143893.gif)
 
----
+
 [Bootstrap]: http://getbootstrap.com
 [Autocomplete]: http://bassistance.de/jquery-plugins/jquery-plugin-autocomplete
 [SockJS-tornado]: https://github.com/mrjoes/sockjs-tornado
