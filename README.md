@@ -57,15 +57,15 @@ Django_crm
 
   ![infinite scroll](https://raw.github.com/meoooh/django_crm/1.5.2/image/infiniteScroll.jpg)
 
-  ![infinite scroll2](http://img.naver.net/static/www/u/2013/0819/infiniteScroll2.jpg)
+  ![infinite scroll2](https://raw.github.com/meoooh/django_crm/1.5.2/image/infiniteScroll2.jpg)
 
 * 차트 그리기(Pie Chart in [Google Charts])
 
-  ![chart](http://img.naver.net/static/www/u/2013/0819/chart.jpg)
+  ![chart](https://raw.github.com/meoooh/django_crm/1.5.2/image/chart.jpg)
 
 * 국가 얻어오기 via [http://freegeoip.net]
 
-  ![country](http://img.naver.net/static/www/u/2013/0819/country.jpg)
+  ![country](https://raw.github.com/meoooh/django_crm/1.5.2/image/country.jpg)
 
 
 [Bootstrap]: http://getbootstrap.com
