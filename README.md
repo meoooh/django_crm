@@ -22,7 +22,7 @@ Django_crm
 --------
 * 기본 CRUD
 
-  ![기본 CRUD](http://img.naver.net/static/www/u/2013/0819/nmms_111143893.gif)
+  ![기본 CRUD](https://raw.github.com/meoooh/django_crm/1.5.2/image/ajaxCRUD.jpg)
     
   * 고객등록시 `작업자`, `담당영업`은 등록된 사용자들의 이름을 입력해야합니다. 현재 등록된 사용자는 (`루트`, `김한기`, `모젯` 등이 있습니다.)
 
