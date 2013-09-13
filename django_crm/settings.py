@@ -4,8 +4,9 @@ import os
 
 SITE_ROOT = os.path.abspath(os.path.dirname(__file__))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+ALLOWED_HOSTS = ['*']
 
 AUTH_PROFILE_MODULE = 'crm.UserProfile'
 
