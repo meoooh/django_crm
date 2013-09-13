@@ -1050,7 +1050,7 @@ class UserDetailView(DetailView):
 @login_required
 def ipDetail(request, slug):
     if request.method == 'GET':
-        if iptools.validate_ip(slug):
+        if ipValidation(slug):
             return IpDetailView.as_view()(request, slug=slug)
         else:
             return HttpResponse("no ip", status=404)
