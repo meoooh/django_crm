@@ -1,12 +1,10 @@
 Django_crm
 ==========
 
-* [http://192.241.237.170:8080](http://192.241.237.170:8080)
-
 * 구현된 기능
   * 기본 CRUD
   * 비동기 CRUD
-  * 자동완성(Typeahead in [Bootstrap][], [Autocomplete] in Jquery plugin)
+  * 자동완성(Typeahead in [Bootstrap][], [Autocomplete] in [Jquery](http://http://jquery.com) plugin)
   * 실시간 처리([SockJS-tornado])
       * 채팅
       * 알림
@@ -53,7 +51,7 @@ Django_crm
 
       ![알림](https://raw.github.com/meoooh/django_crm/1.5.2/image/noti.jpg)
 
-          * 메세지가 아닌 다른페이지에 머물고 있을때 다른 사용자가 `메세지(채팅)`를 보내면 `메세지`버튼이 변하고, 클릭했을때 해당 채팅방으로 바로 이동합니다.
+        * 메세지가 아닌 다른페이지에 머물고 있을때 다른 사용자가 `메세지(채팅)`를 보내면 `메세지`버튼이 변하고, 클릭했을때 해당 채팅방으로 바로 이동합니다.
 
 * infinite scroll
 
