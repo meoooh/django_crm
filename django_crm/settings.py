@@ -17,23 +17,15 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-# import ipdb;ipdb.set_trace()
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'wkdrh1313@gmail.com'
-EMAIL_HOST_PASSWORD = 'gksrlwkdrh1'
-EMAIL_PORT = 587
-
-MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'mysite',                      # Or path to database file if using sqlite3.
-        'USER': 'postgres',                      # Not used with sqlite3.
+        'USER': 'root',                      # Not used with sqlite3.
         'PASSWORD': '1313',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 

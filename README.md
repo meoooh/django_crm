@@ -15,7 +15,7 @@ Django_crm
   * 국가 얻어오기 via [http://freegeoip.net]
 
 * 사용된 라이브러리
-    * [Django](https://www.djangoproject.com) 1.5.2
+    * [Django](https://www.djangoproject.com) 1.6
     * [SockJs-tornado](https://github.com/mrjoes/sockjs-tornado)
     * [iptools](https://github.com/bd808/python-iptools)
     * [simplejson](https://github.com/simplejson/simplejson)
@@ -26,7 +26,7 @@ Django_crm
 
   ![기본 CRUD](https://raw.github.com/meoooh/django_crm/1.5.2/image/basicCRUD.jpg)
     
-  * 고객등록시 `작업자`, `담당영업`은 등록된 사용자들의 이름을 입력해야합니다. 현재 등록된 사용자는 (`루트`, `김한기`, `모젯` 등이 있습니다.)
+  * 고객등록시 `작업자`, `담당영업`은 등록된 사용자들의 이름을 입력해야합니다. 현재 등록된 사용자는 (`루트`, `김한기`, `데모` 등이 있습니다.)
 
 * 비동기 CRUD
 
