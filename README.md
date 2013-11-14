@@ -13,7 +13,7 @@ Django_crm
   * 국가 얻어오기 via [http://freegeoip.net]
 
 * 사용된 라이브러리
-    * [Django](https://www.djangoproject.com) 1.6
+    * [Django](https://www.djangoproject.com) 1.5.2
     * [SockJs-tornado](https://github.com/mrjoes/sockjs-tornado)
     * [iptools](https://github.com/bd808/python-iptools)
     * [simplejson](https://github.com/simplejson/simplejson)
